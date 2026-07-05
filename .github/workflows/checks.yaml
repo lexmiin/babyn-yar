@@ -1,0 +1,55 @@
+name: checks
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: checks-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+
+    env:
+      VITE_API_URL: http://localhost:8000/v1
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7
+
+      - name: set up node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: set up go
+        uses: actions/setup-go@v6
+        with:
+          go-version: "1.26.x"
+          cache: true
+          cache-dependency-path: apps/api/go.sum
+
+      - name: set up just
+        uses: extractions/setup-just@v4
+
+      - name: enable corepack
+        run: |
+          corepack enable
+          corepack install
+
+      - name: install dependencies
+        run: corepack pnpm install --frozen-lockfile
+
+      - name: build
+        run: corepack pnpm run build

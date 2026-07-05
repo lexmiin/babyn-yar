@@ -49,6 +49,7 @@
             pkgs.rclone
             pkgs.jq
             pkgs.pnpm_11
+            pkgs.actionlint
           ];
         };
       }
