@@ -26,6 +26,11 @@ jobs:
       - name: checkout
         uses: actions/checkout@v7
 
+      - name: set up pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 11.10.0
+
       - name: set up node
         uses: actions/setup-node@v6
         with:
@@ -43,13 +48,8 @@ jobs:
       - name: set up just
         uses: extractions/setup-just@v4
 
-      - name: enable corepack
-        run: |
-          corepack enable
-          corepack install
-
       - name: install dependencies
-        run: corepack pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: build
-        run: corepack pnpm run build
+        run: pnpm run build
