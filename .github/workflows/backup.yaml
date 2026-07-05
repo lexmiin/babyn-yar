@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: execute remote script
-        uses: appleboy/ssh-action@v1.2.0
+        uses: appleboy/ssh-action@v1.2.5
         env:
           STORAGE_BUCKET_NAME: ${{ secrets.STORAGE_BUCKET_NAME }}
           STORAGE_ACCOUNT_ID: ${{ secrets.STORAGE_ACCOUNT_ID }}
