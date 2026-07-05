@@ -16,9 +16,9 @@
     }
   },
   "devDependencies": {
-    "typescript": "latest"
+    "typescript": "^5.9.3"
   },
   "dependencies": {
-    "valibot": "^1.0.0"
+    "valibot": "^1.4.2"
   }
 }
