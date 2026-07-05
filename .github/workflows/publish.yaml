@@ -6,7 +6,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  ACTOR: ${{ github.actor }}
+  ACTOR: ${{ github.repository_owner }}
 
 jobs:
   publish:
