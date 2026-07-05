@@ -1,11 +1,14 @@
 FROM node:22-alpine AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME/bin:$PATH"
+RUN corepack enable pnpm && corepack install -g pnpm@11.10.0
 
 FROM base AS builder
 RUN apk update
 RUN apk add --no-cache libc6-compat
 # Set working directory
 WORKDIR /app
-RUN npm install -g turbo
+RUN pnpm add -g turbo@2.10.3
 COPY . .
 RUN turbo prune gov --docker
 
@@ -17,10 +20,9 @@ WORKDIR /app
 
 # Copy package files
 COPY --from=builder /app/out/json/ .
-COPY --from=builder /app/out/package-lock.json ./package-lock.json
 
 # Install all dependencies (including dev)
-RUN npm ci
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # Copy source code
 COPY --from=builder /app/out/full/ .
@@ -30,20 +32,8 @@ ARG API_URL
 ENV VITE_API_URL=${API_URL}
 
 # Build the project
-RUN npx turbo build --filter=gov...
-
-# Install ONLY production dependencies (separate stage)
-FROM base AS prod-deps
-RUN apk update
-RUN apk add --no-cache libc6-compat
-WORKDIR /app
-
-# Copy package files
-COPY --from=builder /app/out/json/ .
-COPY --from=builder /app/out/package-lock.json ./package-lock.json
-
-# Install only production dependencies
-RUN npm ci --omit=dev
+RUN pnpm exec turbo build --filter=gov...
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm deploy --legacy --filter=gov --prod /prod/gov
 
 # Final runtime stage
 FROM base AS runner
@@ -54,17 +44,7 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 astrojs
 USER astrojs
 
-# Copy built application from installer
-COPY --from=installer --chown=astrojs:nodejs /app/apps /app/apps
-COPY --from=installer --chown=astrojs:nodejs /app/packages /app/packages
-
-# Copy ONLY production node_modules from prod-deps
-COPY --from=prod-deps --chown=astrojs:nodejs /app/node_modules /app/node_modules
-COPY --from=prod-deps --chown=astrojs:nodejs /app/apps/gov/node_modules /app/apps/gov/node_modules
-COPY --from=prod-deps --chown=astrojs:nodejs /app/packages /app/packages
-
-# Copy package.json files (needed for module resolution)
-COPY --from=builder --chown=astrojs:nodejs /app/out/json/ .
+COPY --from=installer --chown=astrojs:nodejs /prod/gov /app
 
 # Runtime environment variables
 ARG API_URL
@@ -75,4 +55,4 @@ ENV NODE_ENV=production
 
 EXPOSE 4321
 
-CMD [ "node", "./apps/gov/dist/server/entry.mjs" ]
+CMD [ "node", "./dist/server/entry.mjs" ]

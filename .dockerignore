@@ -1,8 +1,19 @@
 node_modules
+**/node_modules
+.pnpm-store
+**/.pnpm-store
+.turbo
+**/.turbo
 dist
+**/dist
 .astro
+**/.astro
 .svelte-kit
+**/.svelte-kit
 build
+**/build
+.git
+.jj
 
 .DS_Store
 *.webm

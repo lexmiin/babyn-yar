@@ -1,0 +1,10 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
+engineStrict: true
+resolutionMode: highest
+
+allowBuilds:
+  "@sentry/cli": true
+  esbuild: true

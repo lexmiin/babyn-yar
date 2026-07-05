@@ -48,6 +48,7 @@
             pkgs.just
             pkgs.rclone
             pkgs.jq
+            pkgs.pnpm_11
           ];
         };
       }

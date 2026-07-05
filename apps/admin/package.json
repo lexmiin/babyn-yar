@@ -36,8 +36,8 @@
   },
   "type": "module",
   "dependencies": {
-    "@repo/api": "*",
-    "@repo/schema": "*",
+    "@repo/api": "workspace:*",
+    "@repo/schema": "workspace:*",
     "@sentry/sveltekit": "^10.63.0",
     "@tanstack/svelte-form": "^1.33.0",
     "@tanstack/svelte-query": "^6.1.36",
