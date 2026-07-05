@@ -7,13 +7,13 @@
   "license": "MIT",
   "scripts": {},
   "dependencies": {
-    "@tiptap/core": "^2.27.2",
-    "@tiptap/extension-image": "^2.27.2",
-    "@tiptap/extension-link": "^2.27.2",
-    "@tiptap/extension-text-align": "^2.27.2",
-    "@tiptap/extension-underline": "^2.27.2",
-    "@tiptap/extension-youtube": "^2.27.2",
-    "@tiptap/html": "^2.27.2",
-    "@tiptap/starter-kit": "^2.27.2"
+    "@tiptap/core": "catalog:tiptap",
+    "@tiptap/extension-image": "catalog:tiptap",
+    "@tiptap/extension-link": "catalog:tiptap",
+    "@tiptap/extension-text-align": "catalog:tiptap",
+    "@tiptap/extension-underline": "catalog:tiptap",
+    "@tiptap/extension-youtube": "catalog:tiptap",
+    "@tiptap/html": "catalog:tiptap",
+    "@tiptap/starter-kit": "catalog:tiptap"
   }
 }

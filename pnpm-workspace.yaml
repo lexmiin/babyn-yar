@@ -2,6 +2,18 @@ packages:
   - "apps/*"
   - "packages/*"
 
+catalogs:
+  tiptap:
+    "@tiptap/core": "^2.27.2"
+    "@tiptap/extension-image": "^2.27.2"
+    "@tiptap/extension-link": "^2.27.2"
+    "@tiptap/extension-text-align": "^2.27.2"
+    "@tiptap/extension-underline": "^2.27.2"
+    "@tiptap/extension-youtube": "^2.27.2"
+    "@tiptap/html": "^2.27.2"
+    "@tiptap/pm": "^2.27.2"
+    "@tiptap/starter-kit": "^2.27.2"
+
 engineStrict: true
 resolutionMode: highest
 
