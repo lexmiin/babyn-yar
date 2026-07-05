@@ -16,10 +16,10 @@
   },
   "dependencies": {
     "@repo/schema": "workspace:*",
-    "valibot": "^1.4.2"
+    "valibot": "catalog:"
   },
   "devDependencies": {
-    "vite": "^7.3.6",
-    "typescript": "^5.9.3"
+    "typescript": "catalog:",
+    "vite": "^8.1.3"
   }
 }
