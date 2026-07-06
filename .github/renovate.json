@@ -19,6 +19,13 @@
   },
   "packageRules": [
     {
+      "description": "Do not update lucide-react in apps/gov until v1 icon removals are handled",
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["lucide-react"],
+      "matchFileNames": ["apps/gov/package.json"],
+      "enabled": false
+    },
+    {
       "matchUpdateTypes": ["minor", "patch", "pin", "digest", "lockFileMaintenance"],
       "automerge": true
     },
