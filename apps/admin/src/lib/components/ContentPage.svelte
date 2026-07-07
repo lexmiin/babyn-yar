@@ -37,7 +37,7 @@
   import AlertActions from './AlertActions.svelte'
   import Button from './Button.svelte'
   import { goto } from '$app/navigation'
-  import type { Metadata } from '@repo/schema'
+  import type { Metadata } from '@babyn-yar/schema'
 
   type ContentData = {
     id: number

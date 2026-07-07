@@ -1,4 +1,4 @@
-import { UserSchema } from '@repo/schema'
+import { UserSchema } from '@babyn-yar/schema'
 import { toSearchParams } from '../params'
 import { fetcher } from '../fetcher'
 import { API_URL } from '../context'

@@ -3,8 +3,8 @@ import {
   createQuery,
   useQueryClient
 } from '@tanstack/svelte-query'
-import type { GallerySchema } from '@repo/schema'
-import { GalleryAPI } from '@repo/api'
+import type { GallerySchema } from '@babyn-yar/schema'
+import { GalleryAPI } from '@babyn-yar/api-utils'
 
 const galleryKeys = {
   all: ['gallery'] as const

@@ -54,10 +54,10 @@ importers:
 
   apps/admin:
     dependencies:
-      '@repo/api':
+      '@babyn-yar/api-utils':
         specifier: workspace:*
         version: link:../../packages/api
-      '@repo/schema':
+      '@babyn-yar/schema':
         specifier: workspace:*
         version: link:../../packages/schema
       '@sentry/sveltekit':
@@ -201,15 +201,21 @@ importers:
       '@astrojs/sitemap':
         specifier: ^3.7.3
         version: 3.7.3
+      '@babyn-yar/api-utils':
+        specifier: workspace:*
+        version: link:../../packages/api
+      '@babyn-yar/i18n':
+        specifier: workspace:*
+        version: link:../../packages/i18n
+      '@babyn-yar/schema':
+        specifier: workspace:*
+        version: link:../../packages/schema
+      '@babyn-yar/tiptap-utils':
+        specifier: workspace:*
+        version: link:../../packages/tiptap-utils
       '@heroicons/react':
         specifier: ^2.2.0
         version: 2.2.0(react@19.2.7)
-      '@repo/api':
-        specifier: workspace:*
-        version: link:../../packages/api
-      '@repo/schema':
-        specifier: workspace:*
-        version: link:../../packages/schema
       '@tailwindcss/typography':
         specifier: ^0.5.20
         version: 0.5.20(tailwindcss@4.3.2)
@@ -222,9 +228,6 @@ importers:
       embla-carousel-react:
         specifier: ^8.6.0
         version: 8.6.0(react@19.2.7)
-      i18n:
-        specifier: workspace:*
-        version: link:../../packages/i18n
       lucide-react:
         specifier: ^0.577.0
         version: 0.577.0(react@19.2.7)
@@ -237,9 +240,6 @@ importers:
       tailwindcss:
         specifier: ^4.3.2
         version: 4.3.2
-      tip-tap-utils:
-        specifier: workspace:*
-        version: link:../../packages/tip-tap-utils
     devDependencies:
       '@astrojs/ts-plugin':
         specifier: ^1.10.10
@@ -262,7 +262,7 @@ importers:
 
   packages/api:
     dependencies:
-      '@repo/schema':
+      '@babyn-yar/schema':
         specifier: workspace:*
         version: link:../schema
       valibot:
@@ -292,7 +292,7 @@ importers:
         specifier: 'catalog:'
         version: 6.0.3
 
-  packages/tip-tap-utils:
+  packages/tiptap-utils:
     dependencies:
       '@tiptap/core':
         specifier: catalog:tiptap

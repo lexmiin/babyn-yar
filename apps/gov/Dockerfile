@@ -32,8 +32,8 @@ ARG API_URL
 ENV VITE_API_URL=${API_URL}
 
 # Build the project
-RUN pnpm exec turbo build --filter=gov...
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm deploy --legacy --filter=gov --prod /prod/gov
+RUN pnpm exec turbo build --filter=@babyn-yar/gov...
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm deploy --legacy --filter=@babyn-yar/gov --prod /prod/gov
 
 # Final runtime stage
 FROM base AS runner

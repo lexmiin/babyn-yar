@@ -2,7 +2,7 @@
   import { createForm } from '@tanstack/svelte-form'
   import { permissionOptions } from '$lib/select-options'
   import { useRegister } from '$lib/auth/query'
-  import { ResponseError } from '@repo/api'
+  import { ResponseError } from '@babyn-yar/api-utils'
   import Dialog from './Dialog.svelte'
   import DialogTitle from './DialogTitle.svelte'
   import DialogDescription from './DialogDescription.svelte'
@@ -19,7 +19,7 @@
   import FieldError from './FieldError.svelte'
   import DialogClose from './DialogClose.svelte'
   import Description from './Description.svelte'
-  import { UserSchema } from '@repo/schema'
+  import { UserSchema } from '@babyn-yar/schema'
 
   type Props = {
     open: boolean

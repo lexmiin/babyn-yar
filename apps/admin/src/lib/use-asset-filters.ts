@@ -1,5 +1,5 @@
 import { useQueryState, parseAsJson } from 'nuqs-svelte'
-import { AssetSchema } from '@repo/schema'
+import { AssetSchema } from '@babyn-yar/schema'
 import * as v from 'valibot'
 import { DEFAULT_SORT_OPTION } from './select-options'
 

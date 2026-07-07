@@ -6,7 +6,7 @@
   import EditorSkeleton from '$components/Skeletons/EditorSkeleton.svelte'
   import { useEvent, useEvents, useUpdateEvent } from '$lib/content/query'
   import ContentForm from '$components/ContentForm.svelte'
-  import { ContentSchema } from '@repo/schema'
+  import { ContentSchema } from '@babyn-yar/schema'
   import { toast } from 'svelte-sonner'
   import { trimText } from '$lib/trim-text'
 

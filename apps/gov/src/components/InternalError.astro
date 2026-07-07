@@ -1,6 +1,6 @@
 ---
 import BaseError from './BaseError.astro'
-import { getLangFromUrl, useTranslations } from 'i18n'
+import { getLangFromUrl, useTranslations } from '@babyn-yar/i18n'
 
 const lang = getLangFromUrl(Astro.url)
 const t = useTranslations(lang)

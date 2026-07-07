@@ -2,7 +2,7 @@
   import Image from 'phosphor-svelte/lib/Image'
   import Plus from 'phosphor-svelte/lib/Plus'
   import AssetDialog from './AssetDialog.svelte'
-  import { AssetSchema } from '@repo/schema'
+  import { AssetSchema } from '@babyn-yar/schema'
 
   type Props = {
     id?: string

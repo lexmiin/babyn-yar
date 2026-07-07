@@ -16,7 +16,7 @@
   import { useIntersect } from '$lib/use-intersect.svelte'
   import { useAssets } from '$lib/assets/query'
   import { DEFAULT_SORT_OPTION, sortOptions } from '$lib/select-options'
-  import { AssetSchema } from '@repo/schema'
+  import { AssetSchema } from '@babyn-yar/schema'
   import { untrack } from 'svelte'
   import { useAssetFilters } from '$lib/use-asset-filters'
 

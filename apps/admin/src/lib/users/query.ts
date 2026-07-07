@@ -8,8 +8,8 @@ import {
 import { userToasts } from './toast'
 import { authKeys } from '$lib/auth/query'
 import { useUserFilters } from '$lib/use-user-filters'
-import type { UserSchema } from '@repo/schema'
-import { UserAPI } from '@repo/api'
+import type { UserSchema } from '@babyn-yar/schema'
+import { UserAPI } from '@babyn-yar/api-utils'
 
 export const userKeys = {
   all: ['users'] as const,

@@ -5,7 +5,7 @@
   import Button from '$components/Button.svelte'
   import { useContentFilters } from '$lib/use-content-filters'
   import { useDeletePartners, usePartners } from '$lib/content/query'
-  import { ContentSchema } from '@repo/schema'
+  import { ContentSchema } from '@babyn-yar/schema'
 
   const slug = 'partners'
   const filters = useContentFilters()

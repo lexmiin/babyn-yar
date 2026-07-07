@@ -9,7 +9,7 @@
   import AssetDialog from '$components/AssetDialog.svelte'
   import PageHeader from '$components/PageHeader.svelte'
   import Container from '$components/Container.svelte'
-  import { AssetSchema, GallerySchema } from '@repo/schema'
+  import { AssetSchema, GallerySchema } from '@babyn-yar/schema'
 
   const images = useGalleryImages()
   const deleteImage = useDeleteGalleryImage()

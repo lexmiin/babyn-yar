@@ -1,6 +1,6 @@
 {
   "$schema": "https://www.schemastore.org/package.json",
-  "name": "@repo/schema",
+  "name": "@babyn-yar/schema",
   "version": "0.0.1",
   "private": true,
   "scripts": {

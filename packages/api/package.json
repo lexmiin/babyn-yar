@@ -1,5 +1,5 @@
 {
-  "name": "@repo/api",
+  "name": "@babyn-yar/api-utils",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -15,7 +15,7 @@
     }
   },
   "dependencies": {
-    "@repo/schema": "workspace:*",
+    "@babyn-yar/schema": "workspace:*",
     "valibot": "catalog:"
   },
   "devDependencies": {

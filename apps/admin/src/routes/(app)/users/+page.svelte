@@ -24,7 +24,7 @@
   import LockOpen from 'phosphor-svelte/lib/LockOpen'
   import { formatDate } from '$lib/format-date'
   import { useUsers, useDeleteUsers } from '$lib/users/query'
-  import type { UserSchema } from '@repo/schema'
+  import type { UserSchema } from '@babyn-yar/schema'
   import TableIconCell from '$components/TableIconCell.svelte'
   import ResetPasswordDialog from '$components/ResetPasswordDialog.svelte'
   import { useUserFilters } from '$lib/use-user-filters'

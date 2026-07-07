@@ -4,7 +4,7 @@
   import PageHeader from '$components/PageHeader.svelte'
   import { useContentFilters } from '$lib/use-content-filters'
   import { useDeleteTestimonies, useTestimonies } from '$lib/content/query'
-  import { ContentSchema } from '@repo/schema'
+  import { ContentSchema } from '@babyn-yar/schema'
   import Button from '$components/Button.svelte'
 
   const slug = 'victim-testimonies'

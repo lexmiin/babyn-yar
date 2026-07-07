@@ -4,7 +4,7 @@
   import Container from '$components/Container.svelte'
   import { useMediaArticles, useCreateMediaArticle } from '$lib/content/query'
   import ContentFormSimple from '$components/ContentFormSimple.svelte'
-  import { ContentSchema } from '@repo/schema'
+  import { ContentSchema } from '@babyn-yar/schema'
   import Plus from 'phosphor-svelte/lib/Plus'
   import { goto } from '$app/navigation'
   import { resolve } from '$app/paths'

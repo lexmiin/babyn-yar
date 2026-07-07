@@ -29,7 +29,7 @@ COPY --from=builder /app/out/full/ .
 RUN --mount=type=secret,id=sentry-org,env=SENTRY_ORG  \
   --mount=type=secret,id=sentry-project,env=SENTRY_PROJECT  \
   --mount=type=secret,id=sentry-auth-token,env=SENTRY_AUTH_TOKEN \
-  pnpm exec turbo run build --filter=admin...
+  pnpm exec turbo run build --filter=@babyn-yar/admin...
 
 FROM nginx:1.24-alpine AS runtime
 

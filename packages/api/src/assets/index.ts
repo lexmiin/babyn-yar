@@ -1,4 +1,4 @@
-import { AssetSchema } from '@repo/schema'
+import { AssetSchema } from '@babyn-yar/schema'
 import { API_URL } from '../context'
 import { fetcher } from '../fetcher'
 import { toSearchParams } from '../params'

@@ -20,7 +20,7 @@
         ".svelte-kit/**"
       ]
     },
-    "api#build": {
+    "@babyn-yar/api#build": {
       "dependsOn": [
         "^build"
       ],
@@ -38,7 +38,7 @@
         "topo"
       ]
     },
-    "api#check": {
+    "@babyn-yar/api#check": {
       "dependsOn": [
         "topo"
       ],
@@ -55,7 +55,7 @@
         "VITE_API_URL"
       ]
     },
-    "api#dev": {
+    "@babyn-yar/api#dev": {
       "cache": false,
       "persistent": true,
       "passThroughEnv": [

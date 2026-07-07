@@ -1,5 +1,5 @@
 {
-  "name": "admin",
+  "name": "@babyn-yar/admin",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -36,8 +36,8 @@
   },
   "type": "module",
   "dependencies": {
-    "@repo/api": "workspace:*",
-    "@repo/schema": "workspace:*",
+    "@babyn-yar/api-utils": "workspace:*",
+    "@babyn-yar/schema": "workspace:*",
     "@sentry/sveltekit": "^10.63.0",
     "@tanstack/svelte-form": "^1.33.0",
     "@tanstack/svelte-query": "^6.1.36",

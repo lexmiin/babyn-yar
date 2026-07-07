@@ -8,7 +8,7 @@
     useDeleteDevelopmentConcepts,
     useDevelopmentConcepts
   } from '$lib/content/query'
-  import { ContentSchema } from '@repo/schema'
+  import { ContentSchema } from '@babyn-yar/schema'
 
   const slug = 'development-concept'
   const filters = useContentFilters()

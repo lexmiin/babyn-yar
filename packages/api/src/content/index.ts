@@ -1,5 +1,5 @@
 import { fetcher } from '../fetcher'
-import { ContentSchema } from '@repo/schema'
+import { ContentSchema } from '@babyn-yar/schema'
 import { toSearchParams } from '../params'
 import * as v from 'valibot'
 import { API_URL } from '../context'

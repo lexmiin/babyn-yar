@@ -1,5 +1,5 @@
 import { browser } from '$app/environment'
-import { ResponseError } from '@repo/api'
+import { ResponseError } from '@babyn-yar/api-utils'
 import { captureException, withScope } from '@sentry/sveltekit'
 import { MutationCache, QueryCache, QueryClient } from '@tanstack/svelte-query'
 

@@ -4,9 +4,9 @@ import {
   useQueryClient
 } from '@tanstack/svelte-query'
 import { userKeys } from '$lib/users/query'
-import type { UserSchema } from '@repo/schema'
+import type { UserSchema } from '@babyn-yar/schema'
 import { authToasts } from './toast'
-import { ResponseError, UserAPI } from '@repo/api'
+import { ResponseError, UserAPI } from '@babyn-yar/api-utils'
 
 export const authKeys = {
   all: ['auth'] as const,

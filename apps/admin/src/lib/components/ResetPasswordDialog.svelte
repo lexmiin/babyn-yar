@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { UserSchema } from '@repo/schema'
+  import { UserSchema } from '@babyn-yar/schema'
   import { createForm } from '@tanstack/svelte-form'
   import Button from './Button.svelte'
   import Dialog from './Dialog.svelte'

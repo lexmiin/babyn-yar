@@ -1,6 +1,6 @@
 ---
 import MapLegendItem from './MapLegendItem.astro'
-import { useTranslations, getLangFromUrl } from 'i18n'
+import { useTranslations, getLangFromUrl } from '@babyn-yar/i18n'
 
 const lang = getLangFromUrl(Astro.url)
 const t = useTranslations(lang)

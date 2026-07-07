@@ -1,4 +1,4 @@
-import { GallerySchema } from '@repo/schema'
+import { GallerySchema } from '@babyn-yar/schema'
 import { API_URL } from '../context'
 import { fetcher } from '../fetcher'
 import * as v from 'valibot'

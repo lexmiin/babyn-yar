@@ -1,5 +1,5 @@
-import { defaultLang, languages } from 'i18n'
-import { useTranslatedPath } from 'i18n'
+import { defaultLang, languages } from '@babyn-yar/i18n'
+import { useTranslatedPath } from '@babyn-yar/i18n'
 
 interface LanguagePickerProps {
   lang: keyof typeof languages

@@ -5,8 +5,8 @@ import {
   keepPreviousData,
   useQueryClient
 } from '@tanstack/svelte-query'
-import { ContentAPI } from '@repo/api'
-import { ContentSchema, type Metadata } from '@repo/schema'
+import { ContentAPI } from '@babyn-yar/api-utils'
+import { ContentSchema, type Metadata } from '@babyn-yar/schema'
 import { useContentFilters } from '$lib/use-content-filters'
 
 type WithTranslation<K extends string> = {

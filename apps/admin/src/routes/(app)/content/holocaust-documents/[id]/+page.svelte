@@ -10,7 +10,7 @@
     useUpdateHolocaustDocument
   } from '$lib/content/query'
   import ContentFormSimple from '$components/ContentFormSimple.svelte'
-  import { ContentSchema } from '@repo/schema'
+  import { ContentSchema } from '@babyn-yar/schema'
   import { toast } from 'svelte-sonner'
   import { trimText } from '$lib/trim-text'
 

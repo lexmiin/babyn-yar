@@ -8,7 +8,7 @@
     useDeleteHolocaustDocuments,
     useHolocaustDocuments
   } from '$lib/content/query'
-  import { ContentSchema } from '@repo/schema'
+  import { ContentSchema } from '@babyn-yar/schema'
 
   const slug = 'holocaust-documents'
 

@@ -1,5 +1,5 @@
 {
-  "name": "tip-tap-utils",
+  "name": "@babyn-yar/tiptap-utils",
   "main": "index.ts",
   "types": "index.ts",
   "type": "module",

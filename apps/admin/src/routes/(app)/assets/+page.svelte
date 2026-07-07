@@ -24,7 +24,7 @@
   import { useIntersect } from '$lib/use-intersect.svelte'
   import Checkbox from '$components/Checkbox.svelte'
   import Divider from '$components/Divider.svelte'
-  import { AssetSchema } from '@repo/schema'
+  import { AssetSchema } from '@babyn-yar/schema'
   import { debounce } from '$lib/debounce'
   import { useAssetFilters } from '$lib/use-asset-filters'
 

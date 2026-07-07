@@ -1,5 +1,5 @@
 {
-  "name": "api",
+  "name": "@babyn-yar/api",
   "scripts": {
     "build": "just build",
     "check": "go test ./...",

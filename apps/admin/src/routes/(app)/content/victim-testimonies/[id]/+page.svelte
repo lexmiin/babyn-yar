@@ -9,7 +9,7 @@
     useTestimonies,
     useUpdateTestimony
   } from '$lib/content/query'
-  import { ContentSchema } from '@repo/schema'
+  import { ContentSchema } from '@babyn-yar/schema'
   import { toast } from 'svelte-sonner'
   import { trimText } from '$lib/trim-text'
   import ContentFormSimple from '$components/ContentFormSimple.svelte'

@@ -1,4 +1,4 @@
-import { VictimSchema } from '@repo/schema'
+import { VictimSchema } from '@babyn-yar/schema'
 import { API_URL } from '../context'
 import { toSearchParams } from '../params'
 import { fetcher } from '../fetcher'

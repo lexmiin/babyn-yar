@@ -10,7 +10,7 @@
   import DocumentsSelect from '$components/DocumentsSelect.svelte'
   import DatePickerCalendar from './DatePickerCalendar.svelte'
   import { createForm } from '@tanstack/svelte-form'
-  import { ContentSchema } from '@repo/schema'
+  import { ContentSchema } from '@babyn-yar/schema'
   import Combobox from '$components/Combobox.svelte'
   import ComboboxOption from '$components/ComboboxOption.svelte'
   import ComboboxLabel from '$components/ComboboxLabel.svelte'

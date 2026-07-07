@@ -2,7 +2,7 @@
   import ContentPage from '$components/ContentPage.svelte'
   import Plus from 'phosphor-svelte/lib/Plus'
   import PageHeader from '$components/PageHeader.svelte'
-  import { ContentSchema } from '@repo/schema'
+  import { ContentSchema } from '@babyn-yar/schema'
   import { useDeleteEvents, useEvents } from '$lib/content/query'
   import { useContentFilters } from '$lib/use-content-filters'
   import Button from '$components/Button.svelte'

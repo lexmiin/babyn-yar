@@ -1,7 +1,7 @@
-import { useTranslations } from 'i18n'
+import { useTranslations } from '@babyn-yar/i18n'
 import type { ComponentProps, ReactNode } from 'react'
 import { EnvelopeIcon, MapPinIcon } from '@heroicons/react/24/outline'
-import { languages } from 'i18n'
+import { languages } from '@babyn-yar/i18n'
 
 interface ContactFormProps {
   lang: keyof typeof languages

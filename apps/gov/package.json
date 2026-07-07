@@ -1,5 +1,5 @@
 {
-  "name": "gov",
+  "name": "@babyn-yar/gov",
   "type": "module",
   "version": "0.0.1",
   "license": "MIT",
@@ -20,18 +20,18 @@
     "@astrojs/react": "^6.0.1",
     "@astrojs/sitemap": "^3.7.3",
     "@heroicons/react": "^2.2.0",
-    "@repo/api": "workspace:*",
-    "@repo/schema": "workspace:*",
+    "@babyn-yar/api-utils": "workspace:*",
+    "@babyn-yar/schema": "workspace:*",
     "@tailwindcss/typography": "^0.5.20",
     "@tailwindcss/vite": "^4.3.2",
     "astro": "^7.0.6",
     "embla-carousel-react": "^8.6.0",
-    "i18n": "workspace:*",
+    "@babyn-yar/i18n": "workspace:*",
     "lucide-react": "^0.577.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "tailwindcss": "^4.3.2",
-    "tip-tap-utils": "workspace:*"
+    "@babyn-yar/tiptap-utils": "workspace:*"
   },
   "devDependencies": {
     "@astrojs/ts-plugin": "^1.10.10",

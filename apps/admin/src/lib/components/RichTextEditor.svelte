@@ -27,7 +27,7 @@
   import { onDestroy, onMount } from 'svelte'
   import { type JSONContent } from '@tiptap/core'
   import LinkDialog from './LinkDialog.svelte'
-  import { AssetSchema } from '@repo/schema'
+  import { AssetSchema } from '@babyn-yar/schema'
 
   type Props = {
     content: JSONContent | undefined

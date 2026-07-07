@@ -6,9 +6,9 @@ import {
 } from '@tanstack/svelte-query'
 import { assetToasts } from './toast'
 import type { Getter } from '$lib/runes'
-import { AssetSchema } from '@repo/schema'
+import { AssetSchema } from '@babyn-yar/schema'
 import { useAssetFilters } from '$lib/use-asset-filters'
-import { AssetAPI } from '@repo/api'
+import { AssetAPI } from '@babyn-yar/api-utils'
 
 type QueryOptions = {
   staleTime?: number

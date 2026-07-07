@@ -1,6 +1,6 @@
 import { getContext, setContext } from 'svelte'
 import type { Getter } from './runes'
-import type { UserSchema } from '@repo/schema'
+import type { UserSchema } from '@babyn-yar/schema'
 
 export type LoggedUserContext = UserSchema.User | undefined
 

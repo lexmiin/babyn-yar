@@ -5,9 +5,9 @@
   import Input from '$components/Input.svelte'
   import FieldError from '$components/FieldError.svelte'
   import { useLoggedUser, useLogin } from '$lib/auth/query'
-  import { UserSchema } from '@repo/schema'
+  import { UserSchema } from '@babyn-yar/schema'
   import { createForm } from '@tanstack/svelte-form'
-  import { ResponseError } from '@repo/api'
+  import { ResponseError } from '@babyn-yar/api-utils'
   import { goto } from '$app/navigation'
   import { resolve } from '$app/paths'
 

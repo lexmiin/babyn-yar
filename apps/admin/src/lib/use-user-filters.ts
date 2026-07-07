@@ -1,5 +1,5 @@
 import { parseAsJson, useQueryState } from 'nuqs-svelte'
-import { UserSchema } from '@repo/schema'
+import { UserSchema } from '@babyn-yar/schema'
 import * as v from 'valibot'
 
 export function useUserFilters(defaults: UserSchema.Filters = {}) {

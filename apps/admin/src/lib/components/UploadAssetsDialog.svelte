@@ -13,8 +13,8 @@
   import { useUploadAssets } from '$lib/assets/query'
   import Code from './Code.svelte'
   import { toast } from 'svelte-sonner'
-  import { ResponseError } from '@repo/api'
-  import { AssetSchema } from '@repo/schema'
+  import { ResponseError } from '@babyn-yar/api-utils'
+  import { AssetSchema } from '@babyn-yar/schema'
   import { createForm } from '@tanstack/svelte-form'
 
   type Props = {

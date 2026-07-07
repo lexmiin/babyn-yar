@@ -1,6 +1,6 @@
 import { useQueryState, parseAsJson } from 'nuqs-svelte'
 import * as v from 'valibot'
-import { ContentSchema } from '@repo/schema'
+import { ContentSchema } from '@babyn-yar/schema'
 import { DEFAULT_CONTENT_SORT_OPTION } from './select-options'
 
 export function useContentFilters(defaults: ContentSchema.Filters = {}) {
