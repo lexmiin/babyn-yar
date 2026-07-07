@@ -1,11 +1,20 @@
 {
   "name": "@babyn-yar/tiptap-utils",
-  "main": "index.ts",
-  "types": "index.ts",
   "type": "module",
   "version": "1.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc",
+    "check": "tsc --noEmit",
+    "clean": "rm -rf ./.turbo && rm -rf ./dist"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
   "dependencies": {
     "@tiptap/core": "catalog:tiptap",
     "@tiptap/extension-image": "catalog:tiptap",
@@ -15,5 +24,8 @@
     "@tiptap/extension-youtube": "catalog:tiptap",
     "@tiptap/html": "catalog:tiptap",
     "@tiptap/starter-kit": "catalog:tiptap"
+  },
+  "devDependencies": {
+    "typescript": "catalog:"
   }
 }

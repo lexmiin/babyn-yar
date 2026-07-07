@@ -318,6 +318,10 @@ importers:
       '@tiptap/starter-kit':
         specifier: catalog:tiptap
         version: 3.27.1
+    devDependencies:
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
 
 packages:
 
