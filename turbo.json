@@ -35,6 +35,7 @@
     },
     "check": {
       "dependsOn": [
+        "^build",
         "topo"
       ]
     },
