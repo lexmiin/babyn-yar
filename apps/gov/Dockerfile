@@ -10,7 +10,7 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 RUN pnpm add -g turbo@2.10.3
 COPY . .
-RUN turbo prune gov --docker
+RUN turbo prune @babyn-yar/gov --docker
 
 # Install ALL dependencies and build
 FROM base AS installer

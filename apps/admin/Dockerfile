@@ -10,7 +10,7 @@ RUN apk update
 WORKDIR /app
 RUN pnpm add -g turbo@2.10.3
 COPY . .
-RUN turbo prune admin --docker
+RUN turbo prune @babyn-yar/admin --docker
 
 FROM base AS installer
 RUN apk add --no-cache libc6-compat
