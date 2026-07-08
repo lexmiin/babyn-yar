@@ -13,6 +13,9 @@
   },
   "devDependencies": {
     "prettier": "^3.9.4",
+    "prettier-plugin-astro": "^0.14.1",
+    "prettier-plugin-svelte": "^4.1.1",
+    "prettier-plugin-tailwindcss": "^0.8.0",
     "turbo": "^2.10.3"
   },
   "packageManager": "pnpm@11.10.0"
