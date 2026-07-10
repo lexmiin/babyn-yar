@@ -74,7 +74,7 @@ importers:
         version: 10.63.0(@opentelemetry/core@2.9.0(@opentelemetry/api@1.9.1))(@sveltejs/kit@2.69.2(@opentelemetry/api@1.9.1)(@sveltejs/vite-plugin-svelte@7.1.2(svelte@5.56.4(@typescript-eslint/types@8.62.1))(vite@8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.7.0)(yaml@2.9.0)))(svelte@5.56.4(@typescript-eslint/types@8.62.1))(typescript@6.0.3)(vite@8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.7.0)(yaml@2.9.0)))(svelte@5.56.4(@typescript-eslint/types@8.62.1))(vite@8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.7.0)(yaml@2.9.0))
       '@tanstack/svelte-form':
         specifier: ^1.33.0
-        version: 1.33.0(svelte@5.56.4(@typescript-eslint/types@8.62.1))
+        version: 1.33.1(svelte@5.56.4(@typescript-eslint/types@8.62.1))
       '@tanstack/svelte-query':
         specifier: ^6.1.36
         version: 6.1.36(svelte@5.56.4(@typescript-eslint/types@8.62.1))
@@ -1593,8 +1593,8 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  '@tanstack/form-core@1.33.0':
-    resolution: {integrity: sha512-AV4Pw9Dk4orFsuPBcDssfWMJFs+yMYBae7zZ4oTqrCf4ftNGQKxvrQRZeqKHG6A4TkiLeSvf2kzIjcVkrW7E6w==}
+  '@tanstack/form-core@1.33.1':
+    resolution: {integrity: sha512-iSxLQIAz9vu+mo3Tnzlzo/I/5DC3L/jrQ1oc0ybXNbOJpeNGc4iKx/R3tp5d/Ra9y7JqONQBXiYtgz8/305yZA==}
 
   '@tanstack/pacer-lite@0.1.1':
     resolution: {integrity: sha512-y/xtNPNt/YeyoVxE/JCx+T7yjEzpezmbb+toK8DDD1P4m7Kzs5YR956+7OKexG3f8aXgC3rLZl7b1V+yNUSy5w==}
@@ -1609,8 +1609,8 @@ packages:
   '@tanstack/store@0.11.0':
     resolution: {integrity: sha512-WlzzCt3xi0G6pCAJu1U+2jiECwabETDpQDi3hfkFZvJii9AuZqEKbOiVarX1/bWhTNjU486yQtJCCasi/0q+Cw==}
 
-  '@tanstack/svelte-form@1.33.0':
-    resolution: {integrity: sha512-Omf00K2iNqDVXYWY+W8nqh4+J6AVcmQdqGX3Ru/mfTw7WpqIq6DhAXYZwwsNeriOXnpfdwfWOv8WgGFspdEK5g==}
+  '@tanstack/svelte-form@1.33.1':
+    resolution: {integrity: sha512-wSW9b6+tJmFNMJ6d/3avrHzS1FRzFG67CJdYUoNdj+qV+ZdGVcQQysKNSReL9d0EVwyAOupfsL0dL17GU+R2tw==}
     peerDependencies:
       svelte: ^5.0.0
 
@@ -5413,7 +5413,7 @@ snapshots:
 
   '@tanstack/devtools-event-client@0.4.4': {}
 
-  '@tanstack/form-core@1.33.0':
+  '@tanstack/form-core@1.33.1':
     dependencies:
       '@tanstack/devtools-event-client': 0.4.4
       '@tanstack/pacer-lite': 0.1.1
@@ -5427,9 +5427,9 @@ snapshots:
 
   '@tanstack/store@0.11.0': {}
 
-  '@tanstack/svelte-form@1.33.0(svelte@5.56.4(@typescript-eslint/types@8.62.1))':
+  '@tanstack/svelte-form@1.33.1(svelte@5.56.4(@typescript-eslint/types@8.62.1))':
     dependencies:
-      '@tanstack/form-core': 1.33.0
+      '@tanstack/form-core': 1.33.1
       '@tanstack/svelte-store': 0.12.0(svelte@5.56.4(@typescript-eslint/types@8.62.1))
       svelte: 5.56.4(@typescript-eslint/types@8.62.1)
 
