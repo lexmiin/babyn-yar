@@ -8,7 +8,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/credentials v1.13.40
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.40.0
 	github.com/caarlos0/env/v11 v11.4.1
-	github.com/go-chi/chi/v5 v5.3.0
+	github.com/go-chi/chi/v5 v5.3.1
 	github.com/jackc/pgx/v5 v5.10.0
 	gopkg.in/boj/redistore.v1 v1.0.0-20160128113310-fc113767cd6b
 )
