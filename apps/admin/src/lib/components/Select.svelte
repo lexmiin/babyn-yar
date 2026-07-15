@@ -1,5 +1,6 @@
 <script lang="ts" generics="T extends string">
   import { cn } from '$lib/cn'
+  import { getFieldContext } from '$lib/context'
   import { Select } from 'bits-ui'
   import CaretDown from 'phosphor-svelte/lib/CaretDown'
   import type { Snippet } from 'svelte'
@@ -9,6 +10,7 @@
     value?: T
     placeholder?: string
     invalid?: boolean
+    disabled?: boolean
     items?: Array<{ label: string; value: string }>
     offset?: number
     class?: string
@@ -22,6 +24,7 @@
     value = $bindable(),
     placeholder,
     invalid = false,
+    disabled = false,
     items = [],
     offset = 10,
     class: className = '',
@@ -33,27 +36,33 @@
   let label = $derived(
     value ? items.find(i => i.value === value)?.label : undefined
   )
+
+  const ctx = getFieldContext()
+
+  const isDisabled = $derived(disabled || ctx?.disabled())
 </script>
 
 <Select.Root
   type="single"
   bind:value
-  {items}
+  disabled={isDisabled}
   onValueChange={value => onSelect?.(value as T)}
   onOpenChange={onOpen}
+  {items}
 >
   <Select.Trigger
     {id}
     type="button"
     class={cn(
-      'group relative block w-full before:absolute before:inset-px before:rounded-lg before:bg-white before:shadow-sm after:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:ring-transparent after:ring-inset focus:outline-hidden focus:after:ring-2 focus:after:ring-blue-500',
+      'group relative block w-full before:absolute before:inset-px before:rounded-lg before:bg-white before:shadow-sm after:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:ring-transparent after:ring-inset focus:outline-hidden focus:after:ring-2 focus:after:ring-blue-500 data-disabled:opacity-50 data-disabled:before:bg-zinc-950/5 data-disabled:before:shadow-none',
       className
     )}
     data-slot="control"
     data-invalid={invalid || undefined}
+    data-disabled={isDisabled || undefined}
   >
     <span
-      class="relative block min-h-11 w-full appearance-none rounded-lg border border-zinc-950/10 bg-transparent py-2.5 pr-7 pl-3.5 text-left text-base/6 text-zinc-950 group-hover:border-zinc-950/20 group-data-invalid:border-red-500 group-data-hover:group-data-invalid:border-red-500 sm:min-h-9 sm:py-1.5 sm:pl-3 sm:text-sm/6"
+      class="relative block min-h-11 w-full appearance-none rounded-lg border border-zinc-950/10 bg-transparent py-2.5 pr-7 pl-3.5 text-left text-base/6 text-zinc-950 group-hover:border-zinc-950/20 group-data-disabled:border-zinc-950/20 group-data-disabled:opacity-100 group-data-invalid:border-red-500 group-data-hover:group-data-invalid:border-red-500 sm:min-h-9 sm:py-1.5 sm:pl-3 sm:text-sm/6"
     >
       {#if label}
         <div class="flex min-w-0 items-center">

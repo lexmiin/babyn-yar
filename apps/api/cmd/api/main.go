@@ -8,6 +8,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/gorilla/sessions"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lex-unix/babyn-yar/internal/config"
 	"github.com/lex-unix/babyn-yar/internal/data"
@@ -25,7 +26,7 @@ type application struct {
 	config       config.Config
 	models       data.Models
 	storage      *storage.S3Handler
-	sessionStore *redistore.RediStore
+	sessionStore sessions.Store
 	logger       *jsonlog.Logger
 }
 
@@ -107,6 +108,7 @@ func openDB(cfg config.Config) (*pgxpool.Pool, error) {
 
 	err = db.Ping(ctx)
 	if err != nil {
+		db.Close()
 		return nil, err
 	}
 	return db, nil

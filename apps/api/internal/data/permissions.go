@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"slices"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -10,12 +11,7 @@ import (
 type Permissions []string
 
 func (p Permissions) Include(name string) bool {
-	for i := range p {
-		if name == p[i] {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(p, name)
 }
 
 type PermissionModel struct {

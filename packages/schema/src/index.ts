@@ -1,6 +1,6 @@
 export { Metadata } from './metadata'
-export { ContentSchema } from './content-schema'
 export { UserSchema } from './user-schema'
 export { AssetSchema } from './asset-schema'
 export { GallerySchema } from './gallery-schema'
 export { VictimSchema } from './victim-schema'
+export { PublicationSchema } from './publication-schema'

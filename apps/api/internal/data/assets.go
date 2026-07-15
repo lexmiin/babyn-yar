@@ -40,7 +40,7 @@ func (m AssetModel) Insert(assets []*Asset) error {
 	return nil
 }
 
-func (m AssetModel) InsertBulk(assets [][]interface{}) error {
+func (m AssetModel) InsertBulk(assets [][]any) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
@@ -74,7 +74,7 @@ func (m AssetModel) GetAll(filename, contentType string, filters Filters) ([]*As
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	args := []interface{}{filename, contentType, filters.limit(), filters.offset()}
+	args := []any{filename, contentType, filters.limit(), filters.offset()}
 
 	rows, err := m.DB.Query(ctx, query, args...)
 	if err != nil {

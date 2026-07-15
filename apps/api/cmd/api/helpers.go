@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"maps"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -14,7 +15,7 @@ import (
 	"github.com/lex-unix/babyn-yar/internal/validator"
 )
 
-type envelope map[string]interface{}
+type envelope map[string]any
 
 func (app *application) writeJSON(w http.ResponseWriter, status int, data envelope, headers http.Header) error {
 	js, err := json.Marshal(data)
@@ -24,9 +25,7 @@ func (app *application) writeJSON(w http.ResponseWriter, status int, data envelo
 
 	js = append(js, '\n')
 
-	for key, value := range headers {
-		w.Header()[key] = value
-	}
+	maps.Copy(w.Header(), headers)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
@@ -35,7 +34,7 @@ func (app *application) writeJSON(w http.ResponseWriter, status int, data envelo
 	return nil
 }
 
-func (app *application) readJSON(w http.ResponseWriter, r *http.Request, dst interface{}) error {
+func (app *application) readJSON(w http.ResponseWriter, r *http.Request, dst any) error {
 	maxBytes := 1_048_576
 	r.Body = http.MaxBytesReader(w, r.Body, int64(maxBytes))
 	dec := json.NewDecoder(r.Body)

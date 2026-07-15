@@ -2,7 +2,7 @@
   "name": "@babyn-yar/api",
   "scripts": {
     "build": "just build",
-    "check": "go test ./...",
+    "check": "just test",
     "dev": "just dev",
     "clean": "rm -rf ./.turbo ./bin"
   }

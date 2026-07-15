@@ -19,7 +19,7 @@ audit:
 
 [working-directory(api_dir)]
 test:
-    go test -v -race -buildvcs ./...
+    MIGRATIONS_DIR={{ justfile_dir() }}/migrations go test -race -buildvcs ./...
 
 [working-directory(api_dir)]
 build:

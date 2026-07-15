@@ -27,7 +27,7 @@ func (m GalleryModel) Insert(img *GalleryImage) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	args := []interface{}{img.ID, img.URL}
+	args := []any{img.ID, img.URL}
 
 	return m.DB.QueryRow(ctx, query, args...).Scan(&img.ID)
 }

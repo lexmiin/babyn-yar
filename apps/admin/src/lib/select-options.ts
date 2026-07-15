@@ -11,11 +11,6 @@ export const sortOptions = {
   file_name: { label: 'Назва файлу', order: 'asc' }
 }
 
-export const langOptions = [
-  { value: 'ua', label: 'Українська' },
-  { value: 'en', label: 'Англійська' }
-]
-
 export const pageSizeOptions = [
   { value: '10', label: '10 на сторінку' },
   { value: '20', label: '20 на сторінку' },
@@ -23,9 +18,9 @@ export const pageSizeOptions = [
   { value: '100', label: '100 на сторінку' }
 ]
 
-export const DEFAULT_CONTENT_SORT_OPTION: keyof typeof contentSortOptions =
+export const DEFAULT_PUBLICATION_SORT_OPTION: keyof typeof publicationSortOptions =
   '-created_at'
-export const contentSortOptions = {
+export const publicationSortOptions = {
   created_at: {
     label: 'Дата створення',
     order: 'asc'
@@ -34,11 +29,11 @@ export const contentSortOptions = {
     label: 'Дата створення',
     order: 'desc'
   },
-  occured_on: {
+  occurred_on: {
     label: 'Дата проведення',
     order: 'asc'
   },
-  '-occured_on': {
+  '-occurred_on': {
     label: 'Дата проведення',
     order: 'desc'
   }

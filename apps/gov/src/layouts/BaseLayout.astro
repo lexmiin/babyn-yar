@@ -9,10 +9,9 @@ import '../styles/global.css'
 export interface Props {
   title: string
   description: string
-  translationId?: number
 }
 
-const { title, description, translationId } = Astro.props
+const { title, description } = Astro.props
 ---
 
 <!doctype html>
@@ -27,7 +26,7 @@ const { title, description, translationId } = Astro.props
     />
   </head>
   <body class="relative">
-    <Header {translationId} />
+    <Header />
     <MobileMenu />
     <main
       class="px-4 pt-32 text-xl text-black md:px-[calc(2rem+39px)] lg:px-[calc(3rem+39px)]"

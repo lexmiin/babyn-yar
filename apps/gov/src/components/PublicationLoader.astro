@@ -1,0 +1,38 @@
+---
+import CMSContent from './CMSContent.astro'
+import NotFoundError from './NotFoundError.astro'
+import { PublicationAPI, ResponseError } from '@babyn-yar/api-utils'
+import type { PublicationSchema } from '@babyn-yar/schema'
+
+interface Props {
+  id: string
+  kind: PublicationSchema.Kind
+  locale: PublicationSchema.Locale
+}
+
+const { id, kind, locale } = Astro.props
+let publication: PublicationSchema.Detail | undefined
+
+try {
+  publication = (await PublicationAPI.detail({ id, kind, locale })).publication
+} catch (error) {
+  if (error instanceof ResponseError && error.isNotFoundError()) {
+    Astro.response.status = 404
+  } else {
+    throw error
+  }
+}
+---
+
+{
+  publication ? (
+    <CMSContent
+      title={publication.title}
+      description={publication.description}
+      content={publication.content}
+      attachemnts={publication.documents}
+    />
+  ) : (
+    <NotFoundError />
+  )
+}
