@@ -12,7 +12,7 @@ func (app *application) enableCORS() func(next http.Handler) http.Handler {
 	options := cors.Options{
 		AllowedOrigins:   app.config.CORS.TrustedOrigins,
 		AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
-		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token", "X-Expected-Version"},
 		AllowCredentials: true,
 		MaxAge:           300, // Maximum value not ignored by any of major browsers
 	}

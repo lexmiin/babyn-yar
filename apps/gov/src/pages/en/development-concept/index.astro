@@ -1,21 +1,14 @@
 ---
-import type { ContentSchema, Metadata } from '@babyn-yar/schema'
-import { ContentAPI } from '@babyn-yar/api-utils'
-import CMSList from '@/components/CMSList.astro'
+import PublicationList from '@/components/PublicationList.astro'
 
 export const prerender = false
 
-const page = Number(Astro.url.searchParams.get('page') || '1')
-const response = await ContentAPI.list<{
-  concepts: ContentSchema.Content[]
-  metadata: Metadata
-}>({ slug: 'development-concepts', filters: { page, lang: 'en' } })
 ---
 
-<CMSList
+<PublicationList
+  kind="development_concept"
+  locale="en"
   title="The development concept"
   description="The development concept of the National Historical Memorial Preserve «Babyn Yar»"
   slug="en/development-concept"
-  list={response.concepts}
-  metadata={response.metadata}
 />

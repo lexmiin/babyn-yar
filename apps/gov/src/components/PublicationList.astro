@@ -1,0 +1,25 @@
+---
+import { PublicationAPI } from '@babyn-yar/api-utils'
+import type { PublicationSchema } from '@babyn-yar/schema'
+import CMSList from './CMSList.astro'
+
+interface Props {
+  kind: PublicationSchema.Kind
+  locale: PublicationSchema.Locale
+  title: string
+  description: string
+  slug: string
+}
+
+const { kind, locale, title, description, slug } = Astro.props
+const page = Number(Astro.url.searchParams.get('page') || '1')
+const response = await PublicationAPI.list({ kind, locale, page })
+---
+
+<CMSList
+  {title}
+  {description}
+  {slug}
+  list={response.publications}
+  metadata={response.metadata}
+/>

@@ -3,13 +3,9 @@ import { useTranslatedPath } from '@babyn-yar/i18n'
 
 interface LanguagePickerProps {
   lang: keyof typeof languages
-  translationId?: number
 }
 
-export default function LanguagePicker({
-  lang,
-  translationId
-}: LanguagePickerProps) {
+export default function LanguagePicker({ lang }: LanguagePickerProps) {
   const translatePath = useTranslatedPath(lang)
 
   return (
@@ -20,14 +16,9 @@ export default function LanguagePicker({
         onChange={e => {
           const newLang = e.currentTarget.value
           const isDefault = newLang == defaultLang
-          let path = isDefault
+          const path = isDefault
             ? window.location.pathname.slice(lang.length + 1) // length of lang + /
             : window.location.pathname
-          if (translationId) {
-            const segments = path.split('/')
-            segments[segments.length - 1] = translationId.toString()
-            path = segments.join('/')
-          }
           window.location.pathname = translatePath(path, newLang)
         }}
       >

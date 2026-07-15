@@ -34,7 +34,7 @@ func (m VictimModel) GetAll(fullname string, info string, filters Filters) ([]*V
 
 	defer cancel()
 
-	args := []interface{}{fullname, info, filters.limit(), filters.offset()}
+	args := []any{fullname, info, filters.limit(), filters.offset()}
 
 	rows, err := m.DB.Query(ctx, query, args...)
 	if err != nil {

@@ -1,21 +1,13 @@
 ---
-import type { Metadata, ContentSchema } from '@babyn-yar/schema'
-import { ContentAPI } from '@babyn-yar/api-utils'
-import CMSList from '@/components/CMSList.astro'
+import PublicationList from '@/components/PublicationList.astro'
 
 export const prerender = false
-
-const page = Number(Astro.url.searchParams.get('page') || '1')
-const response = await ContentAPI.list<{
-  documents: ContentSchema.Content[]
-  metadata: Metadata
-}>({ slug: 'holocaust-documents', filters: { page, lang: 'ua' } })
 ---
 
-<CMSList
+<PublicationList
+  kind="holocaust_document"
+  locale="uk"
   title="Документи Голокосту"
   description="Документи Голокосту"
   slug="holocaust/documents"
-  list={response.documents}
-  metadata={response.metadata}
 />

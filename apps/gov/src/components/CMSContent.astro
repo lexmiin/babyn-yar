@@ -7,19 +7,17 @@ interface Props {
   title: string
   description: string
   content: string
-  translationId?: number
   attachemnts?: string[]
 }
 
-const { title, description, content, attachemnts, translationId } = Astro.props
+const { title, description, content, attachemnts } = Astro.props
 
-const html = generateHTML(JSON.parse(content))
+const html = generateHTML(content)
 ---
 
 <MainLayout
   title={title}
   description={description}
-  translationId={translationId}
 >
   <div class="cms-content">
     <Fragment set:html={html} />

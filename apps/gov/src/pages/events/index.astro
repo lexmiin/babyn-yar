@@ -1,21 +1,13 @@
 ---
-import type { ContentSchema, Metadata } from '@babyn-yar/schema'
-import { ContentAPI } from '@babyn-yar/api-utils'
-import CMSList from '@/components/CMSList.astro'
+import PublicationList from '@/components/PublicationList.astro'
 
 export const prerender = false
-
-const page = Number(Astro.url.searchParams.get('page') || '1')
-const response = await ContentAPI.list<{
-  events: ContentSchema.Content[]
-  metadata: Metadata
-}>({ slug: 'events', filters: { page, lang: 'ua' } })
 ---
 
-<CMSList
+<PublicationList
+  kind="event"
+  locale="uk"
   title="Події"
   description="Переглянути всі події"
   slug="events"
-  list={response.events}
-  metadata={response.metadata}
 />

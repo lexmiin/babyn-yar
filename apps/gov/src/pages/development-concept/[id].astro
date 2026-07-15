@@ -1,20 +1,9 @@
 ---
-import CMSLoader from '@/components/CMSLoader.astro'
-import type { ContentSchema } from '@babyn-yar/schema'
-import { ContentAPI } from '@babyn-yar/api-utils'
+import PublicationLoader from '@/components/PublicationLoader.astro'
 
 export const prerender = false
 
-const { id } = Astro.params
+const id = Astro.params.id as string
 ---
 
-<CMSLoader
-  loader={async () =>
-    ContentAPI.detail<{
-      concept: ContentSchema.Content
-      translation?: ContentSchema.Translation
-    }>({ slug: 'development-concepts', id: id as string }).then(data => ({
-      content: data.concept,
-      translationId: data.translation?.englishId
-    }))}
-/>
+<PublicationLoader {id} kind="development_concept" locale="uk" />

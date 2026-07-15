@@ -9,11 +9,6 @@ import {
   MobileNavToggle
 } from '@/components/ui'
 
-interface Props {
-  translationId?: number
-}
-
-const { translationId } = Astro.props
 const lang = getLangFromUrl(Astro.url)
 const t = useTranslations(lang)
 const translatePath = useTranslatedPath(lang)
@@ -110,7 +105,7 @@ const translatePath = useTranslatedPath(lang)
         </HeaderLink>
       </HeaderSection>
       <div class="md:border-l md:border-l-black">
-        <LanugagePicker client:load lang={lang} translationId={translationId} />
+        <LanugagePicker client:load lang={lang} />
       </div>
       <MobileNavToggle client:load />
     </nav>

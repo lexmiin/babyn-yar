@@ -83,7 +83,7 @@ func SeedInitialUser(db *pgxpool.Pool, fullName, email, password string) error {
 		VALUES ($1, $2, $3)
 		RETURNING id, created_at, updated_at`
 
-	args := []interface{}{user.FullName, user.Email, user.Password.hash}
+	args := []any{user.FullName, user.Email, user.Password.hash}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -148,7 +148,7 @@ func (m UserModel) Insert(user *User) error {
 		VALUES ($1, $2, $3)
 		RETURNING id, created_at, updated_at`
 
-	args := []interface{}{user.FullName, user.Email, user.Password.hash}
+	args := []any{user.FullName, user.Email, user.Password.hash}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -260,7 +260,7 @@ func (m UserModel) GetAll(filters Filters) ([]*User, Metadata, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	args := []interface{}{filters.limit(), filters.offset()}
+	args := []any{filters.limit(), filters.offset()}
 
 	rows, err := m.DB.Query(ctx, query, args...)
 	if err != nil {
@@ -298,7 +298,7 @@ func (m UserModel) Update(user *User) error {
 		WHERE id = $4 AND version = $5
 		RETURNING version`
 
-	args := []interface{}{
+	args := []any{
 		user.FullName,
 		user.Email,
 		user.Password.hash,

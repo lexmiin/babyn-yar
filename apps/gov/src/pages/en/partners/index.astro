@@ -1,21 +1,14 @@
 ---
-import type { ContentSchema, Metadata } from '@babyn-yar/schema'
-import { ContentAPI } from '@babyn-yar/api-utils'
-import CMSList from '@/components/CMSList.astro'
+import PublicationList from '@/components/PublicationList.astro'
 
 export const prerender = false
 
-const page = Number(Astro.url.searchParams.get('page') || '1')
-const response = await ContentAPI.list<{
-  partners: ContentSchema.Content[]
-  metadata: Metadata
-}>({ slug: 'partners', filters: { page, lang: 'en' } })
 ---
 
-<CMSList
+<PublicationList
+  kind="partner"
+  locale="en"
   title="Partners"
   description="Partners"
   slug="en/partners"
-  list={response.partners}
-  metadata={response.metadata}
 />
