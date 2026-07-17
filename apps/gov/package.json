@@ -9,6 +9,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
+    "lint": "eslint \"src/**/*.{astro,js,jsx,ts,tsx}\"",
     "astro": "astro",
     "format": "prettier --write .",
     "clean": "rm -rf ./.turbo && rm -rf ./.astro && rm -rf ./dist"
@@ -19,26 +20,32 @@
     "@astrojs/node": "^11.0.2",
     "@astrojs/react": "^6.0.1",
     "@astrojs/sitemap": "^3.7.3",
-    "@heroicons/react": "^2.2.0",
     "@babyn-yar/api-utils": "workspace:*",
+    "@babyn-yar/i18n": "workspace:*",
     "@babyn-yar/schema": "workspace:*",
+    "@babyn-yar/tiptap-utils": "workspace:*",
+    "@heroicons/react": "^2.2.0",
     "@tailwindcss/typography": "^0.5.20",
     "@tailwindcss/vite": "^4.3.2",
     "astro": "^7.0.6",
     "embla-carousel-react": "^8.6.0",
-    "@babyn-yar/i18n": "workspace:*",
     "lucide-react": "^0.577.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "tailwindcss": "^4.3.2",
-    "@babyn-yar/tiptap-utils": "workspace:*"
+    "tailwindcss": "^4.3.2"
   },
   "devDependencies": {
     "@astrojs/ts-plugin": "^1.10.10",
+    "@eslint/js": "^10.0.1",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
+    "eslint": "^10.6.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-astro": "^3.0.1",
+    "globals": "^17.7.0",
     "prettier": "3.9.5",
     "prettier-plugin-tailwindcss": "^0.8.0",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "typescript-eslint": "^8.62.1"
   }
 }

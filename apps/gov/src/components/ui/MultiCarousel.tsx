@@ -10,6 +10,7 @@ export default function MultiCarousel({ slides }: Props) {
   const [show, setShow] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(0)
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleOutsideClick = (e: any) => {
     if (!slideRef) return
     if (e.target.contains(slideRef.current)) {

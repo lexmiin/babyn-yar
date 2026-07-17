@@ -80,7 +80,6 @@
   let isAlertOpen = $state(false)
 
   function handleEdit(content: ContentData) {
-    // eslint-disable-next-line svelte/no-navigation-without-resolve
     goto(`${entryHref}/${content.id}`)
   }
 

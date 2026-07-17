@@ -1,8 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": [
-    ".env"
-  ],
+  "globalDependencies": [".env"],
   "tasks": {
     "build": {
       "env": [
@@ -11,50 +9,28 @@
         "SENTRY_PROJECT",
         "VITE_API_URL"
       ],
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        "dist/**",
-        "build/**",
-        ".svelte-kit/**"
-      ]
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", "build/**", ".svelte-kit/**"]
     },
     "@babyn-yar/api#build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        "bin/**"
-      ],
-      "passThroughEnv": [
-        "GOCACHE",
-        "GOMODCACHE",
-        "GOPATH"
-      ]
+      "dependsOn": ["^build"],
+      "outputs": ["bin/**"],
+      "passThroughEnv": ["GOCACHE", "GOMODCACHE", "GOPATH"]
     },
     "check": {
-      "dependsOn": [
-        "^build",
-        "topo"
-      ]
+      "dependsOn": ["^build", "topo"]
     },
     "@babyn-yar/api#check": {
-      "dependsOn": [
-        "topo"
-      ],
-      "passThroughEnv": [
-        "GOCACHE",
-        "GOMODCACHE",
-        "GOPATH"
-      ]
+      "dependsOn": ["topo"],
+      "passThroughEnv": ["GOCACHE", "GOMODCACHE", "GOPATH"]
+    },
+    "lint": {
+      "dependsOn": ["^lint"]
     },
     "dev": {
       "cache": false,
       "persistent": true,
-      "env": [
-        "VITE_API_URL"
-      ]
+      "env": ["VITE_API_URL"]
     },
     "@babyn-yar/api#dev": {
       "cache": false,
@@ -80,9 +56,7 @@
       "cache": false
     },
     "topo": {
-      "dependsOn": [
-        "^topo"
-      ]
+      "dependsOn": ["^topo"]
     }
   }
 }
