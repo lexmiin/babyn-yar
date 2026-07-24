@@ -6,7 +6,7 @@
   "timezone": "Europe/Kyiv",
   "schedule": ["* * * * 5"],
   "dockerfile": {
-    "enabled": false
+    "enabled": true
   },
   "docker-compose": {
     "enabled": false
@@ -33,6 +33,12 @@
       "description": "Group lockfile maintenance updates",
       "matchUpdateTypes": ["lockFileMaintenance"],
       "groupName": "lockfile maintenance"
+    },
+    {
+      "description": "Pin Dockerfile images by digest and require review",
+      "matchManagers": ["dockerfile"],
+      "pinDigests": true,
+      "automerge": false
     }
   ]
 }
