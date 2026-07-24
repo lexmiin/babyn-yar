@@ -91,7 +91,7 @@ const { victims, metadata } = await VictimAPI.list({ fullname, info })
               {victims.map((victim, i) => (
                 <tr class="text-base odd:bg-zinc-50 even:bg-white">
                   <td class="border-t border-b border-l pl-3">
-                    <!-- Note: non-null assert is fine as long as we check array length above -->
+                    {/* Note: non-null assert is fine as long as we check array length above */}
                     {(metadata.currentPage! - 1) * metadata.pageSize! + i + 1}
                   </td>
                   <td class="border-t border-b py-2 pl-3">{victim.fullname}</td>

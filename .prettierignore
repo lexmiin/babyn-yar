@@ -1,7 +1,9 @@
 .DS_Store
 node_modules
-/dist
-/.astro
+**/build
+**/dist
+**/.astro
+**/.svelte-kit
 .env
 .env.*
 !.env.example
@@ -12,6 +14,6 @@ yarn.lock
 
 
 # Ignore Maps.astro as it contains external script that fails prettier. Nothing we can do about it
-/src/components/Maps.astro
+/apps/gov/src/components/Maps.astro
 
-/src/content/**/*
+/apps/gov/src/content

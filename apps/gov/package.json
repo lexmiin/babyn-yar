@@ -11,7 +11,6 @@
     "check": "astro check",
     "lint": "eslint \"src/**/*.{astro,js,jsx,ts,tsx}\"",
     "astro": "astro",
-    "format": "prettier --write .",
     "clean": "rm -rf ./.turbo && rm -rf ./.astro && rm -rf ./dist"
   },
   "dependencies": {
@@ -43,8 +42,6 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-astro": "^3.0.1",
     "globals": "^17.7.0",
-    "prettier": "3.9.5",
-    "prettier-plugin-tailwindcss": "^0.8.0",
     "typescript": "catalog:",
     "typescript-eslint": "^8.62.1"
   }
