@@ -15,7 +15,7 @@
   }:
     {
       overlays.default = final: prev: {
-        go = final.go-bin.versions."1.26.4";
+        go = final.go-bin.versions."1.26.5";
         nodejs = final.nodejs_22;
       };
     }
