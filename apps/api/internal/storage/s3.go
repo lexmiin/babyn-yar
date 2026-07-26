@@ -78,7 +78,7 @@ func (handler S3Handler) Delete(keys []*string) error {
 		Bucket: aws.String(handler.bucket),
 		Delete: &types.Delete{
 			Objects: objects,
-			Quiet:   *aws.Bool(true),
+			Quiet:   aws.Bool(true),
 		},
 	})
 	if err != nil {
