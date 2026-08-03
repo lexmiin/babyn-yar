@@ -180,7 +180,7 @@
             <TableCell>{publication.publisher.fullName}</TableCell>
             <TableIconCell>
               <Dropdown>
-                <DropdownButton plain>
+                <DropdownButton variant="ghost">
                   {#snippet icon()}
                     <DotsThreeIcon />
                   {/snippet}
@@ -222,8 +222,12 @@
     Ви дійсно хочете видалити цей запис? Ця дія незворотна.
   </AlertDescription>
   <AlertActions>
-    <Button plain onclick={handleCancelDeletion}>Скасувати</Button>
-    <Button onclick={handleDelete} disabled={deleteContent.isPending}>
+    <Button variant="ghost" onclick={handleCancelDeletion}>Скасувати</Button>
+    <Button
+      variant="danger"
+      onclick={handleDelete}
+      disabled={deleteContent.isPending}
+    >
       Видалити
     </Button>
   </AlertActions>

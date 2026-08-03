@@ -2,15 +2,15 @@
   import type { Snippet } from 'svelte'
   import { DropdownMenu } from 'bits-ui'
   import Button from './Button.svelte'
+  import type { ButtonVariants } from './Button.svelte'
 
-  type Props = {
-    plain?: boolean
+  interface Props extends ButtonVariants {
     icon?: Snippet
     children?: Snippet
   }
 
   const {
-    plain = false,
+    variant = 'filled',
     icon = undefined,
     children = undefined
   }: Props = $props()
@@ -18,7 +18,7 @@
 
 <DropdownMenu.Trigger>
   {#snippet child({ props })}
-    <Button {plain} {icon} {...props} class="data-[state=open]:bg-zinc-950/5">
+    <Button {variant} {icon} {...props} class="data-[state=open]:bg-zinc-950/5">
       {@render children?.()}
     </Button>
   {/snippet}

@@ -150,7 +150,11 @@
       multiple
       onchange={addFiles}
     />
-    <Button plain disabled={uploadAssets.isPending} onclick={openFileBrowser}>
+    <Button
+      variant="ghost"
+      disabled={uploadAssets.isPending}
+      onclick={openFileBrowser}
+    >
       Додати файл
     </Button>
     <form.Subscribe

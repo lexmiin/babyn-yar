@@ -145,7 +145,7 @@
         })}
       >
         {#snippet children({ canSubmit, isSubmitting })}
-          <Button plain type="button" onclick={() => form.reset()}>
+          <Button variant="ghost" type="button" onclick={() => form.reset()}>
             Скинути
           </Button>
           <Button disabled={!canSubmit}>
