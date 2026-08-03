@@ -2,7 +2,7 @@
   import { cn } from '$lib/cn'
   import { getFieldContext } from '$lib/context'
   import { Select } from 'bits-ui'
-  import CaretDown from 'phosphor-svelte/lib/CaretDown'
+  import CaretDownIcon from 'phosphor-svelte/lib/CaretDownIcon'
   import type { Snippet } from 'svelte'
 
   type Props = {
@@ -79,7 +79,7 @@
     <span
       class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"
     >
-      <CaretDown
+      <CaretDownIcon
         class="size-5 text-zinc-500 group-data-disabled:text-zinc-600 sm:size-4"
       />
     </span>

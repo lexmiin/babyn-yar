@@ -4,10 +4,10 @@
   import InputGroup from '$components/InputGroup.svelte'
   import Select from '$components/Select.svelte'
   import SelectOption from '$components/SelectOption.svelte'
-  import MagnifyingGlass from 'phosphor-svelte/lib/MagnifyingGlass'
-  import CloudArrowUp from 'phosphor-svelte/lib/CloudArrowUp'
-  import ArrowUp from 'phosphor-svelte/lib/ArrowUp'
-  import ArrowDown from 'phosphor-svelte/lib/ArrowDown'
+  import MagnifyingGlassIcon from 'phosphor-svelte/lib/MagnifyingGlassIcon'
+  import CloudArrowUpIcon from 'phosphor-svelte/lib/CloudArrowUpIcon'
+  import ArrowUpIcon from 'phosphor-svelte/lib/ArrowUpIcon'
+  import ArrowDownIcon from 'phosphor-svelte/lib/ArrowDownIcon'
   import Alert from '$components/Alert.svelte'
   import AlertTitle from '$components/AlertTitle.svelte'
   import AlertDescription from '$components/AlertDescription.svelte'
@@ -17,7 +17,7 @@
   import AssetItem from '$components/AssetItem.svelte'
   import UploadAssetsDialog from '$components/UploadAssetsDialog.svelte'
   import AssetSkeleton from '$components/Skeletons/AssetSkeleton.svelte'
-  import Trash from 'phosphor-svelte/lib/Trash'
+  import TrashIcon from 'phosphor-svelte/lib/TrashIcon'
   import { useAssets, useDeleteAssets } from '$lib/assets/query'
   import { cn } from '$lib/cn'
   import { sortOptions, DEFAULT_SORT_OPTION } from '$lib/select-options'
@@ -97,7 +97,7 @@
   </h1>
   <Button onclick={() => (isUploadDialogOpen = true)}>
     {#snippet icon()}
-      <CloudArrowUp weight="fill" />
+      <CloudArrowUpIcon weight="fill" />
     {/snippet}
     Завантажити
   </Button>
@@ -107,7 +107,7 @@
   <div class="flex max-w-xl flex-col gap-5 sm:flex-1 sm:flex-row">
     <div class="flex-1">
       <InputGroup>
-        <MagnifyingGlass weight="regular" />
+        <MagnifyingGlassIcon weight="regular" />
         <Input
           placeholder="Пошук&hellip;"
           oninput={debounce(handleSearch)}
@@ -128,9 +128,9 @@
           <SelectOption value={key} label={value.label}>
             {#snippet icon()}
               {#if value.order === 'asc'}
-                <ArrowUp weight="fill" />
+                <ArrowUpIcon weight="fill" />
               {:else}
-                <ArrowDown weight="fill" />
+                <ArrowDownIcon weight="fill" />
               {/if}
             {/snippet}
             {value.label}
@@ -158,7 +158,7 @@
           <div class="flex items-center justify-center gap-4">
             <Button plain onclick={() => (isAlertDialogOpen = true)}>
               {#snippet icon()}
-                <Trash />
+                <TrashIcon />
               {/snippet}
             </Button>
           </div>

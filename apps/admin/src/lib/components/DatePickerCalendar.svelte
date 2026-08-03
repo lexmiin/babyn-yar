@@ -1,8 +1,8 @@
 <script lang="ts">
   import { DatePicker } from 'bits-ui'
-  import CaretLeft from 'phosphor-svelte/lib/CaretLeft'
-  import CaretRight from 'phosphor-svelte/lib/CaretRight'
-  import CalendarBlank from 'phosphor-svelte/lib/CalendarBlank'
+  import CaretLeftIcon from 'phosphor-svelte/lib/CaretLeftIcon'
+  import CaretRightIcon from 'phosphor-svelte/lib/CaretRightIcon'
+  import CalendarBlankIcon from 'phosphor-svelte/lib/CalendarBlankIcon'
   import Button from './Button.svelte'
   import type { DateValue } from '@internationalized/date'
   import { jsDateToCalendarDate } from '$lib/format-date'
@@ -59,7 +59,7 @@
       class="group absolute inset-y-0 right-0 flex items-center px-2 outline-none"
       type="button"
     >
-      <CalendarBlank
+      <CalendarBlankIcon
         class="size-5 text-zinc-500 group-hover:text-zinc-700 sm:size-4"
       />
     </DatePicker.Trigger>
@@ -79,7 +79,7 @@
               {#snippet child({ props })}
                 <Button plain {...props}>
                   {#snippet icon()}
-                    <CaretLeft />
+                    <CaretLeftIcon />
                   {/snippet}
                 </Button>
               {/snippet}
@@ -89,7 +89,7 @@
               {#snippet child({ props })}
                 <Button plain {...props}>
                   {#snippet icon()}
-                    <CaretRight />
+                    <CaretRightIcon />
                   {/snippet}
                 </Button>
               {/snippet}

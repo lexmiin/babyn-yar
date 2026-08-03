@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Snippet } from 'svelte'
-  import Warning from 'phosphor-svelte/lib/Warning'
+  import WarningIcon from 'phosphor-svelte/lib/WarningIcon'
 
   type Props = {
     children: Snippet
@@ -13,7 +13,7 @@
   <div
     class="flex gap-3 rounded border border-red-700/10 bg-red-100 px-4 py-2.5 text-red-800"
   >
-    <Warning />
+    <WarningIcon />
     <span>
       {@render children()}
     </span>

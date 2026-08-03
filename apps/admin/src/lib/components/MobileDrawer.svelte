@@ -3,8 +3,8 @@
   import { fade, fly } from 'svelte/transition'
   import Sidebar from './Sidebar.svelte'
   import Button from './Button.svelte'
-  import List from 'phosphor-svelte/lib/List'
-  import X from 'phosphor-svelte/lib/X'
+  import ListIcon from 'phosphor-svelte/lib/ListIcon'
+  import XIcon from 'phosphor-svelte/lib/XIcon'
   import { mobileDrawer } from '$lib/state.svelte'
 </script>
 
@@ -17,7 +17,7 @@
     {#snippet child({ props })}
       <Button plain {...props}>
         {#snippet icon()}
-          <List />
+          <ListIcon />
         {/snippet}
       </Button>
     {/snippet}
@@ -54,7 +54,7 @@
                   {#snippet child({ props })}
                     <Button plain aria-label="Close" {...props}>
                       {#snippet icon()}
-                        <X />
+                        <XIcon />
                       {/snippet}
                     </Button>
                   {/snippet}

@@ -10,7 +10,7 @@
   import Field from './Field.svelte'
   import Label from './Label.svelte'
   import InputGroup from './InputGroup.svelte'
-  import Lock from 'phosphor-svelte/lib/Lock'
+  import LockIcon from 'phosphor-svelte/lib/LockIcon'
   import SelectOption from './SelectOption.svelte'
   import Select from './Select.svelte'
   import DialogActions from './DialogActions.svelte'
@@ -121,7 +121,7 @@
               <Label for={field.name}>Пароль</Label>
               <Description>Має бути не менше 8 символів</Description>
               <InputGroup>
-                <Lock size={20} />
+                <LockIcon size={20} />
                 <Input
                   type="password"
                   id={field.name}

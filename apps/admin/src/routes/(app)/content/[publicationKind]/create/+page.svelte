@@ -10,7 +10,7 @@
   } from '$lib/publications/query'
   import type { PublicationRoute } from '$lib/publications/routes'
   import { PublicationSchema } from '@babyn-yar/schema'
-  import Plus from 'phosphor-svelte/lib/Plus'
+  import PlusIcon from 'phosphor-svelte/lib/PlusIcon'
 
   type Props = {
     data: {
@@ -43,7 +43,7 @@
 <PageHeader title="Новий запис">
   <Button disabled={!canSubmit || isSubmitting} form="record-form">
     {#snippet icon()}
-      <Plus size={16} />
+      <PlusIcon size={16} />
     {/snippet}
     Створити
   </Button>
