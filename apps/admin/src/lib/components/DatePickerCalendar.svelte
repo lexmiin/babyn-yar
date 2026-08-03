@@ -77,7 +77,7 @@
           <DatePicker.Header class="flex items-center justify-between">
             <DatePicker.PrevButton>
               {#snippet child({ props })}
-                <Button plain {...props}>
+                <Button variant="ghost" {...props}>
                   {#snippet icon()}
                     <CaretLeftIcon />
                   {/snippet}
@@ -87,7 +87,7 @@
             <DatePicker.Heading class="text-base/6 sm:text-sm/6" />
             <DatePicker.NextButton>
               {#snippet child({ props })}
-                <Button plain {...props}>
+                <Button variant="ghost" {...props}>
                   {#snippet icon()}
                     <CaretRightIcon />
                   {/snippet}

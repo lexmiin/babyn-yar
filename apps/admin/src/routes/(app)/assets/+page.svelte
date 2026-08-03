@@ -152,11 +152,15 @@
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-4">
             <p>Обрано {selectedAssets.length}</p>
-            <Button plain onclick={selectAll}>Обрати всі</Button>
-            <Button plain onclick={clear}>Очистити</Button>
+            <Button variant="ghost" onclick={selectAll}>Обрати всі</Button>
+            <Button variant="ghost" onclick={clear}>Очистити</Button>
           </div>
           <div class="flex items-center justify-center gap-4">
-            <Button plain onclick={() => (isAlertDialogOpen = true)}>
+            <Button
+              variant="ghost"
+              aria-label="Видалити обрані файли"
+              onclick={() => (isAlertDialogOpen = true)}
+            >
               {#snippet icon()}
                 <TrashIcon />
               {/snippet}
@@ -225,8 +229,12 @@
     видалено назавжди.
   </AlertDescription>
   <AlertActions>
-    <Button plain onclick={cancelDeletion}>Скасувати</Button>
-    <Button onclick={confirmDeletion} disabled={deleteAssets.isPending}>
+    <Button variant="ghost" onclick={cancelDeletion}>Скасувати</Button>
+    <Button
+      variant="danger"
+      onclick={confirmDeletion}
+      disabled={deleteAssets.isPending}
+    >
       Видалити
     </Button>
   </AlertActions>

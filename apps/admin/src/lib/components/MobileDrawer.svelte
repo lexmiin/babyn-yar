@@ -15,7 +15,7 @@
 >
   <Dialog.Trigger>
     {#snippet child({ props })}
-      <Button plain {...props}>
+      <Button variant="ghost" {...props}>
         {#snippet icon()}
           <ListIcon />
         {/snippet}
@@ -52,7 +52,7 @@
               <div class="mb-2 px-4 pt-3">
                 <Dialog.Close>
                   {#snippet child({ props })}
-                    <Button plain aria-label="Close" {...props}>
+                    <Button variant="ghost" aria-label="Close" {...props}>
                       {#snippet icon()}
                         <XIcon />
                       {/snippet}

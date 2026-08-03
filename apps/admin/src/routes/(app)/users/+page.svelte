@@ -103,7 +103,7 @@
               <TableCell>{formatDate(user.createdAt)}</TableCell>
               <TableIconCell>
                 <Dropdown>
-                  <DropdownButton plain>
+                  <DropdownButton variant="ghost">
                     {#snippet icon()}
                       <DotsThreeIcon />
                     {/snippet}
@@ -159,8 +159,12 @@
       скасувати.
     </AlertDescription>
     <AlertActions>
-      <Button plain onclick={cancelDeletion}>Скасувати</Button>
-      <Button onclick={confirmDeletion} disabled={deleteUser.isPending}>
+      <Button variant="ghost" onclick={cancelDeletion}>Скасувати</Button>
+      <Button
+        variant="danger"
+        onclick={confirmDeletion}
+        disabled={deleteUser.isPending}
+      >
         Видалити
       </Button>
     </AlertActions>
