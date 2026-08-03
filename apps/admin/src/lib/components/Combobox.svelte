@@ -1,6 +1,6 @@
 <script lang="ts" generics="T">
   import { Combobox } from 'bits-ui'
-  import CaretUpDown from 'phosphor-svelte/lib/CaretUpDown'
+  import CaretUpDownIcon from 'phosphor-svelte/lib/CaretUpDownIcon'
   import type { Snippet } from 'svelte'
   import { setComboboxContext } from '$lib/context'
 
@@ -89,7 +89,7 @@
       class="group absolute inset-y-0 right-0 flex items-center px-2"
       type="button"
     >
-      <CaretUpDown
+      <CaretUpDownIcon
         class="size-5 stroke-zinc-500 group-data-disabled:stroke-zinc-600 group-data-hover:stroke-zinc-700 sm:size-4"
       />
     </Combobox.Trigger>

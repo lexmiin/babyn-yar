@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Image from 'phosphor-svelte/lib/Image'
-  import Plus from 'phosphor-svelte/lib/Plus'
+  import ImageIcon from 'phosphor-svelte/lib/ImageIcon'
+  import PlusIcon from 'phosphor-svelte/lib/PlusIcon'
   import AssetDialog from './AssetDialog.svelte'
   import { AssetSchema } from '@babyn-yar/schema'
 
@@ -47,14 +47,14 @@
           class="h-full max-w-full object-contain"
         />
       {:else}
-        <Image class="size-6" />
+        <ImageIcon class="size-6" />
       {/if}
     </div>
     <div class="flex items-center gap-1">
       {#if cover}
         <span class="text-sm"> Змінити </span>
       {:else}
-        <Plus class="size-4" />
+        <PlusIcon class="size-4" />
         <p class="text-sm">Додати обкладинку</p>
       {/if}
     </div>

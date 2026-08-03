@@ -11,9 +11,9 @@
   import Input from './Input.svelte'
   import Select from './Select.svelte'
   import SelectOption from './SelectOption.svelte'
-  import Link from 'phosphor-svelte/lib/Link'
-  import Globe from 'phosphor-svelte/lib/Globe'
-  import At from 'phosphor-svelte/lib/At'
+  import LinkIcon from 'phosphor-svelte/lib/LinkIcon'
+  import GlobeIcon from 'phosphor-svelte/lib/GlobeIcon'
+  import AtIcon from 'phosphor-svelte/lib/AtIcon'
 
   type Props = {
     open: boolean
@@ -35,17 +35,17 @@
     {
       label: 'Internal',
       value: 'internal',
-      Icon: Link
+      Icon: LinkIcon
     },
     {
       label: 'URL',
       value: 'external',
-      Icon: Globe
+      Icon: GlobeIcon
     },
     {
       label: 'Email',
       value: 'email',
-      Icon: At
+      Icon: AtIcon
     }
   ]
 </script>

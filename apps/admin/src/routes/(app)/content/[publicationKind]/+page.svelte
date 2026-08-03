@@ -40,13 +40,13 @@
   import { trimText } from '$lib/trim-text'
   import { usePublicationFilters } from '$lib/use-publication-filters'
   import { PublicationSchema } from '@babyn-yar/schema'
-  import ArrowDown from 'phosphor-svelte/lib/ArrowDown'
-  import ArrowUp from 'phosphor-svelte/lib/ArrowUp'
-  import DotsThree from 'phosphor-svelte/lib/DotsThree'
-  import MagnifyingGlass from 'phosphor-svelte/lib/MagnifyingGlass'
-  import Pencil from 'phosphor-svelte/lib/Pencil'
-  import Plus from 'phosphor-svelte/lib/Plus'
-  import Trash from 'phosphor-svelte/lib/Trash'
+  import ArrowDownIcon from 'phosphor-svelte/lib/ArrowDownIcon'
+  import ArrowUpIcon from 'phosphor-svelte/lib/ArrowUpIcon'
+  import DotsThreeIcon from 'phosphor-svelte/lib/DotsThreeIcon'
+  import MagnifyingGlassIcon from 'phosphor-svelte/lib/MagnifyingGlassIcon'
+  import PencilIcon from 'phosphor-svelte/lib/PencilIcon'
+  import PlusIcon from 'phosphor-svelte/lib/PlusIcon'
+  import TrashIcon from 'phosphor-svelte/lib/TrashIcon'
 
   type Props = {
     data: {
@@ -110,7 +110,7 @@
 <PageHeader {title}>
   <Button href={`/content/${route}/create`}>
     {#snippet icon()}
-      <Plus size={16} />
+      <PlusIcon size={16} />
     {/snippet}
     Cтворити
   </Button>
@@ -121,7 +121,7 @@
     <div class="flex max-w-xl flex-col gap-5 sm:flex-1 sm:flex-row">
       <div class="flex-1">
         <InputGroup>
-          <MagnifyingGlass weight="regular" />
+          <MagnifyingGlassIcon weight="regular" />
           <Input
             placeholder="Пошук&hellip;"
             oninput={debounce(handleSearch)}
@@ -144,9 +144,9 @@
             <SelectOption value={key} label={value.label}>
               {#snippet icon()}
                 {#if value.order === 'asc'}
-                  <ArrowUp weight="fill" />
+                  <ArrowUpIcon weight="fill" />
                 {:else}
-                  <ArrowDown weight="fill" />
+                  <ArrowDownIcon weight="fill" />
                 {/if}
               {/snippet}
               {value.label}
@@ -182,19 +182,19 @@
               <Dropdown>
                 <DropdownButton plain>
                   {#snippet icon()}
-                    <DotsThree />
+                    <DotsThreeIcon />
                   {/snippet}
                 </DropdownButton>
                 <DropdownMenu offset={3}>
                   <DropdownItem onSelect={() => handleEdit(publication)}>
                     {#snippet icon()}
-                      <Pencil weight="fill" />
+                      <PencilIcon weight="fill" />
                     {/snippet}
                     Редагувати
                   </DropdownItem>
                   <DropdownItem onSelect={() => handleShowAlert(publication)}>
                     {#snippet icon()}
-                      <Trash weight="fill" />
+                      <TrashIcon weight="fill" />
                     {/snippet}
                     Видалити
                   </DropdownItem>

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Plus from 'phosphor-svelte/lib/Plus'
-  import Trash from 'phosphor-svelte/lib/Trash'
+  import PlusIcon from 'phosphor-svelte/lib/PlusIcon'
+  import TrashIcon from 'phosphor-svelte/lib/TrashIcon'
   import {
     useGalleryImages,
     useDeleteGalleryImage,
@@ -54,7 +54,7 @@
                 class="inline-flex items-center justify-center rounded-full border border-red-400/20 bg-red-600 p-2 text-sm font-medium text-red-50 transition-colors hover:bg-red-700 hover:text-red-100"
                 onclick={() => removeImage(image)}
               >
-                <Trash class="h-5 w-5" />
+                <TrashIcon class="h-5 w-5" />
               </button>
             </div>
           </div>
@@ -64,7 +64,7 @@
         class="inline-flex items-center justify-center rounded-md border bg-gray-100 text-gray-400 focus-within:border-sky-400 focus-within:ring focus-within:ring-sky-100 hover:border-sky-400 hover:text-gray-600"
         onclick={handleOpenDialog}
       >
-        <Plus />
+        <PlusIcon />
       </button>
     </div>
   {/if}

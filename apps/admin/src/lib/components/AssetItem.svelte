@@ -1,6 +1,6 @@
 <script lang="ts">
-  import VideoCamera from 'phosphor-svelte/lib/VideoCamera'
-  import FileText from 'phosphor-svelte/lib/FileText'
+  import VideoCameraIcon from 'phosphor-svelte/lib/VideoCameraIcon'
+  import FileTextIcon from 'phosphor-svelte/lib/FileTextIcon'
 
   type Props = {
     contentType: string
@@ -28,9 +28,9 @@
           class="!max-h-full !max-w-full"
         />
       {:else if contentType.startsWith('video')}
-        <VideoCamera class="h-12 w-12 text-amber-400 lg:h-16 lg:w-16" />
+        <VideoCameraIcon class="h-12 w-12 text-amber-400 lg:h-16 lg:w-16" />
       {:else}
-        <FileText class="h-12 w-12 text-blue-400 lg:h-16 lg:w-16" />
+        <FileTextIcon class="h-12 w-12 text-blue-400 lg:h-16 lg:w-16" />
       {/if}
     </div>
   </div>

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Select } from 'bits-ui'
-  import Check from 'phosphor-svelte/lib/Check'
+  import CheckIcon from 'phosphor-svelte/lib/CheckIcon'
 
   const { value, label, icon = undefined, children: kids } = $props()
 </script>
@@ -13,7 +13,7 @@
 >
   {#snippet children({ selected })}
     {#if selected}
-      <Check
+      <CheckIcon
         size={20}
         weight="regular"
         class="relative size-5 self-center text-current sm:size-4"

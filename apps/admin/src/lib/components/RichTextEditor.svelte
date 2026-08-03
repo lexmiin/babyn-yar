@@ -3,25 +3,25 @@
   import EditorCommandDivider from './EditorCommandDivider.svelte'
   import AssetDialog from './AssetDialog.svelte'
   import YouTubeLinkDialog from './YouTubeLinkDialog.svelte'
-  import TextHOne from 'phosphor-svelte/lib/TextHOne'
-  import TextHTwo from 'phosphor-svelte/lib/TextHTwo'
-  import TextHThree from 'phosphor-svelte/lib/TextHThree'
-  import Paragraph from 'phosphor-svelte/lib/Paragraph'
-  import Link from 'phosphor-svelte/lib/Link'
-  import LinkBreak from 'phosphor-svelte/lib/LinkBreak'
-  import ListBullets from 'phosphor-svelte/lib/ListBullets'
-  import ListNumbers from 'phosphor-svelte/lib/ListNumbers'
-  import TextB from 'phosphor-svelte/lib/TextB'
-  import TextItalic from 'phosphor-svelte/lib/TextItalic'
-  import TextUnderline from 'phosphor-svelte/lib/TextUnderline'
-  import TextStrikethrough from 'phosphor-svelte/lib/TextStrikethrough'
-  import TextAlignLeft from 'phosphor-svelte/lib/TextAlignLeft'
-  import TextAlignCenter from 'phosphor-svelte/lib/TextAlignCenter'
-  import TextAlignRight from 'phosphor-svelte/lib/TextAlignRight'
-  import ArrowElbowDownLeft from 'phosphor-svelte/lib/ArrowElbowDownLeft'
-  import ImageSquare from 'phosphor-svelte/lib/ImageSquare'
-  import VideoCamera from 'phosphor-svelte/lib/VideoCamera'
-  import YoutubeLogo from 'phosphor-svelte/lib/YoutubeLogo'
+  import TextHOneIcon from 'phosphor-svelte/lib/TextHOneIcon'
+  import TextHTwoIcon from 'phosphor-svelte/lib/TextHTwoIcon'
+  import TextHThreeIcon from 'phosphor-svelte/lib/TextHThreeIcon'
+  import ParagraphIcon from 'phosphor-svelte/lib/ParagraphIcon'
+  import LinkIcon from 'phosphor-svelte/lib/LinkIcon'
+  import LinkBreakIcon from 'phosphor-svelte/lib/LinkBreakIcon'
+  import ListBulletsIcon from 'phosphor-svelte/lib/ListBulletsIcon'
+  import ListNumbersIcon from 'phosphor-svelte/lib/ListNumbersIcon'
+  import TextBIcon from 'phosphor-svelte/lib/TextBIcon'
+  import TextItalicIcon from 'phosphor-svelte/lib/TextItalicIcon'
+  import TextUnderlineIcon from 'phosphor-svelte/lib/TextUnderlineIcon'
+  import TextStrikethroughIcon from 'phosphor-svelte/lib/TextStrikethroughIcon'
+  import TextAlignLeftIcon from 'phosphor-svelte/lib/TextAlignLeftIcon'
+  import TextAlignCenterIcon from 'phosphor-svelte/lib/TextAlignCenterIcon'
+  import TextAlignRightIcon from 'phosphor-svelte/lib/TextAlignRightIcon'
+  import ArrowElbowDownLeftIcon from 'phosphor-svelte/lib/ArrowElbowDownLeftIcon'
+  import ImageSquareIcon from 'phosphor-svelte/lib/ImageSquareIcon'
+  import VideoCameraIcon from 'phosphor-svelte/lib/VideoCameraIcon'
+  import YoutubeLogoIcon from 'phosphor-svelte/lib/YoutubeLogoIcon'
   import { Editor } from '@tiptap/core'
   import { extensions } from '$lib/editor-extensions'
   import { onDestroy, onMount } from 'svelte'
@@ -132,108 +132,108 @@
               editor?.chain().focus().toggleHeading({ level: 1 }).run()}
             active={editor.isActive('heading', { level: 1 })}
           >
-            <TextHOne size={16} />
+            <TextHOneIcon size={16} />
           </EditorCommand>
           <EditorCommand
             onClick={() =>
               editor?.chain().focus().toggleHeading({ level: 2 }).run()}
             active={editor.isActive('heading', { level: 2 })}
           >
-            <TextHTwo size={16} />
+            <TextHTwoIcon size={16} />
           </EditorCommand>
           <EditorCommand
             onClick={() =>
               editor?.chain().focus().toggleHeading({ level: 3 }).run()}
             active={editor.isActive('heading', { level: 3 })}
           >
-            <TextHThree size={16} />
+            <TextHThreeIcon size={16} />
           </EditorCommand>
           <EditorCommand
             onClick={() => editor?.chain().focus().setParagraph().run()}
             active={editor.isActive('paragraph')}
           >
-            <Paragraph size={16} />
+            <ParagraphIcon size={16} />
           </EditorCommand>
           <EditorCommand
             onClick={handleOpenLinkDialog}
             active={editor.isActive('link')}
           >
-            <Link size={16} />
+            <LinkIcon size={16} />
           </EditorCommand>
           {#if editor.isActive('link')}
             <EditorCommand
               onClick={() => editor?.chain().focus().unsetLink().run()}
             >
-              <LinkBreak size={16} />
+              <LinkBreakIcon size={16} />
             </EditorCommand>
           {/if}
           <EditorCommand
             onClick={() => editor?.chain().focus().toggleBulletList().run()}
             active={editor.isActive('bulletList')}
           >
-            <ListBullets size={16} />
+            <ListBulletsIcon size={16} />
           </EditorCommand>
           <EditorCommand
             onClick={() => editor?.chain().focus().toggleOrderedList().run()}
             active={editor.isActive('orderedList')}
           >
-            <ListNumbers size={16} />
+            <ListNumbersIcon size={16} />
           </EditorCommand>
           <EditorCommandDivider />
           <EditorCommand
             onClick={() => editor?.chain().focus().toggleBold().run()}
             active={editor.isActive('bold')}
           >
-            <TextB size={16} />
+            <TextBIcon size={16} />
           </EditorCommand>
           <EditorCommand
             onClick={() => editor?.chain().focus().toggleItalic().run()}
             active={editor.isActive('italic')}
           >
-            <TextItalic size={16} />
+            <TextItalicIcon size={16} />
           </EditorCommand>
           <EditorCommand
             onClick={() => editor?.chain().focus().toggleUnderline().run()}
             active={editor.isActive('underline')}
           >
-            <TextUnderline size={16} />
+            <TextUnderlineIcon size={16} />
           </EditorCommand>
           <EditorCommand
             onClick={() => editor?.chain().focus().toggleStrike().run()}
             active={editor.isActive('strike')}
           >
-            <TextStrikethrough size={16} />
+            <TextStrikethroughIcon size={16} />
           </EditorCommand>
           <EditorCommandDivider />
           <EditorCommand
             onClick={() => editor?.chain().focus().setTextAlign('left').run()}
           >
-            <TextAlignLeft size={16} />
+            <TextAlignLeftIcon size={16} />
           </EditorCommand>
           <EditorCommand
             onClick={() => editor?.chain().focus().setTextAlign('center').run()}
           >
-            <TextAlignCenter size={16} />
+            <TextAlignCenterIcon size={16} />
           </EditorCommand>
           <EditorCommand
             onClick={() => editor?.chain().focus().setTextAlign('right').run()}
           >
-            <TextAlignRight size={16} />
+            <TextAlignRightIcon size={16} />
           </EditorCommand>
           <EditorCommand
             onClick={() => editor?.chain().focus().setHardBreak().run()}
           >
-            <ArrowElbowDownLeft size={16} />
+            <ArrowElbowDownLeftIcon size={16} />
           </EditorCommand>
           <EditorCommandDivider />
           <EditorCommand onClick={handleOpenImageDialog}>
-            <ImageSquare size={16} />
+            <ImageSquareIcon size={16} />
           </EditorCommand>
           <EditorCommand onClick={handleOpenVideoDialog}>
-            <VideoCamera size={16} />
+            <VideoCameraIcon size={16} />
           </EditorCommand>
           <EditorCommand onClick={handleOpenYouTubeDialog}>
-            <YoutubeLogo size={16} />
+            <YoutubeLogoIcon size={16} />
           </EditorCommand>
         </div>
       </div>

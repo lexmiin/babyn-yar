@@ -1,6 +1,6 @@
 <script lang="ts">
-  import X from 'phosphor-svelte/lib/X'
-  import Plus from 'phosphor-svelte/lib/Plus'
+  import XIcon from 'phosphor-svelte/lib/XIcon'
+  import PlusIcon from 'phosphor-svelte/lib/PlusIcon'
   import AssetDialog from './AssetDialog.svelte'
   import { AssetSchema } from '@babyn-yar/schema'
 
@@ -60,7 +60,7 @@
           aria-label="Видалити долучення"
           {disabled}
         >
-          <X class="size-4" />
+          <XIcon class="size-4" />
         </button>
       </div>
     {/each}
@@ -71,7 +71,7 @@
       class="flex items-center gap-1 rounded px-2 py-1 text-sm text-gray-700 hover:bg-zinc-950/5 focus:outline-hidden"
       onclick={handleOpenDialog}
     >
-      <Plus class="size-4" />
+      <PlusIcon class="size-4" />
       <span>Додати</span>
     </button>
   </div>

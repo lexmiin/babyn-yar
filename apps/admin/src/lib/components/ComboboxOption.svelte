@@ -1,7 +1,7 @@
 <script lang="ts" generics="T">
   import { getComboboxContext } from '$lib/context'
   import { Combobox as ComboboxPrimitive } from 'bits-ui'
-  import Check from 'phosphor-svelte/lib/Check'
+  import CheckIcon from 'phosphor-svelte/lib/CheckIcon'
   import type { Snippet } from 'svelte'
 
   interface Props {
@@ -30,7 +30,7 @@
 >
   {#snippet children({ selected })}
     {#if selected}
-      <Check
+      <CheckIcon
         size={20}
         weight="regular"
         class="relative size-5 self-center text-current sm:size-4"

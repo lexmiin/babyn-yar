@@ -10,9 +10,9 @@
   import InputGroup from './InputGroup.svelte'
   import Select from './Select.svelte'
   import SelectOption from './SelectOption.svelte'
-  import ArrowUp from 'phosphor-svelte/lib/ArrowUp'
-  import ArrowDown from 'phosphor-svelte/lib/ArrowDown'
-  import MagnifyingGlass from 'phosphor-svelte/lib/MagnifyingGlass'
+  import ArrowUpIcon from 'phosphor-svelte/lib/ArrowUpIcon'
+  import ArrowDownIcon from 'phosphor-svelte/lib/ArrowDownIcon'
+  import MagnifyingGlassIcon from 'phosphor-svelte/lib/MagnifyingGlassIcon'
   import { useIntersect } from '$lib/use-intersect.svelte'
   import { useAssets } from '$lib/assets/query'
   import { DEFAULT_SORT_OPTION, sortOptions } from '$lib/select-options'
@@ -81,7 +81,7 @@
       <div class="flex max-w-2xl flex-col gap-5 sm:flex-1 sm:flex-row">
         <div class="flex-1">
           <InputGroup>
-            <MagnifyingGlass weight="regular" />
+            <MagnifyingGlassIcon weight="regular" />
             <Input
               placeholder="Пошук&hellip;"
               oninput={handleSearch}
@@ -102,9 +102,9 @@
               <SelectOption value={key} label={value.label}>
                 {#snippet icon()}
                   {#if value.order === 'asc'}
-                    <ArrowUp weight="fill" />
+                    <ArrowUpIcon weight="fill" />
                   {:else}
-                    <ArrowDown weight="fill" />
+                    <ArrowDownIcon weight="fill" />
                   {/if}
                 {/snippet}
                 {value.label}

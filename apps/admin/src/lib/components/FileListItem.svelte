@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Trash from 'phosphor-svelte/lib/Trash'
-  import VideoCamera from 'phosphor-svelte/lib/VideoCamera'
-  import FileText from 'phosphor-svelte/lib/FileText'
+  import TrashIcon from 'phosphor-svelte/lib/TrashIcon'
+  import VideoCameraIcon from 'phosphor-svelte/lib/VideoCameraIcon'
+  import FileTextIcon from 'phosphor-svelte/lib/FileTextIcon'
 
   type Props = {
     file: File
@@ -40,7 +40,7 @@
     class="absolute top-3 right-3 z-10 hidden items-center justify-center p-1.5 text-gray-400 group-hover:inline-flex hover:text-red-400"
     aria-label="Видалити файл"
   >
-    <Trash size={16} />
+    <TrashIcon size={16} />
   </button>
   <div
     class="flex h-[160px] items-center justify-center overflow-hidden rounded-lg bg-gray-100"
@@ -52,9 +52,9 @@
         class="max-h-full w-full object-cover"
       />
     {:else if fileType === 'video'}
-      <VideoCamera class="h-12 w-12 text-amber-400 lg:h-16 lg:w-16" />
+      <VideoCameraIcon class="h-12 w-12 text-amber-400 lg:h-16 lg:w-16" />
     {:else}
-      <FileText class="h-12 w-12 text-blue-400 lg:h-16  lg:w-16" />
+      <FileTextIcon class="h-12 w-12 text-blue-400 lg:h-16  lg:w-16" />
     {/if}
   </div>
   <div class="w-full">

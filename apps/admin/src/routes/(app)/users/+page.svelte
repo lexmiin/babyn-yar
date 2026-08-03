@@ -18,10 +18,10 @@
   import AlertTitle from '$components/AlertTitle.svelte'
   import AlertDescription from '$components/AlertDescription.svelte'
   import AlertActions from '$components/AlertActions.svelte'
-  import DotsThree from 'phosphor-svelte/lib/DotsThree'
-  import Pencil from 'phosphor-svelte/lib/Pencil'
-  import Trash from 'phosphor-svelte/lib/Trash'
-  import LockOpen from 'phosphor-svelte/lib/LockOpen'
+  import DotsThreeIcon from 'phosphor-svelte/lib/DotsThreeIcon'
+  import PencilIcon from 'phosphor-svelte/lib/PencilIcon'
+  import TrashIcon from 'phosphor-svelte/lib/TrashIcon'
+  import LockOpenIcon from 'phosphor-svelte/lib/LockOpenIcon'
   import { formatDate } from '$lib/format-date'
   import { useUsers, useDeleteUsers } from '$lib/users/query'
   import type { UserSchema } from '@babyn-yar/schema'
@@ -105,19 +105,19 @@
                 <Dropdown>
                   <DropdownButton plain>
                     {#snippet icon()}
-                      <DotsThree />
+                      <DotsThreeIcon />
                     {/snippet}
                   </DropdownButton>
                   <DropdownMenu offset={3}>
                     <DropdownItem onSelect={() => handleShowEditDialog(user)}>
                       {#snippet icon()}
-                        <Pencil weight="fill" />
+                        <PencilIcon weight="fill" />
                       {/snippet}
                       Редагувати
                     </DropdownItem>
                     <DropdownItem onSelect={() => handleShowAlert(user)}>
                       {#snippet icon()}
-                        <Trash weight="fill" />
+                        <TrashIcon weight="fill" />
                       {/snippet}
                       Видалити
                     </DropdownItem>
@@ -125,7 +125,7 @@
                       onSelect={() => handleShowResetPasswordDialog()}
                     >
                       {#snippet icon()}
-                        <LockOpen weight="fill" />
+                        <LockOpenIcon weight="fill" />
                       {/snippet}
                       Скинути пароль
                     </DropdownItem>
