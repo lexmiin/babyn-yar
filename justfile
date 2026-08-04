@@ -1,3 +1,5 @@
+set default-list
+
 api_dir := "apps/api"
 main_package := "./cmd/api"
 binary := "api"
