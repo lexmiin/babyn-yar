@@ -35,6 +35,7 @@ func NewS3Handler(cfg config.Config) (*S3Handler, error) {
 			cfg.Storage.AccessKeySecret,
 			"",
 		)),
+		awsConfig.WithRegion("auto"),
 	)
 
 	if err != nil {
