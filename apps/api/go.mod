@@ -7,7 +7,8 @@ require (
 	github.com/aws/aws-sdk-go-v2 v1.43.3
 	github.com/aws/aws-sdk-go-v2/config v1.32.34
 	github.com/aws/aws-sdk-go-v2/credentials v1.19.33
-	github.com/aws/aws-sdk-go-v2/service/s3 v1.106.3
+	github.com/aws/aws-sdk-go-v2/feature/s3/transfermanager v0.3.9
+	github.com/aws/aws-sdk-go-v2/service/s3 v1.106.4
 	github.com/caarlos0/env/v11 v11.4.1
 	github.com/go-chi/chi/v5 v5.3.1
 	github.com/gorilla/sessions v1.2.1
@@ -89,7 +90,6 @@ require (
 )
 
 require (
-	github.com/aws/aws-sdk-go-v2/feature/s3/manager v1.22.38
 	github.com/go-chi/cors v1.2.2
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
