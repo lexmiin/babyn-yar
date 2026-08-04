@@ -79,3 +79,19 @@ export function useUpdateSettings() {
     }
   }))
 }
+
+export function useResetPassword() {
+  const client = useQueryClient()
+
+  return createMutation(() => ({
+    mutationFn: ({ userId, password }: { userId: number; password: string }) =>
+      UserAPI.resetPassword(userId, { password }),
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: userKeys.all })
+      userToasts.resetPasswordSuccess()
+    },
+    onError: () => {
+      userToasts.resetPasswordError()
+    }
+  }))
+}

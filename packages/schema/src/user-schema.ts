@@ -5,10 +5,20 @@ export namespace UserSchema {
   const Email = v.pipe(v.string(), v.email())
   const FullName = v.pipe(v.string(), v.minLength(3))
 
+  const Password = v.pipe(
+    v.string(),
+    v.minLength(8),
+    v.maxLength(72),
+    v.regex(
+      /^[\x20-\x7e]+$/,
+      'Пароль може містити лише друковані ASCII-символи'
+    )
+  )
+
   const OptionalPassword = v.pipe(
     v.string(),
     v.transform(value => (value.length > 0 ? value : undefined)),
-    v.undefinedable(v.pipe(v.string(), v.minLength(8)))
+    v.undefinedable(Password)
   )
 
   export const User = v.pipe(
@@ -36,7 +46,7 @@ export namespace UserSchema {
   export const Register = v.object({
     email: Email,
     fullName: FullName,
-    password: v.pipe(v.string(), v.minLength(8)),
+    password: Password,
     permission: v.union([v.literal('admin'), v.literal('publisher')])
   })
 
@@ -46,9 +56,24 @@ export namespace UserSchema {
     permission: v.union([v.literal('admin'), v.literal('publisher')])
   })
 
-  export const ResetPassword = v.object({
-    password: v.pipe(v.string(), v.minLength(8))
+  export const ResetPasswordRequest = v.object({
+    password: Password
   })
+
+  export const ResetPassword = v.pipe(
+    v.object({
+      password: Password,
+      passwordConfirmation: Password
+    }),
+    v.forward(
+      v.partialCheck(
+        [['password'], ['passwordConfirmation']],
+        input => input.password === input.passwordConfirmation,
+        'Паролі не збігаються'
+      ),
+      ['passwordConfirmation']
+    )
+  )
 
   export const DetailResponse = v.object({
     user: User
@@ -74,6 +99,7 @@ export namespace UserSchema {
   export type Settings = v.InferOutput<typeof Settings>
   export type Register = v.InferInput<typeof Register>
   export type Edit = v.InferOutput<typeof Edit>
+  export type ResetPasswordRequest = v.InferOutput<typeof ResetPasswordRequest>
   export type ResetPassword = v.InferOutput<typeof ResetPassword>
   export type Filters = v.InferInput<typeof Filters>
   export type Login = v.InferInput<typeof Login>
