@@ -9,27 +9,21 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsConfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
-	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
+	"github.com/aws/aws-sdk-go-v2/feature/s3/transfermanager"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/lex-unix/babyn-yar/internal/config"
 )
 
 type S3Handler struct {
-	client    *s3.Client
-	bucket    string
-	publicURL string
+	client          *s3.Client
+	transferManager *transfermanager.Client
+	bucket          string
+	publicURL       string
 }
 
 func NewS3Handler(cfg config.Config) (*S3Handler, error) {
-	r2Resovler := aws.EndpointResolverWithOptionsFunc(func(service, region string, options ...interface{}) (aws.Endpoint, error) {
-		return aws.Endpoint{
-			URL: fmt.Sprintf("https://%s.r2.cloudflarestorage.com", cfg.Storage.AccountID),
-		}, nil
-	})
-
 	awsCfg, err := awsConfig.LoadDefaultConfig(context.TODO(),
-		awsConfig.WithEndpointResolverWithOptions(r2Resovler),
 		awsConfig.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(
 			cfg.Storage.AccessKeyID,
 			cfg.Storage.AccessKeySecret,
@@ -42,20 +36,23 @@ func NewS3Handler(cfg config.Config) (*S3Handler, error) {
 		return nil, err
 	}
 
-	client := s3.NewFromConfig(awsCfg)
-	S3Handler := &S3Handler{
+	r2Endpoint := fmt.Sprintf("https://%s.r2.cloudflarestorage.com", cfg.Storage.AccountID)
+	client := s3.NewFromConfig(awsCfg, func(options *s3.Options) {
+		options.BaseEndpoint = aws.String(r2Endpoint)
+	})
+	handler := &S3Handler{
 		client:    client,
 		bucket:    cfg.Storage.Bucket,
 		publicURL: cfg.Storage.PublicURL,
 	}
-	return S3Handler, nil
+	handler.transferManager = transfermanager.New(handler.client)
+
+	return handler, nil
 
 }
 
 func (handler S3Handler) Upload(file io.ReadSeeker, filename, contentType string) (string, error) {
-	uploader := manager.NewUploader(handler.client)
-
-	_, err := uploader.Upload(context.TODO(), &s3.PutObjectInput{
+	_, err := handler.transferManager.UploadObject(context.TODO(), &transfermanager.UploadObjectInput{
 		Body:        file,
 		Bucket:      aws.String(handler.bucket),
 		Key:         aws.String(filename),
