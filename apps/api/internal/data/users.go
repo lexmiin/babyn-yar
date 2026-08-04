@@ -123,8 +123,18 @@ func ValidateEmail(v *validator.Validator, email string) {
 
 func ValidatePasswordPlaintext(v *validator.Validator, password string) {
 	v.Check(password != "", "password", "must be provided")
-	v.Check(len(password) >= 8, "password", "must be at least 8 bytes long")
-	v.Check(len(password) <= 72, "password", "must not be more than 72 bytes long")
+	v.Check(len(password) >= 8, "password", "must be at least 8 characters long")
+	v.Check(len(password) <= 72, "password", "must not be more than 72 characters long")
+	v.Check(isPrintableASCII(password), "password", "must contain only printable ASCII characters")
+}
+
+func isPrintableASCII(value string) bool {
+	for _, character := range []byte(value) {
+		if character < 0x20 || character > 0x7e {
+			return false
+		}
+	}
+	return true
 }
 
 func ValidateUser(v *validator.Validator, user *User) {
@@ -323,6 +333,32 @@ func (m UserModel) Update(user *User) error {
 			return err
 		}
 	}
+	return nil
+}
+
+func (m UserModel) UpdatePassword(userID int64, plaintextPassword string) error {
+	var password password
+	err := password.Set(plaintextPassword)
+	if err != nil {
+		return err
+	}
+
+	query := `
+		UPDATE users
+		SET password_hash = $1, updated_at = now(), version = version + 1
+		WHERE id = $2`
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	result, err := m.DB.Exec(ctx, query, password.hash, userID)
+	if err != nil {
+		return err
+	}
+	if result.RowsAffected() == 0 {
+		return ErrRecordNotFound
+	}
+
 	return nil
 }
 

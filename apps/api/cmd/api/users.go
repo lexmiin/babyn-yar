@@ -22,6 +22,13 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
+	v := validator.New()
+	data.ValidatePasswordPlaintext(v, input.Password)
+	if !v.Valid() {
+		app.failedValidationResponse(w, r, v.Errors)
+		return
+	}
+
 	user := &data.User{
 		FullName: input.FullName,
 		Email:    input.Email,
@@ -33,7 +40,6 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	v := validator.New()
 	if data.ValidateUser(v, user); !v.Valid() {
 		app.failedValidationResponse(w, r, v.Errors)
 		return
@@ -189,6 +195,13 @@ func (app *application) updateUserHandler(w http.ResponseWriter, r *http.Request
 	}
 
 	if input.Password != nil {
+		v := validator.New()
+		data.ValidatePasswordPlaintext(v, *input.Password)
+		if !v.Valid() {
+			app.failedValidationResponse(w, r, v.Errors)
+			return
+		}
+
 		err = user.Password.Set(*input.Password)
 		if err != nil {
 			app.serverErrorResponse(w, r, err)
@@ -219,6 +232,47 @@ func (app *application) updateUserHandler(w http.ResponseWriter, r *http.Request
 	}
 
 	err = app.writeJSON(w, http.StatusOK, envelope{"user": user}, nil)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
+}
+
+func (app *application) resetUserPasswordHandler(w http.ResponseWriter, r *http.Request) {
+	userID, err := app.readIDParam(r)
+	if err != nil {
+		app.notFoundResponse(w, r)
+		return
+	}
+
+	var input struct {
+		Password string `json:"password"`
+	}
+
+	err = app.readJSON(w, r, &input)
+	if err != nil {
+		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	v := validator.New()
+	data.ValidatePasswordPlaintext(v, input.Password)
+	if !v.Valid() {
+		app.failedValidationResponse(w, r, v.Errors)
+		return
+	}
+
+	err = app.models.Users.UpdatePassword(userID, input.Password)
+	if err != nil {
+		switch {
+		case errors.Is(err, data.ErrRecordNotFound):
+			app.notFoundResponse(w, r)
+		default:
+			app.serverErrorResponse(w, r, err)
+		}
+		return
+	}
+
+	err = app.writeJSON(w, http.StatusOK, envelope{"message": "password successfully reset"}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
