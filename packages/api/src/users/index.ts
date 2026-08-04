@@ -57,4 +57,14 @@ export namespace UserAPI {
 
     return v.parse(UserSchema.DetailResponse, response)
   }
+
+  export async function resetPassword(
+    userId: number,
+    input: UserSchema.ResetPasswordRequest
+  ) {
+    return fetcher(`${BASE_URL}/${userId}/password`, {
+      method: 'PATCH',
+      body: JSON.stringify(input)
+    })
+  }
 }

@@ -41,7 +41,8 @@
   const users = useUsers()
   const deleteUser = useDeleteUsers()
 
-  function handleShowResetPasswordDialog() {
+  function handleShowResetPasswordDialog(user: UserSchema.User) {
+    selectedUser = user
     isResetPassswrodDialogOpen = true
   }
 
@@ -122,7 +123,7 @@
                       Видалити
                     </DropdownItem>
                     <DropdownItem
-                      onSelect={() => handleShowResetPasswordDialog()}
+                      onSelect={() => handleShowResetPasswordDialog(user)}
                     >
                       {#snippet icon()}
                         <LockOpenIcon weight="fill" />
@@ -147,9 +148,12 @@
   </div>
 
   <RegisterUserDialog bind:open={isRegisterDialogOpen} />
-  <ResetPasswordDialog bind:open={isResetPassswrodDialogOpen} />
   {#if selectedUser}
     <EditUserDialog bind:open={isEditDialogOpen} {selectedUser} />
+    <ResetPasswordDialog
+      bind:open={isResetPassswrodDialogOpen}
+      {selectedUser}
+    />
   {/if}
 
   <Alert bind:open={isAlertOpen}>
