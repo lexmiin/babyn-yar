@@ -1,7 +1,10 @@
 <script lang="ts">
   import { permissionOptions } from '$lib/select-options'
   import { UserSchema } from '@babyn-yar/schema'
+  import { ResponseError } from '@babyn-yar/api-utils'
+  import { useEditUser } from '$lib/users/query'
   import { createForm } from '@tanstack/svelte-form'
+  import { untrack } from 'svelte'
   import Button from './Button.svelte'
   import Dialog from './Dialog.svelte'
   import DialogActions from './DialogActions.svelte'
@@ -22,14 +25,30 @@
 
   let { open = $bindable(), selectedUser }: Props = $props()
 
+  const editUser = useEditUser()
+
+  function valuesFor(user: UserSchema.User): UserSchema.Edit {
+    return {
+      fullName: user.fullName,
+      email: user.email,
+      permission: user.permissions.includes('admin') ? 'admin' : 'publisher'
+    }
+  }
+
   const form = createForm(() => ({
-    defaultValues: {
-      fullName: selectedUser.fullName,
-      email: selectedUser.email,
-      permission: selectedUser.permissions[0]
-    } as UserSchema.Edit,
+    defaultValues: valuesFor(selectedUser),
     validators: {
-      onSubmit: UserSchema.Edit
+      onSubmit: UserSchema.Edit,
+      onSubmitAsync: async ({ value }) => {
+        try {
+          await editUser.mutateAsync({ userId: selectedUser.id, input: value })
+        } catch (error) {
+          if (error instanceof ResponseError && error.isFormError()) {
+            return { fields: error.formErrors }
+          }
+          throw error
+        }
+      }
     },
     onSubmit: ({ formApi }) => {
       formApi.reset()
@@ -37,13 +56,20 @@
     }
   }))
 
+  $effect(() => {
+    if (open) {
+      const values = valuesFor(selectedUser)
+      untrack(() => form.reset(values))
+    }
+  })
+
   function handleSubmit(event: SubmitEvent) {
     event.preventDefault()
     form.handleSubmit()
   }
 </script>
 
-<Dialog bind:open onClose={() => form.reset()}>
+<Dialog bind:open onClose={isOpen => !isOpen && form.reset()}>
   <DialogTitle>Редагування користувача</DialogTitle>
   <DialogBody>
     <form id="edit-user-form" onsubmit={handleSubmit} class="space-y-5">
