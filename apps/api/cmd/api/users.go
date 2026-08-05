@@ -278,6 +278,73 @@ func (app *application) resetUserPasswordHandler(w http.ResponseWriter, r *http.
 	}
 }
 
+func (app *application) adminUpdateUserHandler(w http.ResponseWriter, r *http.Request) {
+	userID, err := app.readIDParam(r)
+	if err != nil {
+		app.notFoundResponse(w, r)
+		return
+	}
+
+	var input struct {
+		FullName   *string `json:"fullName"`
+		Email      *string `json:"email"`
+		Permission *string `json:"permission"`
+	}
+	if err = app.readJSON(w, r, &input); err != nil {
+		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	v := validator.New()
+	if input.Permission != nil {
+		v.Check(validator.In(*input.Permission, "admin", "publisher"), "permission", "must be admin or publisher")
+	}
+
+	user, err := app.models.Users.GetByID(userID)
+	if err != nil {
+		switch {
+		case errors.Is(err, data.ErrRecordNotFound):
+			app.notFoundResponse(w, r)
+		default:
+			app.serverErrorResponse(w, r, err)
+		}
+		return
+	}
+
+	if input.FullName != nil {
+		user.FullName = *input.FullName
+	}
+	if input.Email != nil {
+		user.Email = *input.Email
+	}
+	data.ValidateUser(v, user)
+	if !v.Valid() {
+		app.failedValidationResponse(w, r, v.Errors)
+		return
+	}
+
+	err = app.models.Users.UpdateByAdmin(user, input.Permission)
+	if err != nil {
+		switch {
+		case errors.Is(err, data.ErrEditConflict):
+			app.editConflictResponse(w, r)
+		case errors.Is(err, data.ErrDuplicateEmail):
+			v.AddError("email", "a user with this email already exists")
+			app.failedValidationResponse(w, r, v.Errors)
+		case errors.Is(err, data.ErrLastAdmin):
+			v.AddError("permission", "at least one administrator must remain")
+			app.failedValidationResponse(w, r, v.Errors)
+		default:
+			app.serverErrorResponse(w, r, err)
+		}
+		return
+	}
+
+	if err = app.writeJSON(w, http.StatusOK, envelope{"user": user}, nil); err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
+}
+
 func (app *application) deleteUsersHandler(w http.ResponseWriter, r *http.Request) {
 	v := validator.New()
 
@@ -295,6 +362,9 @@ func (app *application) deleteUsersHandler(w http.ResponseWriter, r *http.Reques
 		switch {
 		case errors.Is(err, data.ErrRecordNotFound):
 			app.notFoundResponse(w, r)
+		case errors.Is(err, data.ErrLastAdmin):
+			v.AddError("ids", "at least one administrator must remain")
+			app.failedValidationResponse(w, r, v.Errors)
 		default:
 			app.serverErrorResponse(w, r, err)
 		}
