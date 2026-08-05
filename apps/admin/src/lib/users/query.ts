@@ -9,7 +9,7 @@ import { userToasts } from './toast'
 import { authKeys } from '$lib/auth/query'
 import { useUserFilters } from '$lib/use-user-filters'
 import type { UserSchema } from '@babyn-yar/schema'
-import { UserAPI } from '@babyn-yar/api-utils'
+import { ResponseError, UserAPI } from '@babyn-yar/api-utils'
 
 export const userKeys = {
   all: ['users'] as const,
@@ -76,6 +76,25 @@ export function useUpdateSettings() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: userKeys.all })
       queryClient.invalidateQueries({ queryKey: authKeys.me() })
+    }
+  }))
+}
+
+export function useEditUser() {
+  const client = useQueryClient()
+
+  return createMutation(() => ({
+    mutationFn: ({ userId, input }: { userId: number; input: UserSchema.Edit }) =>
+      UserAPI.update(userId, input),
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: userKeys.all })
+      client.invalidateQueries({ queryKey: authKeys.me() })
+      userToasts.editUserSuccess()
+    },
+    onError: error => {
+      if (!(error instanceof ResponseError && error.isFormError())) {
+        userToasts.editUserError()
+      }
     }
   }))
 }

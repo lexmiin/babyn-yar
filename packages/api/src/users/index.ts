@@ -58,6 +58,18 @@ export namespace UserAPI {
     return v.parse(UserSchema.DetailResponse, response)
   }
 
+  export async function update(
+    userId: number,
+    input: Partial<UserSchema.Edit>
+  ) {
+    const response = await fetcher(`${BASE_URL}/${userId}`, {
+      method: 'PATCH',
+      body: JSON.stringify(input)
+    })
+
+    return v.parse(UserSchema.DetailResponse, response)
+  }
+
   export async function resetPassword(
     userId: number,
     input: UserSchema.ResetPasswordRequest

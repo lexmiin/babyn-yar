@@ -101,6 +101,193 @@ func TestResetUserPasswordThroughHTTP(t *testing.T) {
 	})
 }
 
+func TestAdminUpdateUserThroughHTTP(t *testing.T) {
+	testAPI := newAPITest(t)
+	adminClient, adminID := authenticatedPublicationClient(
+		t,
+		testAPI,
+		"User Administrator",
+		"user-admin@example.com",
+	)
+	publisherClient, publisherID := createAuthenticatedUser(
+		t,
+		testAPI,
+		"Original Publisher",
+		"original-publisher@example.com",
+		"publisher",
+	)
+	updateURL := fmt.Sprintf("%s/v1/users/%d", testAPI.server.URL, publisherID)
+
+	t.Run("authentication is required", func(t *testing.T) {
+		response := publicationJSONRequest(t, http.DefaultClient, http.MethodPatch, updateURL, map[string]any{
+			"fullName": "Updated Publisher",
+		})
+		defer response.Body.Close()
+		assert.Equal(t, http.StatusUnauthorized, response.StatusCode)
+	})
+
+	t.Run("admin permission is required", func(t *testing.T) {
+		response := publicationJSONRequest(t, publisherClient, http.MethodPatch, updateURL, map[string]any{
+			"fullName": "Updated Publisher",
+		})
+		defer response.Body.Close()
+		assert.Equal(t, http.StatusForbidden, response.StatusCode)
+	})
+
+	t.Run("an empty update preserves the user", func(t *testing.T) {
+		response := publicationJSONRequest(t, adminClient, http.MethodPatch, updateURL, map[string]any{})
+		defer response.Body.Close()
+		require.Equal(t, http.StatusOK, response.StatusCode)
+
+		var body struct {
+			User data.User `json:"user"`
+		}
+		require.NoError(t, json.NewDecoder(response.Body).Decode(&body))
+		assert.Equal(t, "Original Publisher", body.User.FullName)
+		assert.Equal(t, "original-publisher@example.com", body.User.Email)
+		assert.Equal(t, data.Permissions{"publisher"}, body.User.Permissions)
+	})
+
+	t.Run("null fields are omitted and invalid values are rejected", func(t *testing.T) {
+		response := publicationJSONRequest(t, adminClient, http.MethodPatch, updateURL, map[string]any{
+			"fullName":   nil,
+			"email":      "not-an-email",
+			"permission": "owner",
+		})
+		defer response.Body.Close()
+		require.Equal(t, http.StatusUnprocessableEntity, response.StatusCode)
+
+		var body struct {
+			Error map[string]string `json:"error"`
+		}
+		require.NoError(t, json.NewDecoder(response.Body).Decode(&body))
+		assert.NotContains(t, body.Error, "fullName")
+		assert.Contains(t, body.Error, "email")
+		assert.Contains(t, body.Error, "permission")
+	})
+
+	t.Run("missing users return not found", func(t *testing.T) {
+		response := publicationJSONRequest(t, adminClient, http.MethodPatch, testAPI.server.URL+"/v1/users/999999", map[string]any{
+			"fullName": "Missing User",
+		})
+		defer response.Body.Close()
+		assert.Equal(t, http.StatusNotFound, response.StatusCode)
+	})
+
+	t.Run("partial updates preserve omitted fields", func(t *testing.T) {
+		response := publicationJSONRequest(t, adminClient, http.MethodPatch, updateURL, map[string]any{
+			"fullName": "Updated Publisher",
+		})
+		defer response.Body.Close()
+		require.Equal(t, http.StatusOK, response.StatusCode)
+
+		var body struct {
+			User data.User `json:"user"`
+		}
+		require.NoError(t, json.NewDecoder(response.Body).Decode(&body))
+		assert.Equal(t, "Updated Publisher", body.User.FullName)
+		assert.Equal(t, "original-publisher@example.com", body.User.Email)
+		assert.Equal(t, data.Permissions{"publisher"}, body.User.Permissions)
+	})
+
+	t.Run("all editable fields and the single role are replaced", func(t *testing.T) {
+		response := publicationJSONRequest(t, adminClient, http.MethodPatch, updateURL, map[string]any{
+			"fullName":   "Promoted Publisher",
+			"email":      "promoted-publisher@example.com",
+			"permission": "admin",
+		})
+		defer response.Body.Close()
+		require.Equal(t, http.StatusOK, response.StatusCode)
+
+		var body struct {
+			User data.User `json:"user"`
+		}
+		require.NoError(t, json.NewDecoder(response.Body).Decode(&body))
+		assert.Equal(t, "Promoted Publisher", body.User.FullName)
+		assert.Equal(t, "promoted-publisher@example.com", body.User.Email)
+		assert.Equal(t, data.Permissions{"admin"}, body.User.Permissions)
+	})
+
+	t.Run("the last admin cannot be demoted", func(t *testing.T) {
+		response := publicationJSONRequest(t, adminClient, http.MethodPatch, updateURL, map[string]any{
+			"permission": "publisher",
+		})
+		defer response.Body.Close()
+		require.Equal(t, http.StatusOK, response.StatusCode)
+
+		adminURL := fmt.Sprintf("%s/v1/users/%d", testAPI.server.URL, adminID)
+		response = publicationJSONRequest(t, adminClient, http.MethodPatch, adminURL, map[string]any{
+			"permission": "publisher",
+		})
+		defer response.Body.Close()
+		require.Equal(t, http.StatusUnprocessableEntity, response.StatusCode)
+
+		var body struct {
+			Error map[string]string `json:"error"`
+		}
+		require.NoError(t, json.NewDecoder(response.Body).Decode(&body))
+		assert.Contains(t, body.Error, "permission")
+	})
+
+	t.Run("stale versions are rejected", func(t *testing.T) {
+		models := data.NewModels(testAPI.db)
+		user, err := models.Users.GetByID(publisherID)
+		require.NoError(t, err)
+		_, err = testAPI.db.Exec(t.Context(), `UPDATE users SET version = version + 1 WHERE id = $1`, publisherID)
+		require.NoError(t, err)
+
+		user.FullName = "Stale Update"
+		err = models.Users.UpdateByAdmin(user, nil)
+		assert.ErrorIs(t, err, data.ErrEditConflict)
+	})
+}
+
+func TestDeleteUsersPreservesAnAdmin(t *testing.T) {
+	testAPI := newAPITest(t)
+	adminClient, adminID := authenticatedPublicationClient(
+		t,
+		testAPI,
+		"Delete Administrator",
+		"delete-admin@example.com",
+	)
+	_, publisherID := createAuthenticatedUser(
+		t,
+		testAPI,
+		"Delete Publisher",
+		"delete-publisher@example.com",
+		"publisher",
+	)
+
+	deleteURL := fmt.Sprintf("%s/v1/users?ids=%d,%d", testAPI.server.URL, adminID, publisherID)
+	response := publicationJSONRequest(t, adminClient, http.MethodDelete, deleteURL, nil)
+	defer response.Body.Close()
+	require.Equal(t, http.StatusUnprocessableEntity, response.StatusCode)
+
+	models := data.NewModels(testAPI.db)
+	_, err := models.Users.GetByID(adminID)
+	require.NoError(t, err)
+	_, err = models.Users.GetByID(publisherID)
+	require.NoError(t, err, "bulk deletion must be atomic")
+
+	_, secondAdminID := createAuthenticatedUser(
+		t,
+		testAPI,
+		"Remaining Administrator",
+		"remaining-admin@example.com",
+		"admin",
+	)
+	response = publicationJSONRequest(t, adminClient, http.MethodDelete, deleteURL, nil)
+	defer response.Body.Close()
+	require.Equal(t, http.StatusOK, response.StatusCode)
+
+	_, err = models.Users.GetByID(adminID)
+	assert.ErrorIs(t, err, data.ErrRecordNotFound)
+	_, err = models.Users.GetByID(publisherID)
+	assert.ErrorIs(t, err, data.ErrRecordNotFound)
+	_, err = models.Users.GetByID(secondAdminID)
+	require.NoError(t, err)
+}
+
 func createAuthenticatedUser(
 	t *testing.T,
 	testAPI *apiTest,

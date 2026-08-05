@@ -1,6 +1,14 @@
 import { toast } from 'svelte-sonner'
 
 export const userToasts = {
+  editUserSuccess: () =>
+    toast.success('Зміни збережено', {
+      description: 'Дані користувача було оновлено'
+    }),
+  editUserError: () =>
+    toast.error('Зміни не збережено', {
+      description: 'Не вдалося оновити дані користувача'
+    }),
   updateSettingsSuccess: () =>
     toast.success('Зміни збережено', {
       description: 'Ваші налаштування було збережено'
