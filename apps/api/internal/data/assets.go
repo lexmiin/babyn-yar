@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	sq "github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -63,20 +64,38 @@ func (m AssetModel) InsertBulk(assets [][]any) error {
 }
 
 func (m AssetModel) GetAll(filename, contentType string, filters Filters) ([]*Asset, Metadata, error) {
-	query := fmt.Sprintf(`
-		SELECT count(*) OVER(), id, created_at, url, file_name, content_type
-		FROM assets
-		WHERE (STRPOS(LOWER(file_name), LOWER($1)) > 0 OR $1 = '')
-		AND (STRPOS(LOWER(content_type), LOWER($2)) > 0 OR $2 = '')
-		ORDER BY %s %s, id ASC
-		LIMIT $3 OFFSET $4 `, filters.sortColumn(), filters.sortDirection())
+	query := psql.
+		Select(
+			"count(*) OVER()",
+			"id",
+			"created_at",
+			"url",
+			"file_name",
+			"content_type",
+		).
+		From("assets").
+		OrderBy(fmt.Sprintf("%s %s", filters.sortColumn(), filters.sortDirection())).
+		OrderBy("id ASC").
+		Limit(uint64(filters.limit())).
+		Offset(uint64(filters.offset()))
+
+	if filename != "" {
+		query = query.Where(sq.Expr("STRPOS(lower(file_name), lower(?)) > 0", filename))
+	}
+
+	if contentType != "" {
+		query = query.Where(sq.Expr("STRPOS(lower(content_type), lower(?)) > 0", contentType))
+	}
+
+	sql, args, err := query.ToSql()
+	if err != nil {
+		return nil, Metadata{}, err
+	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	args := []any{filename, contentType, filters.limit(), filters.offset()}
-
-	rows, err := m.DB.Query(ctx, query, args...)
+	rows, err := m.DB.Query(ctx, sql, args...)
 	if err != nil {
 		return nil, Metadata{}, err
 	}
