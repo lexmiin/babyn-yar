@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run --ui tui dev",
+    "dev": "turbo run --ui stream-with-experimental-timestamps dev",
     "dev:plain": "turbo run dev",
     "check": "turbo run check",
     "lint": "turbo run lint",

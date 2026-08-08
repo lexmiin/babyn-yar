@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net/mail"
 	"time"
 
 	"github.com/jackc/pgx/v5"
@@ -15,6 +16,7 @@ import (
 
 var (
 	ErrDuplicateEmail = errors.New("duplicate email")
+	ErrLastAdmin      = errors.New("at least one admin must remain")
 	AnonymousUser     = &User{}
 )
 
@@ -119,6 +121,8 @@ func SeedInitialUser(db *pgxpool.Pool, fullName, email, password string) error {
 
 func ValidateEmail(v *validator.Validator, email string) {
 	v.Check(email != "", "email", "must be provided")
+	address, err := mail.ParseAddress(email)
+	v.Check(err == nil && address.Address == email, "email", "must be a valid email address")
 }
 
 func ValidatePasswordPlaintext(v *validator.Validator, password string) {
@@ -138,8 +142,8 @@ func isPrintableASCII(value string) bool {
 }
 
 func ValidateUser(v *validator.Validator, user *User) {
-	v.Check(user.FullName != "", "name", "must be provided")
-	v.Check(len(user.FullName) <= 500, "name", "must not be more that 500 bytes long")
+	v.Check(len(user.FullName) >= 3, "fullName", "must be at least 3 characters long")
+	v.Check(len(user.FullName) <= 500, "fullName", "must not be more than 500 bytes long")
 
 	ValidateEmail(v, user.Email)
 
@@ -362,15 +366,107 @@ func (m UserModel) UpdatePassword(userID int64, plaintextPassword string) error 
 	return nil
 }
 
-func (m UserModel) DeleteMultiple(ids []int64) error {
-	query := `
-		DELETE FROM users
-		WHERE id = ANY($1)`
-
+func (m UserModel) UpdateByAdmin(user *User, permission *string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	result, err := m.DB.Exec(ctx, query, ids)
+	tx, err := m.DB.Begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback(ctx)
+
+	var adminPermissionID int64
+	if permission != nil {
+		// Role-removing mutations lock the same row so concurrent requests cannot
+		// both observe an admin and then remove the last two administrators.
+		err = tx.QueryRow(ctx, `SELECT id FROM permissions WHERE name = 'admin' FOR UPDATE`).Scan(&adminPermissionID)
+		if err != nil {
+			return err
+		}
+	}
+
+	err = tx.QueryRow(ctx, `
+		UPDATE users
+		SET full_name = $1, email = $2, updated_at = now(), version = version + 1
+		WHERE id = $3 AND version = $4
+		RETURNING updated_at, version`, user.FullName, user.Email, user.ID, user.Version).Scan(&user.UpdatedAt, &user.Version)
+	if err != nil {
+		var pgErr *pgconn.PgError
+		if errors.As(err, &pgErr) && pgErr.Code == "23505" {
+			return ErrDuplicateEmail
+		}
+		if errors.Is(err, pgx.ErrNoRows) {
+			return ErrEditConflict
+		}
+		return err
+	}
+
+	if permission != nil {
+		if user.Permissions.Include("admin") && *permission != "admin" {
+			var adminCount int
+			err = tx.QueryRow(ctx, `
+				SELECT count(*)
+				FROM users_permissions
+				WHERE permission_id = $1`, adminPermissionID).Scan(&adminCount)
+			if err != nil {
+				return err
+			}
+			if adminCount <= 1 {
+				return ErrLastAdmin
+			}
+		}
+
+		_, err = tx.Exec(ctx, `DELETE FROM users_permissions WHERE user_id = $1`, user.ID)
+		if err != nil {
+			return err
+		}
+		_, err = tx.Exec(ctx, `
+			INSERT INTO users_permissions (user_id, permission_id)
+			SELECT $1, id FROM permissions WHERE name = $2`, user.ID, *permission)
+		if err != nil {
+			return err
+		}
+		user.Permissions = Permissions{*permission}
+	}
+
+	if err = tx.Commit(ctx); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m UserModel) DeleteMultiple(ids []int64) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	tx, err := m.DB.Begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback(ctx)
+
+	var adminPermissionID int64
+	err = tx.QueryRow(ctx, `SELECT id FROM permissions WHERE name = 'admin' FOR UPDATE`).Scan(&adminPermissionID)
+	if err != nil {
+		return err
+	}
+
+	var adminCount int
+	var deletedAdminCount int
+	err = tx.QueryRow(ctx, `
+		SELECT count(*), count(*) FILTER (WHERE user_id = ANY($2))
+		FROM users_permissions
+		WHERE permission_id = $1`, adminPermissionID, ids).Scan(&adminCount, &deletedAdminCount)
+	if err != nil {
+		return err
+	}
+	if adminCount-deletedAdminCount < 1 {
+		return ErrLastAdmin
+	}
+
+	result, err := tx.Exec(ctx, `DELETE FROM users WHERE id = ANY($1)`, ids)
 	if err != nil {
 		return err
 	}
@@ -381,5 +477,5 @@ func (m UserModel) DeleteMultiple(ids []int64) error {
 		return ErrRecordNotFound
 	}
 
-	return nil
+	return tx.Commit(ctx)
 }
