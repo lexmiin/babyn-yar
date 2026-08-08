@@ -3,18 +3,17 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"time"
 
+	"github.com/boj/redistore/v2"
 	"github.com/gorilla/sessions"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lex-unix/babyn-yar/internal/config"
 	"github.com/lex-unix/babyn-yar/internal/data"
 	"github.com/lex-unix/babyn-yar/internal/jsonlog"
 	"github.com/lex-unix/babyn-yar/internal/storage"
-	"gopkg.in/boj/redistore.v1"
 )
 
 const (
@@ -115,14 +114,14 @@ func openDB(cfg config.Config) (*pgxpool.Pool, error) {
 }
 
 func newSessionStore(cfg config.Config) (*redistore.RediStore, error) {
-	store, err := redistore.NewRediStore(
-		cfg.SessionStore.MaxIdleConns,
-		"tcp",
-		cfg.SessionStore.DSN,
-		cfg.SessionStore.Password,
-		[]byte(cfg.SessionStore.Secret))
+	store, err := redistore.NewStore(
+		redistore.KeysFromStrings(cfg.SessionStore.Secret),
+		redistore.WithAddress("tcp", cfg.SessionStore.DSN),
+		redistore.WithPassword(cfg.SessionStore.Password),
+		redistore.WithPoolSize(cfg.SessionStore.MaxIdleConns),
+	)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	store.Options.Secure = cfg.Env != "development"
