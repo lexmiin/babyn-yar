@@ -15,8 +15,6 @@ import (
 	"github.com/lex-unix/babyn-yar/internal/validator"
 )
 
-var psql = sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
-
 var validPublicationKinds = []string{
 	"event",
 	"book",

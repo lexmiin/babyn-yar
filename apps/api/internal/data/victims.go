@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	sq "github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -23,20 +24,42 @@ func (m VictimModel) GetAll(fullname string, info string, filters Filters) ([]*V
 	// sorting by id here because of mixed langauge in full_name column
 	// full_name ordering gives unexpected results
 	// because this table probably won't change this is okay
-	query := `
-		SELECT count(*) OVER(), id, full_name, info, version
-		FROM victims
-		WHERE (to_tsvector('simple', full_name) @@ plainto_tsquery('simple', $1) OR $1 = '')
-		AND (to_tsvector('simple', info) @@ plainto_tsquery('simple', $2) OR $2 = '')
-		ORDER BY id
-		LIMIT $3 OFFSET $4`
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	query := psql.
+		Select(
+			"count(*) OVER()",
+			"id",
+			"full_name",
+			"info",
+			"version",
+		).
+		From("victims").
+		OrderBy("id").
+		Limit(uint64(filters.limit())).
+		Offset(uint64(filters.offset()))
 
+	if fullname != "" {
+		query = query.Where(sq.Expr(
+			"to_tsvector('simple', full_name) @@ plainto_tsquery('simple', ?)",
+			fullname,
+		))
+	}
+
+	if info != "" {
+		query = query.Where(sq.Expr(
+			"to_tsvector('simple', info) @@ plainto_tsquery('simple', ?)",
+			info,
+		))
+	}
+
+	sql, args, err := query.ToSql()
+	if err != nil {
+		return nil, Metadata{}, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	args := []any{fullname, info, filters.limit(), filters.offset()}
-
-	rows, err := m.DB.Query(ctx, query, args...)
+	rows, err := m.DB.Query(ctx, sql, args...)
 	if err != nil {
 		return nil, Metadata{}, err
 	}
