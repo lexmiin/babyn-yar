@@ -128,6 +128,7 @@
       >
         <div class="flex items-center gap-1 p-2">
           <EditorCommand
+            ariaLabel="Заголовок 1"
             onClick={() =>
               editor?.chain().focus().toggleHeading({ level: 1 }).run()}
             active={editor.isActive('heading', { level: 1 })}
@@ -135,6 +136,7 @@
             <TextHOneIcon size={16} />
           </EditorCommand>
           <EditorCommand
+            ariaLabel="Заголовок 2"
             onClick={() =>
               editor?.chain().focus().toggleHeading({ level: 2 }).run()}
             active={editor.isActive('heading', { level: 2 })}
@@ -142,6 +144,7 @@
             <TextHTwoIcon size={16} />
           </EditorCommand>
           <EditorCommand
+            ariaLabel="Заголовок 3"
             onClick={() =>
               editor?.chain().focus().toggleHeading({ level: 3 }).run()}
             active={editor.isActive('heading', { level: 3 })}
@@ -149,12 +152,14 @@
             <TextHThreeIcon size={16} />
           </EditorCommand>
           <EditorCommand
+            ariaLabel="Абзац"
             onClick={() => editor?.chain().focus().setParagraph().run()}
             active={editor.isActive('paragraph')}
           >
             <ParagraphIcon size={16} />
           </EditorCommand>
           <EditorCommand
+            ariaLabel="Додати посилання"
             onClick={handleOpenLinkDialog}
             active={editor.isActive('link')}
           >
@@ -162,18 +167,21 @@
           </EditorCommand>
           {#if editor.isActive('link')}
             <EditorCommand
+              ariaLabel="Видалити посилання"
               onClick={() => editor?.chain().focus().unsetLink().run()}
             >
               <LinkBreakIcon size={16} />
             </EditorCommand>
           {/if}
           <EditorCommand
+            ariaLabel="Маркований список"
             onClick={() => editor?.chain().focus().toggleBulletList().run()}
             active={editor.isActive('bulletList')}
           >
             <ListBulletsIcon size={16} />
           </EditorCommand>
           <EditorCommand
+            ariaLabel="Нумерований список"
             onClick={() => editor?.chain().focus().toggleOrderedList().run()}
             active={editor.isActive('orderedList')}
           >
@@ -181,24 +189,28 @@
           </EditorCommand>
           <EditorCommandDivider />
           <EditorCommand
+            ariaLabel="Напівжирний"
             onClick={() => editor?.chain().focus().toggleBold().run()}
             active={editor.isActive('bold')}
           >
             <TextBIcon size={16} />
           </EditorCommand>
           <EditorCommand
+            ariaLabel="Курсив"
             onClick={() => editor?.chain().focus().toggleItalic().run()}
             active={editor.isActive('italic')}
           >
             <TextItalicIcon size={16} />
           </EditorCommand>
           <EditorCommand
+            ariaLabel="Підкреслений"
             onClick={() => editor?.chain().focus().toggleUnderline().run()}
             active={editor.isActive('underline')}
           >
             <TextUnderlineIcon size={16} />
           </EditorCommand>
           <EditorCommand
+            ariaLabel="Закреслений"
             onClick={() => editor?.chain().focus().toggleStrike().run()}
             active={editor.isActive('strike')}
           >
@@ -206,33 +218,46 @@
           </EditorCommand>
           <EditorCommandDivider />
           <EditorCommand
+            ariaLabel="Вирівняти ліворуч"
             onClick={() => editor?.chain().focus().setTextAlign('left').run()}
           >
             <TextAlignLeftIcon size={16} />
           </EditorCommand>
           <EditorCommand
+            ariaLabel="Вирівняти по центру"
             onClick={() => editor?.chain().focus().setTextAlign('center').run()}
           >
             <TextAlignCenterIcon size={16} />
           </EditorCommand>
           <EditorCommand
+            ariaLabel="Вирівняти праворуч"
             onClick={() => editor?.chain().focus().setTextAlign('right').run()}
           >
             <TextAlignRightIcon size={16} />
           </EditorCommand>
           <EditorCommand
+            ariaLabel="Новий рядок"
             onClick={() => editor?.chain().focus().setHardBreak().run()}
           >
             <ArrowElbowDownLeftIcon size={16} />
           </EditorCommand>
           <EditorCommandDivider />
-          <EditorCommand onClick={handleOpenImageDialog}>
+          <EditorCommand
+            ariaLabel="Додати зображення"
+            onClick={handleOpenImageDialog}
+          >
             <ImageSquareIcon size={16} />
           </EditorCommand>
-          <EditorCommand onClick={handleOpenVideoDialog}>
+          <EditorCommand
+            ariaLabel="Додати відео"
+            onClick={handleOpenVideoDialog}
+          >
             <VideoCameraIcon size={16} />
           </EditorCommand>
-          <EditorCommand onClick={handleOpenYouTubeDialog}>
+          <EditorCommand
+            ariaLabel="Додати відео з YouTube"
+            onClick={handleOpenYouTubeDialog}
+          >
             <YoutubeLogoIcon size={16} />
           </EditorCommand>
         </div>
