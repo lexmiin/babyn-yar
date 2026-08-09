@@ -58,6 +58,7 @@
       {id}
       class="group absolute inset-y-0 right-0 flex items-center px-2 outline-none"
       type="button"
+      aria-label="Відкрити календар"
     >
       <CalendarBlankIcon
         class="size-5 text-zinc-500 group-hover:text-zinc-700 sm:size-4"

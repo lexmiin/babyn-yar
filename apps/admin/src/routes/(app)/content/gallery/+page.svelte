@@ -53,6 +53,7 @@
               <button
                 class="inline-flex items-center justify-center rounded-full border border-red-400/20 bg-red-600 p-2 text-sm font-medium text-red-50 transition-colors hover:bg-red-700 hover:text-red-100"
                 onclick={() => removeImage(image)}
+                aria-label={`Видалити зображення ${image.url.split('/').at(-1)}`}
               >
                 <TrashIcon class="h-5 w-5" />
               </button>
@@ -63,6 +64,7 @@
       <button
         class="inline-flex items-center justify-center rounded-md border bg-gray-100 text-gray-400 focus-within:border-sky-400 focus-within:ring focus-within:ring-sky-100 hover:border-sky-400 hover:text-gray-600"
         onclick={handleOpenDialog}
+        aria-label="Додати зображення до галереї"
       >
         <PlusIcon />
       </button>
