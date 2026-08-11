@@ -67,6 +67,7 @@ export default defineConfig({
       }
     })
   ],
+  devToolbar: { enabled: false },
   adapter: node({ mode: 'standalone' }),
   i18n: {
     locales: ['uk', 'en'],

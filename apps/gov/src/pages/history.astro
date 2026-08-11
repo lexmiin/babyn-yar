@@ -1,0 +1,12 @@
+---
+import HistoryMap from '@/components/history-map/HistoryMap'
+import BaseLayout from '@/layouts/BaseLayout.astro'
+---
+
+<BaseLayout
+  title="Бабин Яр до 1941 року"
+  description="Історична карта Бабиного Яру та прилеглих територій до 1941 року."
+  flushMobileFooter
+>
+  <HistoryMap client:load />
+</BaseLayout>

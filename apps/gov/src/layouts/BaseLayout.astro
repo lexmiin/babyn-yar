@@ -9,9 +9,10 @@ import '../styles/global.css'
 export interface Props {
   title: string
   description: string
+  flushMobileFooter?: boolean
 }
 
-const { title, description } = Astro.props
+const { title, description, flushMobileFooter = false } = Astro.props
 const lang = getLang(Astro.currentLocale)
 const t = useTranslations(lang)
 const ogImage = lang === 'en' ? '/og-image-en.png' : '/og-image.png'
@@ -31,6 +32,6 @@ const ogImage = lang === 'en' ? '/og-image-en.png' : '/og-image.png'
     >
       <slot />
     </main>
-    <Footer />
+    <Footer flushMobile={flushMobileFooter} />
   </body>
 </html>

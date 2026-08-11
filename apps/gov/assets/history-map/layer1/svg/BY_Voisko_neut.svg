@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_14" data-name="Layer 14" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 894.14 783.2">
+  <defs>
+    <style>
+      .cls-1, .cls-2, .cls-3 {
+        fill: none;
+      }
+
+      .cls-4 {
+        opacity: .3;
+      }
+
+      .cls-4, .cls-5 {
+        fill: #fff;
+      }
+
+      .cls-6 {
+        clip-path: url(#clippath-1);
+      }
+
+      .cls-2 {
+        stroke: #fff;
+      }
+
+      .cls-2, .cls-5 {
+        stroke-miterlimit: 10;
+      }
+
+      .cls-2, .cls-3 {
+        stroke-width: 1.42px;
+      }
+
+      .cls-5 {
+        opacity: .16;
+        stroke: #ffeb00;
+        stroke-width: 1.14px;
+      }
+
+      .cls-3 {
+        stroke: #ec2125;
+        stroke-linejoin: round;
+      }
+
+      .cls-7 {
+        clip-path: url(#clippath);
+      }
+    </style>
+    <clipPath id="clippath">
+      <rect class="cls-1" x="0" y=".61" width="894.14" height="782.59"/>
+    </clipPath>
+    <clipPath id="clippath-1">
+      <rect class="cls-1" x="-933.84" y=".61" width="894.14" height="782.59"/>
+    </clipPath>
+  </defs>
+  <g class="cls-7">
+    <polygon class="cls-4" points="474.97 547.3 454.33 622.04 410.74 613.07 399.25 656.64 395 692.07 501.96 695.65 529.27 693.07 549.9 684.06 592.44 575.16 474.97 547.3"/>
+    <rect class="cls-1" x="0" y=".61" width="894.14" height="782.59"/>
+    <polygon class="cls-2" points="474.97 547.3 454.33 622.04 410.74 613.07 399.25 656.64 395 692.07 501.96 695.65 529.27 693.07 549.9 684.06 592.44 575.16 474.97 547.3"/>
+  </g>
+  <g class="cls-6">
+    <polygon class="cls-3" points="67.24 -30.08 135.39 9.24 143.28 62.89 176.09 68.57 196.61 68.57 276.77 57.52 314.95 12.08 319.69 4.74 319.69 -9.06 314.95 -18.21 287.75 -62.04 262.27 -50.86 252.31 -53.05 237 -63.66 212.46 -80.4 206.71 -123.63 168.55 -113.84 112.16 -81.08 67.24 -30.08"/>
+    <polygon class="cls-5" points="67.24 -30.08 135.39 9.24 143.28 62.89 176.09 68.57 196.61 68.57 276.77 57.52 314.95 12.08 319.69 4.74 319.69 -9.06 314.95 -18.21 287.75 -62.04 262.27 -50.86 252.31 -53.05 237 -63.66 212.46 -80.4 206.71 -123.63 168.55 -113.84 112.16 -81.08 67.24 -30.08"/>
+  </g>
+</svg>
