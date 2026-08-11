@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import type { ReactNode, WheelEvent } from 'react'
 
 type HistoryMapLayoutProps = {
   title: string
@@ -7,7 +7,22 @@ type HistoryMapLayoutProps = {
   mapSource: string
   territoryLabel: string
   territories: readonly string[]
+  renderTerritory?: (territory: string, index: number) => ReactNode
   children: ReactNode
+}
+
+function handOffScrollAtBoundary(event: WheelEvent<HTMLDivElement>) {
+  if (!window.matchMedia('(min-width: 768px)').matches) return
+
+  const container = event.currentTarget
+  const atTop = container.scrollTop <= 0
+  const atBottom =
+    container.scrollTop + container.clientHeight >= container.scrollHeight - 1
+
+  if ((event.deltaY < 0 && atTop) || (event.deltaY > 0 && atBottom)) {
+    event.preventDefault()
+    window.scrollBy({ top: event.deltaY })
+  }
 }
 
 export default function HistoryMapLayout({
@@ -17,6 +32,7 @@ export default function HistoryMapLayout({
   mapSource,
   territoryLabel,
   territories,
+  renderTerritory,
   children
 }: HistoryMapLayoutProps) {
   return (
@@ -24,7 +40,12 @@ export default function HistoryMapLayout({
       aria-labelledby="history-map-title"
       className="mx-auto max-w-[1600px] pb-12 md:pb-20"
     >
-      <div className="grid items-start gap-y-10 md:grid-cols-[minmax(0,1.75fr)_minmax(15rem,0.8fr)] md:gap-x-8 lg:gap-x-12 xl:gap-x-16">
+      <div
+        tabIndex={0}
+        data-history-map-scroll-container
+        onWheel={handOffScrollAtBoundary}
+        className="grid [scrollbar-width:none] items-start gap-y-10 md:max-h-[calc(100svh-9rem)] md:grid-cols-[minmax(0,1.75fr)_minmax(15rem,0.8fr)] md:gap-x-8 md:overflow-y-auto md:pr-3 lg:gap-x-12 xl:gap-x-16 [&::-webkit-scrollbar]:hidden"
+      >
         <div className="min-w-0">
           <h1
             id="history-map-title"
@@ -53,17 +74,21 @@ export default function HistoryMapLayout({
               {territoryLabel}
             </h2>
             <ul className="mt-3 grid gap-x-8 gap-y-1 text-base leading-snug sm:grid-cols-2 lg:text-lg">
-              {territories.map(territory => (
-                <li key={territory} className="flex gap-2">
-                  <span aria-hidden="true">—</span>
-                  <span>{territory}</span>
-                </li>
-              ))}
+              {territories.map((territory, index) =>
+                renderTerritory ? (
+                  renderTerritory(territory, index)
+                ) : (
+                  <li key={territory} className="flex gap-2">
+                    <span aria-hidden="true">—</span>
+                    <span>{territory}</span>
+                  </li>
+                )
+              )}
             </ul>
           </section>
         </div>
 
-        <aside className="text-base leading-[1.38] md:sticky md:top-28 md:mt-[4.25rem] lg:text-lg">
+        <aside className="text-base leading-[1.38] md:mt-[4.25rem] lg:text-lg">
           {children}
         </aside>
       </div>
