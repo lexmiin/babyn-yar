@@ -1,8 +1,9 @@
 import { defineConfig, fontProviders } from 'astro/config'
 import react from '@astrojs/react'
 import mdx from '@astrojs/mdx'
-import node from '@astrojs/node'
+// import node from '@astrojs/node'
 import sitemap from '@astrojs/sitemap'
+import vercel from '@astrojs/vercel'
 
 import tailwindcss from '@tailwindcss/vite'
 
@@ -72,7 +73,10 @@ export default defineConfig({
       }
     })
   ],
-  adapter: node({ mode: 'standalone' }),
+  devToolbar: { enabled: false },
+  // TODO: Restore the Node adapter before merging this branch into main.
+  // adapter: node({ mode: 'standalone' }),
+  adapter: vercel(),
   i18n: {
     locales: ['uk', 'en'],
     defaultLocale: 'uk',

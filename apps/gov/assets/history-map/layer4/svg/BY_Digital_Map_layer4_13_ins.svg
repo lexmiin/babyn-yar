@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="points" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 894.14 783.2">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #ec2125;
+      }
+
+      .cls-2 {
+        fill: none;
+        stroke: #fff;
+        stroke-miterlimit: 10;
+        stroke-width: .91px;
+      }
+    </style>
+  </defs>
+  <circle class="cls-1" cx="182.25" cy="701.47" r="3.95"/>
+  <circle class="cls-2" cx="182.25" cy="701.47" r="6.5"/>
+</svg>
