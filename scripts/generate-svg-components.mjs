@@ -101,7 +101,7 @@ function makeTerritoryFillThemeable(svg, sourceName) {
   }
 
   const classAttribute = `class="${fillClass}"`
-  const themedAttribute = `${classAttribute} style="fill:var(--territory-fill,#fff);opacity:var(--territory-fill-opacity,.3);transition:fill var(--territory-fill-duration,180ms) ease,opacity var(--territory-fill-duration,180ms) ease"`
+  const themedAttribute = `${classAttribute} style="fill:var(--territory-fill,#fff);opacity:var(--territory-fill-opacity,.3);pointer-events:visiblePainted;transition:fill var(--territory-fill-duration,180ms) ease,opacity var(--territory-fill-duration,180ms) ease"`
 
   if (!svg.includes(classAttribute)) {
     throw new Error(

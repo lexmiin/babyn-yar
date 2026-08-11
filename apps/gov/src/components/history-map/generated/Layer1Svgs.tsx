@@ -44,6 +44,7 @@ const Layer1Bratske = (props: SVGProps<SVGSVGElement>) => (
         style={{
           fill: 'var(--territory-fill,#fff)',
           opacity: 'var(--territory-fill-opacity,.3)',
+          pointerEvents: 'visiblePainted',
           transition:
             'fill var(--territory-fill-duration,180ms) ease,opacity var(--territory-fill-duration,180ms) ease'
         }}
@@ -119,6 +120,7 @@ const Layer1Envang = (props: SVGProps<SVGSVGElement>) => (
         style={{
           fill: 'var(--territory-fill,#fff)',
           opacity: 'var(--territory-fill-opacity,.3)',
+          pointerEvents: 'visiblePainted',
           transition:
             'fill var(--territory-fill-duration,180ms) ease,opacity var(--territory-fill-duration,180ms) ease'
         }}
@@ -195,6 +197,7 @@ const Layer1Jew = (props: SVGProps<SVGSVGElement>) => (
         style={{
           fill: 'var(--territory-fill,#fff)',
           opacity: 'var(--territory-fill-opacity,.3)',
+          pointerEvents: 'visiblePainted',
           transition:
             'fill var(--territory-fill-duration,180ms) ease,opacity var(--territory-fill-duration,180ms) ease'
         }}
@@ -292,6 +295,7 @@ const Layer1Karamske = (props: SVGProps<SVGSVGElement>) => (
         style={{
           fill: 'var(--territory-fill,#fff)',
           opacity: 'var(--territory-fill-opacity,.3)',
+          pointerEvents: 'visiblePainted',
           transition:
             'fill var(--territory-fill-duration,180ms) ease,opacity var(--territory-fill-duration,180ms) ease'
         }}
@@ -371,6 +375,7 @@ const Layer1Kirill = (props: SVGProps<SVGSVGElement>) => (
         style={{
           fill: 'var(--territory-fill,#fff)',
           opacity: 'var(--territory-fill-opacity,.3)',
+          pointerEvents: 'visiblePainted',
           transition:
             'fill var(--territory-fill-duration,180ms) ease,opacity var(--territory-fill-duration,180ms) ease'
         }}
@@ -453,6 +458,7 @@ const Layer1Luk = (props: SVGProps<SVGSVGElement>) => (
         style={{
           fill: 'var(--territory-fill,#fff)',
           opacity: 'var(--territory-fill-opacity,.3)',
+          pointerEvents: 'visiblePainted',
           transition:
             'fill var(--territory-fill-duration,180ms) ease,opacity var(--territory-fill-duration,180ms) ease'
         }}
@@ -546,6 +552,7 @@ const Layer1Magomet = (props: SVGProps<SVGSVGElement>) => (
         style={{
           fill: 'var(--territory-fill,#fff)',
           opacity: 'var(--territory-fill-opacity,.3)',
+          pointerEvents: 'visiblePainted',
           transition:
             'fill var(--territory-fill-duration,180ms) ease,opacity var(--territory-fill-duration,180ms) ease'
         }}
@@ -625,6 +632,7 @@ const Layer1Maria = (props: SVGProps<SVGSVGElement>) => (
         style={{
           fill: 'var(--territory-fill,#fff)',
           opacity: 'var(--territory-fill-opacity,.3)',
+          pointerEvents: 'visiblePainted',
           transition:
             'fill var(--territory-fill-duration,180ms) ease,opacity var(--territory-fill-duration,180ms) ease'
         }}
@@ -703,6 +711,7 @@ const Layer1Voisko = (props: SVGProps<SVGSVGElement>) => (
         style={{
           fill: 'var(--territory-fill,#fff)',
           opacity: 'var(--territory-fill-opacity,.3)',
+          pointerEvents: 'visiblePainted',
           transition:
             'fill var(--territory-fill-duration,180ms) ease,opacity var(--territory-fill-duration,180ms) ease'
         }}
