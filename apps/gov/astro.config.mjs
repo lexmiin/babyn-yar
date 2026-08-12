@@ -9,6 +9,7 @@ import tailwindcss from '@tailwindcss/vite'
 // https://astro.build/config
 export default defineConfig({
   site: 'https://babynyar.gov.ua',
+  devToolbar: { enabled: false },
   integrations: [react(), mdx(), sitemap()],
   adapter: node({ mode: 'standalone' }),
 

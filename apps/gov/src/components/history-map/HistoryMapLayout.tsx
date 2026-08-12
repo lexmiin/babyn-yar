@@ -46,14 +46,14 @@ export default function HistoryMapLayout({
   return (
     <section
       aria-labelledby="history-map-title"
-      className="mx-auto max-w-[1600px] pb-12 md:pb-20"
+      className="mx-auto max-w-[1600px] md:pb-20"
     >
       <div
         ref={scrollContainerRef}
         tabIndex={0}
         data-history-map-scroll-container
         onWheel={handOffScrollAtBoundary}
-        className="grid max-h-[calc(100svh-9rem)] [scrollbar-width:none] items-start gap-y-10 overflow-y-auto pr-3 md:grid-cols-[minmax(0,1.75fr)_minmax(15rem,0.8fr)] md:gap-x-8 lg:gap-x-12 xl:gap-x-16 [&::-webkit-scrollbar]:hidden"
+        className="grid max-h-[calc(100dvh-9rem)] [scrollbar-width:none] items-start gap-y-10 overflow-y-auto pr-3 md:grid-cols-[minmax(0,1.75fr)_minmax(15rem,0.8fr)] md:gap-x-8 lg:gap-x-12 xl:gap-x-16 [&::-webkit-scrollbar]:hidden"
       >
         <div className="min-w-0">
           <h1
