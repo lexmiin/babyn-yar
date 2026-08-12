@@ -1,4 +1,3 @@
-import { useState, type KeyboardEvent, type ReactNode } from 'react'
 import {
   AnimatePresence,
   motion,
@@ -6,7 +5,12 @@ import {
   type Transition
 } from 'framer-motion'
 import HistoryMapLayout from './HistoryMapLayout'
-import type { HistoryMapTerritory } from './layers'
+import {
+  HISTORY_MAP_BASE,
+  type HistoryMapLayerData,
+  type HistoryMapTerritory
+} from './layers'
+import { useTerritorySelection } from './useTerritorySelection'
 
 const TERRITORY_INITIAL_DELAY_MS = 250
 const TERRITORY_STAGGER_MS = 220
@@ -18,17 +22,6 @@ const LABEL_WIDTH = 204
 const LABEL_LINE_START_X = 247
 const LABEL_HEIGHT = 24
 const ACTIVE_LABEL_Y = 176
-
-type HistoryMapLayerProps = {
-  title: string
-  baseMapSrc: string
-  mapAlt: string
-  mapAspectRatio: string
-  mapSource: string
-  territoryLabel: string
-  territories: readonly HistoryMapTerritory[]
-  children: ReactNode
-}
 
 function getTerritoryTransition(
   index: number,
@@ -57,37 +50,85 @@ function getTerritoryExitTransition(
   }
 }
 
-export default function HistoryMapLayer({
-  title,
-  baseMapSrc,
-  mapAlt,
-  mapAspectRatio,
-  mapSource,
-  territoryLabel,
+function TerritoryOverlay({
+  layerKey,
   territories,
-  children
-}: HistoryMapLayerProps) {
+  activeTerritoryIndex,
+  getTerritoryControlProps,
+  shouldReduceMotion
+}: {
+  layerKey: number
+  territories: readonly HistoryMapTerritory[]
+  activeTerritoryIndex: number | null
+  getTerritoryControlProps: ReturnType<
+    typeof useTerritorySelection
+  >['getTerritoryControlProps']
+  shouldReduceMotion: boolean | null
+}) {
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={layerKey}
+        data-history-map-overlay={layerKey}
+        className="pointer-events-none absolute inset-0"
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        variants={{
+          hidden: {},
+          visible: { transition: { when: 'beforeChildren' } },
+          exit: { transition: { when: 'afterChildren' } }
+        }}
+      >
+        {territories.map(({ label, Component }, index) => {
+          const isActive = activeTerritoryIndex === index
+
+          return (
+            <motion.div
+              key={label}
+              className="pointer-events-none absolute inset-0"
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: getTerritoryTransition(index, shouldReduceMotion)
+                },
+                exit: {
+                  opacity: 0,
+                  transition: getTerritoryExitTransition(
+                    index,
+                    territories.length,
+                    shouldReduceMotion
+                  )
+                }
+              }}
+            >
+              <Component
+                {...getTerritoryControlProps(index)}
+                className={`pointer-events-none absolute inset-0 h-full w-full cursor-pointer transition-[filter] duration-150 focus-visible:drop-shadow-[0_0_5px_#fff] focus-visible:outline-none [&_path]:pointer-events-auto [&_polygon]:pointer-events-auto ${
+                  isActive
+                    ? '[--territory-fill-opacity:.48] [--territory-fill:#941f37]'
+                    : '[--territory-fill-opacity:.3] [--territory-fill:#fff] hover:[--territory-fill-opacity:.48] hover:[--territory-fill:#941f37]'
+                }`}
+              />
+            </motion.div>
+          )
+        })}
+      </motion.div>
+    </AnimatePresence>
+  )
+}
+
+export default function HistoryMapLayer({
+  layerKey,
+  layer: { title, mapSource, territoryLabel, territories, overview }
+}: {
+  layerKey: number
+  layer: HistoryMapLayerData
+}) {
   const shouldReduceMotion = useReducedMotion()
-  const [activeTerritoryIndex, setActiveTerritoryIndex] = useState<
-    number | null
-  >(null)
-
-  function toggleTerritory(index: number) {
-    setActiveTerritoryIndex(current => (current === index ? null : index))
-  }
-
-  function handleTerritoryKeyDown(
-    event: KeyboardEvent<SVGSVGElement>,
-    index: number
-  ) {
-    if (event.key !== 'Enter' && event.key !== ' ') return
-
-    event.preventDefault()
-    toggleTerritory(index)
-  }
-
-  const activeTerritory =
-    activeTerritoryIndex === null ? null : territories[activeTerritoryIndex]
+  const { activeTerritory, activeTerritoryIndex, getTerritoryControlProps } =
+    useTerritorySelection(territories, layerKey)
   const activeLabelIsTwoLines = Boolean(activeTerritory?.mapLabel.lines)
   const activeLabelHeight = activeLabelIsTwoLines ? 39 : LABEL_HEIGHT
   const activeLabelY = ACTIVE_LABEL_Y - activeLabelHeight / 2
@@ -95,53 +136,19 @@ export default function HistoryMapLayer({
   const map = (
     <>
       <img
-        src={baseMapSrc}
-        alt={mapAlt}
+        data-history-map-base
+        src={HISTORY_MAP_BASE.src}
+        alt={HISTORY_MAP_BASE.alt}
         className="absolute inset-0 h-full w-full object-contain select-none"
         draggable={false}
       />
-      {territories.map(({ label, Component }, index) => {
-        const isActive = activeTerritoryIndex === index
-
-        return (
-          <motion.div
-            key={label}
-            className="pointer-events-none absolute inset-0"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={getTerritoryTransition(index, shouldReduceMotion)}
-            exit={{
-              opacity: 0,
-              transition: getTerritoryExitTransition(
-                index,
-                territories.length,
-                shouldReduceMotion
-              )
-            }}
-          >
-            <Component
-              focusable="false"
-              role="button"
-              tabIndex={0}
-              aria-label={`${isActive ? 'Сховати' : 'Показати'} підпис: ${label}`}
-              aria-pressed={isActive}
-              onPointerDown={event =>
-                event.currentTarget.focus({ preventScroll: true })
-              }
-              onClick={event => {
-                event.currentTarget.focus({ preventScroll: true })
-                toggleTerritory(index)
-              }}
-              onKeyDown={event => handleTerritoryKeyDown(event, index)}
-              className={`pointer-events-none absolute inset-0 h-full w-full cursor-pointer transition-[filter] duration-150 focus-visible:drop-shadow-[0_0_5px_#fff] focus-visible:outline-none [&_path]:pointer-events-auto [&_polygon]:pointer-events-auto ${
-                isActive
-                  ? '[--territory-fill-opacity:.48] [--territory-fill:#941f37]'
-                  : '[--territory-fill-opacity:.3] [--territory-fill:#fff] hover:[--territory-fill-opacity:.48] hover:[--territory-fill:#941f37]'
-              }`}
-            />
-          </motion.div>
-        )
-      })}
+      <TerritoryOverlay
+        layerKey={layerKey}
+        territories={territories}
+        activeTerritoryIndex={activeTerritoryIndex}
+        getTerritoryControlProps={getTerritoryControlProps}
+        shouldReduceMotion={shouldReduceMotion}
+      />
       <AnimatePresence mode="wait">
         {activeTerritory && (
           <motion.div
@@ -243,34 +250,38 @@ export default function HistoryMapLayer({
 
   return (
     <HistoryMapLayout
+      layerKey={layerKey}
       title={
-        <motion.span
-          className="block"
-          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={getTerritoryTransition(0, shouldReduceMotion)}
-          exit={{
-            opacity: 0,
-            y: shouldReduceMotion ? 0 : -10,
-            transition: {
-              duration: shouldReduceMotion
-                ? 0
-                : TERRITORY_EXIT_DURATION_MS / 1000,
-              ease: [0.64, 0, 0.78, 0]
-            }
-          }}
-        >
-          {title}
-        </motion.span>
+        <AnimatePresence mode="wait">
+          <motion.span
+            key={layerKey}
+            className="block"
+            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={getTerritoryTransition(0, shouldReduceMotion)}
+            exit={{
+              opacity: 0,
+              y: shouldReduceMotion ? 0 : -10,
+              transition: {
+                duration: shouldReduceMotion
+                  ? 0
+                  : TERRITORY_EXIT_DURATION_MS / 1000,
+                ease: [0.64, 0, 0.78, 0]
+              }
+            }}
+          >
+            {title}
+          </motion.span>
+        </AnimatePresence>
       }
       map={map}
-      mapAspectRatio={mapAspectRatio}
+      mapAspectRatio={HISTORY_MAP_BASE.aspectRatio}
       mapSource={mapSource}
       territoryLabel={territoryLabel}
       territories={territories.map(({ label }) => label)}
       renderTerritory={(territory, index) => (
         <motion.li
-          key={territory}
+          key={`${layerKey}-${territory}`}
           className="flex gap-2"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -283,7 +294,7 @@ export default function HistoryMapLayer({
     >
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
-          key={activeTerritory?.label ?? 'period-overview'}
+          key={`${layerKey}-${activeTerritory?.label ?? 'period-overview'}`}
           aria-live="polite"
           className="space-y-5"
           initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 10 }}
@@ -311,7 +322,7 @@ export default function HistoryMapLayer({
               ))}
             </>
           ) : (
-            children
+            overview.map(paragraph => <p key={paragraph}>{paragraph}</p>)
           )}
         </motion.div>
       </AnimatePresence>

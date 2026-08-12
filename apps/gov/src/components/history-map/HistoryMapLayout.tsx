@@ -1,6 +1,7 @@
-import type { ReactNode, WheelEvent } from 'react'
+import { useLayoutEffect, useRef, type ReactNode, type WheelEvent } from 'react'
 
 type HistoryMapLayoutProps = {
+  layerKey: number
   title: ReactNode
   map: ReactNode
   mapAspectRatio: string
@@ -26,6 +27,7 @@ function handOffScrollAtBoundary(event: WheelEvent<HTMLDivElement>) {
 }
 
 export default function HistoryMapLayout({
+  layerKey,
   title,
   map,
   mapAspectRatio,
@@ -35,12 +37,19 @@ export default function HistoryMapLayout({
   renderTerritory,
   children
 }: HistoryMapLayoutProps) {
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+
+  useLayoutEffect(() => {
+    if (scrollContainerRef.current) scrollContainerRef.current.scrollTop = 0
+  }, [layerKey])
+
   return (
     <section
       aria-labelledby="history-map-title"
       className="mx-auto max-w-[1600px] pb-12 md:pb-20"
     >
       <div
+        ref={scrollContainerRef}
         tabIndex={0}
         data-history-map-scroll-container
         onWheel={handOffScrollAtBoundary}

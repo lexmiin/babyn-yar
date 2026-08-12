@@ -1,17 +1,9 @@
 import { useRef, useState } from 'react'
-import {
-  AnimatePresence,
-  motion,
-  useMotionValueEvent,
-  useScroll
-} from 'framer-motion'
-import LayerOne from './LayerOne'
-import LayerThree from './LayerThree'
-import LayerTwo from './LayerTwo'
+import { useMotionValueEvent, useScroll } from 'framer-motion'
+import HistoryMapLayer from './HistoryMapLayer'
+import { HISTORY_MAP_LAYERS } from './layers'
 
-const LAYERS = [LayerOne, LayerTwo, LayerThree] as const
-
-export default function HistoryMap() {
+function useActiveHistoryLayer(layerCount: number) {
   const trackRef = useRef<HTMLElement>(null)
   const [activeLayer, setActiveLayer] = useState(0)
   const { scrollYProgress } = useScroll({
@@ -21,23 +13,28 @@ export default function HistoryMap() {
 
   useMotionValueEvent(scrollYProgress, 'change', progress => {
     const nextLayer = Math.min(
-      Math.max(Math.floor(progress * LAYERS.length), 0),
-      LAYERS.length - 1
+      Math.max(Math.floor(progress * layerCount), 0),
+      layerCount - 1
     )
     setActiveLayer(current => (current === nextLayer ? current : nextLayer))
   })
 
-  const ActiveLayer = LAYERS[activeLayer]
+  return { activeLayer, trackRef }
+}
+
+export default function HistoryMap() {
+  const { activeLayer, trackRef } = useActiveHistoryLayer(
+    HISTORY_MAP_LAYERS.length
+  )
 
   return (
     <section ref={trackRef} className="relative min-h-[360svh]">
       <div className="sticky top-[7.5rem] md:top-28">
         <div aria-live="polite">
-          <AnimatePresence mode="wait">
-            <motion.div key={activeLayer} exit={{}}>
-              <ActiveLayer />
-            </motion.div>
-          </AnimatePresence>
+          <HistoryMapLayer
+            layer={HISTORY_MAP_LAYERS[activeLayer]}
+            layerKey={activeLayer}
+          />
         </div>
       </div>
     </section>
