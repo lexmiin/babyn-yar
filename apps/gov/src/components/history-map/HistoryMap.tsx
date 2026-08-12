@@ -31,7 +31,7 @@ export default function HistoryMap() {
 
   return (
     <section ref={trackRef} className="relative min-h-[360svh]">
-      <div className="md:sticky md:top-28">
+      <div className="sticky top-[7.5rem] md:top-28">
         <div aria-live="polite">
           <AnimatePresence mode="wait">
             <motion.div key={activeLayer} exit={{}}>

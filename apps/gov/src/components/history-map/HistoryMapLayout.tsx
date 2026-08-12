@@ -1,7 +1,7 @@
 import type { ReactNode, WheelEvent } from 'react'
 
 type HistoryMapLayoutProps = {
-  title: string
+  title: ReactNode
   map: ReactNode
   mapAspectRatio: string
   mapSource: string
@@ -44,12 +44,12 @@ export default function HistoryMapLayout({
         tabIndex={0}
         data-history-map-scroll-container
         onWheel={handOffScrollAtBoundary}
-        className="grid [scrollbar-width:none] items-start gap-y-10 md:max-h-[calc(100svh-9rem)] md:grid-cols-[minmax(0,1.75fr)_minmax(15rem,0.8fr)] md:gap-x-8 md:overflow-y-auto md:pr-3 lg:gap-x-12 xl:gap-x-16 [&::-webkit-scrollbar]:hidden"
+        className="grid max-h-[calc(100svh-9rem)] [scrollbar-width:none] items-start gap-y-10 overflow-y-auto pr-3 md:grid-cols-[minmax(0,1.75fr)_minmax(15rem,0.8fr)] md:gap-x-8 lg:gap-x-12 xl:gap-x-16 [&::-webkit-scrollbar]:hidden"
       >
         <div className="min-w-0">
           <h1
             id="history-map-title"
-            className="mb-4 text-[clamp(2.25rem,4vw,4.5rem)] leading-[0.92] font-bold tracking-[-0.035em]"
+            className="mb-4 text-[clamp(1.875rem,3vw,3.25rem)] leading-[0.92] font-bold tracking-[-0.035em]"
           >
             {title}
           </h1>

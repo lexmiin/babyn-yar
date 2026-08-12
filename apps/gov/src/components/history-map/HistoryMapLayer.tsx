@@ -94,7 +94,26 @@ export default function HistoryMapLayer({
 
   return (
     <HistoryMapLayout
-      title={title}
+      title={
+        <motion.span
+          className="block"
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={getTerritoryTransition(0, shouldReduceMotion)}
+          exit={{
+            opacity: 0,
+            y: shouldReduceMotion ? 0 : -10,
+            transition: {
+              duration: shouldReduceMotion
+                ? 0
+                : TERRITORY_EXIT_DURATION_MS / 1000,
+              ease: [0.64, 0, 0.78, 0]
+            }
+          }}
+        >
+          {title}
+        </motion.span>
+      }
       map={map}
       mapAspectRatio={mapAspectRatio}
       mapSource={mapSource}
@@ -115,9 +134,19 @@ export default function HistoryMapLayer({
     >
       <motion.div
         className="space-y-5"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 12 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={getTerritoryTransition(0, shouldReduceMotion)}
+        exit={{
+          opacity: 0,
+          y: shouldReduceMotion ? 0 : -12,
+          transition: {
+            duration: shouldReduceMotion
+              ? 0
+              : TERRITORY_EXIT_DURATION_MS / 1000,
+            ease: [0.64, 0, 0.78, 0]
+          }
+        }}
       >
         {children}
       </motion.div>
