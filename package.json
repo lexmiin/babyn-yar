@@ -7,7 +7,6 @@
     "build": "turbo run build",
     "dev": "turbo run --ui stream-with-experimental-timestamps dev",
     "dev:plain": "turbo run dev",
-    "generate:history-map-svgs": "node scripts/generate-svg-components.mjs --input BY_map/SVG --output apps/gov/src/components/history-map/generated/Layer1Svgs.tsx --layer 1",
     "check": "turbo run check",
     "lint": "turbo run lint",
     "clean": "turbo run clean",

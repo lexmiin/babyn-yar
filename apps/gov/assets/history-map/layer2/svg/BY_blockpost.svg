@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_16" data-name="Layer 16" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 894.14 783.2">
+  <defs>
+    <style>
+      .cls-1, .cls-2, .cls-3 {
+        fill: none;
+      }
+
+      .cls-2 {
+        stroke-width: 5.55px;
+      }
+
+      .cls-2, .cls-3, .cls-4 {
+        stroke-miterlimit: 10;
+      }
+
+      .cls-2, .cls-4 {
+        stroke: #fff;
+      }
+
+      .cls-3 {
+        stroke: #f84048;
+        stroke-width: 6.88px;
+      }
+
+      .cls-5 {
+        clip-path: url(#clippath-1);
+      }
+
+      .cls-6 {
+        clip-path: url(#clippath-2);
+      }
+
+      .cls-7 {
+        fill: #fff;
+      }
+
+      .cls-4 {
+        fill: #ec2125;
+        stroke-width: 6.38px;
+      }
+
+      .cls-8 {
+        clip-path: url(#clippath);
+      }
+    </style>
+    <clipPath id="clippath">
+      <rect class="cls-1" x="-927.15" y="0" width="893.81" height="783.21"/>
+    </clipPath>
+    <clipPath id="clippath-1">
+      <rect class="cls-1" x=".32" y="0" width="893.81" height="783.21"/>
+    </clipPath>
+    <clipPath id="clippath-2">
+      <rect class="cls-1" x="964.57" y="0" width="893.81" height="783.21"/>
+    </clipPath>
+  </defs>
+  <g class="cls-8">
+    <polyline class="cls-3" points="303.12 995.4 -189.17 637.38 -227.26 604.06 -285.5 563.03 -314.78 551.32 -463.37 526.47 -500.81 626 -559.47 634.64 -724.78 626.71 -746.16 590.97"/>
+  </g>
+  <g class="cls-5">
+    <g>
+      <path class="cls-4" d="M748.31,619.06c0,14.57-11.82,26.38-26.39,26.38s-26.38-11.81-26.38-26.38,11.81-26.39,26.38-26.39,26.39,11.82,26.39,26.39Z"/>
+      <g>
+        <line class="cls-2" x1="709.06" y1="606.46" x2="734.39" y2="631.79"/>
+        <line class="cls-2" x1="734.39" y1="606.46" x2="709.06" y2="631.79"/>
+      </g>
+    </g>
+  </g>
+  <g class="cls-6">
+    <path class="cls-7" d="M813.6,432.02c3.34,0,6.04-2.71,6.04-6.04s-2.7-6.05-6.04-6.05-6.04,2.71-6.04,6.05,2.7,6.04,6.04,6.04"/>
+  </g>
+</svg>

@@ -6,9 +6,9 @@ type HistoryMapLayoutProps = {
   map: ReactNode
   mapAspectRatio: string
   mapSource: string
-  territoryLabel: string
-  territories: readonly string[]
-  renderTerritory?: (territory: string, index: number) => ReactNode
+  featureLabel: string
+  features: readonly string[]
+  renderFeature?: (feature: string, index: number) => ReactNode
   children: ReactNode
 }
 
@@ -32,9 +32,9 @@ export default function HistoryMapLayout({
   map,
   mapAspectRatio,
   mapSource,
-  territoryLabel,
-  territories,
-  renderTerritory,
+  featureLabel,
+  features,
+  renderFeature,
   children
 }: HistoryMapLayoutProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
@@ -75,21 +75,21 @@ export default function HistoryMapLayout({
             </figcaption>
           </figure>
 
-          <section aria-labelledby="history-map-territories" className="mt-7">
+          <section aria-labelledby="history-map-features" className="mt-7">
             <h2
-              id="history-map-territories"
+              id="history-map-features"
               className="text-xl leading-tight font-bold"
             >
-              {territoryLabel}
+              {featureLabel}
             </h2>
             <ul className="mt-3 grid gap-x-8 gap-y-1 text-base leading-snug sm:grid-cols-2 lg:text-lg">
-              {territories.map((territory, index) =>
-                renderTerritory ? (
-                  renderTerritory(territory, index)
+              {features.map((feature, index) =>
+                renderFeature ? (
+                  renderFeature(feature, index)
                 ) : (
-                  <li key={territory} className="flex gap-2">
+                  <li key={feature} className="flex gap-2">
                     <span aria-hidden="true">—</span>
-                    <span>{territory}</span>
+                    <span>{feature}</span>
                   </li>
                 )
               )}

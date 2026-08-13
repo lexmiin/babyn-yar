@@ -8,14 +8,16 @@ import HistoryMapLayout from './HistoryMapLayout'
 import {
   HISTORY_MAP_BASE,
   type HistoryMapLayerData,
-  type HistoryMapTerritory
+  type HistoryMapFeature,
+  type HistoryMapOverlay,
+  type HistoryMapRoute
 } from './layers'
-import { useTerritorySelection } from './useTerritorySelection'
+import { useMapFeatureSelection } from './useMapFeatureSelection'
 
-const TERRITORY_INITIAL_DELAY_MS = 250
-const TERRITORY_STAGGER_MS = 220
-const TERRITORY_EXIT_DURATION_MS = 320
-const TERRITORY_EXIT_STAGGER_MS = 55
+const FEATURE_INITIAL_DELAY_MS = 250
+const FEATURE_STAGGER_MS = 220
+const FEATURE_EXIT_DURATION_MS = 320
+const FEATURE_EXIT_STAGGER_MS = 55
 const MAP_VIEW_BOX = '0 0 894.14 783.2'
 const LABEL_X = 29
 const LABEL_WIDTH = 204
@@ -23,47 +25,50 @@ const LABEL_LINE_START_X = 247
 const LABEL_HEIGHT = 24
 const ACTIVE_LABEL_Y = 176
 
-function getTerritoryTransition(
+function getFeatureTransition(
   index: number,
-  shouldReduceMotion: boolean | null
+  shouldReduceMotion: boolean | null,
+  initialDelayMs = FEATURE_INITIAL_DELAY_MS
 ): Transition {
   return {
     duration: shouldReduceMotion ? 0 : 0.44,
     delay: shouldReduceMotion
       ? 0
-      : (TERRITORY_INITIAL_DELAY_MS + index * TERRITORY_STAGGER_MS) / 1000,
+      : (initialDelayMs + index * FEATURE_STAGGER_MS) / 1000,
     ease: [0.22, 1, 0.36, 1]
   }
 }
 
-function getTerritoryExitTransition(
+function getFeatureExitTransition(
   index: number,
-  territoryCount: number,
+  featureCount: number,
   shouldReduceMotion: boolean | null
 ): Transition {
   return {
-    duration: shouldReduceMotion ? 0 : TERRITORY_EXIT_DURATION_MS / 1000,
+    duration: shouldReduceMotion ? 0 : FEATURE_EXIT_DURATION_MS / 1000,
     delay: shouldReduceMotion
       ? 0
-      : ((territoryCount - index - 1) * TERRITORY_EXIT_STAGGER_MS) / 1000,
+      : ((featureCount - index - 1) * FEATURE_EXIT_STAGGER_MS) / 1000,
     ease: [0.64, 0, 0.78, 0]
   }
 }
 
-function TerritoryOverlay({
+function FeatureOverlay({
   layerKey,
-  territories,
-  activeTerritoryIndex,
-  getTerritoryControlProps,
-  shouldReduceMotion
+  features,
+  activeFeatureIndex,
+  getFeatureControlProps,
+  shouldReduceMotion,
+  initialDelayMs
 }: {
   layerKey: number
-  territories: readonly HistoryMapTerritory[]
-  activeTerritoryIndex: number | null
-  getTerritoryControlProps: ReturnType<
-    typeof useTerritorySelection
-  >['getTerritoryControlProps']
+  features: readonly HistoryMapFeature[]
+  activeFeatureIndex: number | null
+  getFeatureControlProps: ReturnType<
+    typeof useMapFeatureSelection
+  >['getFeatureControlProps']
   shouldReduceMotion: boolean | null
+  initialDelayMs: number
 }) {
   return (
     <AnimatePresence mode="wait">
@@ -80,8 +85,8 @@ function TerritoryOverlay({
           exit: { transition: { when: 'afterChildren' } }
         }}
       >
-        {territories.map(({ label, Component }, index) => {
-          const isActive = activeTerritoryIndex === index
+        {features.map(({ label, Component }, index) => {
+          const isActive = activeFeatureIndex === index
 
           return (
             <motion.div
@@ -91,20 +96,24 @@ function TerritoryOverlay({
                 hidden: { opacity: 0 },
                 visible: {
                   opacity: 1,
-                  transition: getTerritoryTransition(index, shouldReduceMotion)
+                  transition: getFeatureTransition(
+                    index,
+                    shouldReduceMotion,
+                    initialDelayMs
+                  )
                 },
                 exit: {
                   opacity: 0,
-                  transition: getTerritoryExitTransition(
+                  transition: getFeatureExitTransition(
                     index,
-                    territories.length,
+                    features.length,
                     shouldReduceMotion
                   )
                 }
               }}
             >
               <Component
-                {...getTerritoryControlProps(index)}
+                {...getFeatureControlProps(index)}
                 className={`pointer-events-none absolute inset-0 h-full w-full cursor-pointer transition-[filter] duration-150 focus-visible:drop-shadow-[0_0_5px_#fff] focus-visible:outline-none [&_path]:pointer-events-auto [&_polygon]:pointer-events-auto ${
                   isActive
                     ? '[--territory-fill-opacity:.48] [--territory-fill:#941f37]'
@@ -119,17 +128,119 @@ function TerritoryOverlay({
   )
 }
 
+function DecorativeOverlays({
+  overlays,
+  shouldReduceMotion,
+  scaleIn = false
+}: {
+  overlays: readonly HistoryMapOverlay[]
+  shouldReduceMotion: boolean | null
+  scaleIn?: boolean
+}) {
+  return overlays.map(({ id, delay, duration = 0.32, Component }) => (
+    <motion.div
+      key={id}
+      className="pointer-events-none absolute inset-0"
+      initial={{ opacity: 0, scale: scaleIn && !shouldReduceMotion ? 0.96 : 1 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{
+        opacity: 0,
+        scale: scaleIn && !shouldReduceMotion ? 0.96 : 1,
+        transition: {
+          duration: shouldReduceMotion ? 0 : 0.18,
+          delay: 0,
+          ease: [0.64, 0, 0.78, 0]
+        }
+      }}
+      transition={{
+        duration: shouldReduceMotion ? 0 : duration,
+        delay: shouldReduceMotion ? 0 : delay,
+        ease: [0.22, 1, 0.36, 1]
+      }}
+    >
+      <Component
+        aria-hidden="true"
+        focusable="false"
+        className="absolute inset-0 h-full w-full"
+      />
+    </motion.div>
+  ))
+}
+
+function RouteOverlay({
+  routes,
+  featureOffset,
+  activeFeatureIndex,
+  getFeatureControlProps,
+  shouldReduceMotion
+}: {
+  routes: readonly HistoryMapRoute[]
+  featureOffset: number
+  activeFeatureIndex: number | null
+  getFeatureControlProps: ReturnType<
+    typeof useMapFeatureSelection
+  >['getFeatureControlProps']
+  shouldReduceMotion: boolean | null
+}) {
+  return routes.map(({ id, Component }, index) => {
+    const selectionIndex = featureOffset + index
+    const isActive = activeFeatureIndex === selectionIndex
+
+    return (
+      <motion.div
+        key={id}
+        className="pointer-events-none absolute inset-0"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{
+          opacity: 0,
+          transition: {
+            duration: shouldReduceMotion ? 0 : 0.2,
+            delay: 0,
+            ease: [0.64, 0, 0.78, 0]
+          }
+        }}
+        transition={{
+          duration: shouldReduceMotion ? 0 : 0.24,
+          delay: shouldReduceMotion ? 0 : 0.2
+        }}
+      >
+        <Component
+          {...getFeatureControlProps(selectionIndex)}
+          shouldReduceMotion={Boolean(shouldReduceMotion)}
+          className={`pointer-events-none absolute inset-0 h-full w-full cursor-pointer focus-visible:outline-none ${
+            isActive
+              ? 'drop-shadow-[0_0_5px_rgba(255,255,255,.95)]'
+              : 'focus-visible:drop-shadow-[0_0_5px_#fff]'
+          }`}
+        />
+      </motion.div>
+    )
+  })
+}
+
 export default function HistoryMapLayer({
   layerKey,
-  layer: { title, mapSource, territoryLabel, territories, overview }
+  layer: {
+    title,
+    mapSource,
+    featureLabel,
+    features,
+    featureInitialDelayMs = FEATURE_INITIAL_DELAY_MS,
+    routes = [],
+    backgroundOverlays = [],
+    symbols = [],
+    overview
+  }
 }: {
   layerKey: number
   layer: HistoryMapLayerData
 }) {
   const shouldReduceMotion = useReducedMotion()
-  const { activeTerritory, activeTerritoryIndex, getTerritoryControlProps } =
-    useTerritorySelection(territories, layerKey)
-  const activeLabelIsTwoLines = Boolean(activeTerritory?.mapLabel.lines)
+  const selectableFeatures = [...features, ...routes]
+  const { activeFeature, activeFeatureIndex, getFeatureControlProps } =
+    useMapFeatureSelection(selectableFeatures, layerKey)
+  const activeLabelIsTwoLines = Boolean(activeFeature?.mapLabel.lines)
   const activeLabelHeight = activeLabelIsTwoLines ? 39 : LABEL_HEIGHT
   const activeLabelY = ACTIVE_LABEL_Y - activeLabelHeight / 2
 
@@ -142,17 +253,55 @@ export default function HistoryMapLayer({
         className="absolute inset-0 h-full w-full object-contain select-none"
         draggable={false}
       />
-      <TerritoryOverlay
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={`background-${layerKey}`}
+          className="pointer-events-none absolute inset-0"
+        >
+          <DecorativeOverlays
+            overlays={backgroundOverlays}
+            shouldReduceMotion={shouldReduceMotion}
+          />
+        </motion.div>
+      </AnimatePresence>
+      <FeatureOverlay
         layerKey={layerKey}
-        territories={territories}
-        activeTerritoryIndex={activeTerritoryIndex}
-        getTerritoryControlProps={getTerritoryControlProps}
+        features={features}
+        activeFeatureIndex={activeFeatureIndex}
+        getFeatureControlProps={getFeatureControlProps}
         shouldReduceMotion={shouldReduceMotion}
+        initialDelayMs={featureInitialDelayMs}
       />
       <AnimatePresence mode="wait">
-        {activeTerritory && (
+        <motion.div
+          key={`routes-${layerKey}`}
+          className="pointer-events-none absolute inset-0"
+        >
+          <RouteOverlay
+            routes={routes}
+            featureOffset={features.length}
+            activeFeatureIndex={activeFeatureIndex}
+            getFeatureControlProps={getFeatureControlProps}
+            shouldReduceMotion={shouldReduceMotion}
+          />
+        </motion.div>
+      </AnimatePresence>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={`symbols-${layerKey}`}
+          className="pointer-events-none absolute inset-0"
+        >
+          <DecorativeOverlays
+            overlays={symbols}
+            shouldReduceMotion={shouldReduceMotion}
+            scaleIn
+          />
+        </motion.div>
+      </AnimatePresence>
+      <AnimatePresence mode="wait">
+        {activeFeature && (
           <motion.div
-            key={activeTerritory.label}
+            key={activeFeature.label}
             aria-live="polite"
             className="pointer-events-none absolute top-[22.5%] left-[3.25%] z-10 flex min-h-7 w-[min(70%,17rem)] items-center justify-center rounded-full border border-neutral-900 bg-white px-3 py-1 text-center text-xs leading-tight font-bold text-neutral-950 xl:hidden"
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : -4 }}
@@ -163,7 +312,7 @@ export default function HistoryMapLayer({
               ease: [0.22, 1, 0.36, 1]
             }}
           >
-            {activeTerritory.label}
+            {activeFeature.label}
           </motion.div>
         )}
       </AnimatePresence>
@@ -174,9 +323,9 @@ export default function HistoryMapLayer({
         className="pointer-events-none absolute inset-0 hidden h-full w-full xl:block"
       >
         <AnimatePresence mode="wait">
-          {activeTerritory && (
+          {activeFeature && (
             <motion.g
-              key={activeTerritory.label}
+              key={activeFeature.label}
               initial={{ opacity: 0, y: shouldReduceMotion ? 0 : -5 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: shouldReduceMotion ? 0 : -5 }}
@@ -188,8 +337,8 @@ export default function HistoryMapLayer({
               <line
                 x1={LABEL_LINE_START_X}
                 y1={ACTIVE_LABEL_Y}
-                x2={activeTerritory.mapLabel.anchor[0]}
-                y2={activeTerritory.mapLabel.anchor[1]}
+                x2={activeFeature.mapLabel.anchor[0]}
+                y2={activeFeature.mapLabel.anchor[1]}
                 stroke="white"
                 strokeWidth="1.35"
                 vectorEffect="non-scaling-stroke"
@@ -201,8 +350,8 @@ export default function HistoryMapLayer({
                 fill="white"
               />
               <circle
-                cx={activeTerritory.mapLabel.anchor[0]}
-                cy={activeTerritory.mapLabel.anchor[1]}
+                cx={activeFeature.mapLabel.anchor[0]}
+                cy={activeFeature.mapLabel.anchor[1]}
                 r="4.2"
                 fill="white"
               />
@@ -226,18 +375,18 @@ export default function HistoryMapLayer({
                 fontWeight="700"
                 textAnchor="middle"
               >
-                {activeTerritory.mapLabel.lines ? (
+                {activeFeature.mapLabel.lines ? (
                   <>
                     <tspan x={LABEL_X + LABEL_WIDTH / 2} dy="-2.5">
-                      {activeTerritory.mapLabel.lines[0]}
+                      {activeFeature.mapLabel.lines[0]}
                     </tspan>
                     <tspan x={LABEL_X + LABEL_WIDTH / 2} dy="14">
-                      {activeTerritory.mapLabel.lines[1]}
+                      {activeFeature.mapLabel.lines[1]}
                     </tspan>
                   </>
                 ) : (
                   <tspan dominantBaseline="central">
-                    {activeTerritory.label}
+                    {activeFeature.label}
                   </tspan>
                 )}
               </text>
@@ -258,14 +407,14 @@ export default function HistoryMapLayer({
             className="block"
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={getTerritoryTransition(0, shouldReduceMotion)}
+            transition={getFeatureTransition(0, shouldReduceMotion)}
             exit={{
               opacity: 0,
               y: shouldReduceMotion ? 0 : -10,
               transition: {
                 duration: shouldReduceMotion
                   ? 0
-                  : TERRITORY_EXIT_DURATION_MS / 1000,
+                  : FEATURE_EXIT_DURATION_MS / 1000,
                 ease: [0.64, 0, 0.78, 0]
               }
             }}
@@ -277,24 +426,24 @@ export default function HistoryMapLayer({
       map={map}
       mapAspectRatio={HISTORY_MAP_BASE.aspectRatio}
       mapSource={mapSource}
-      territoryLabel={territoryLabel}
-      territories={territories.map(({ label }) => label)}
-      renderTerritory={(territory, index) => (
+      featureLabel={featureLabel}
+      features={selectableFeatures.map(({ label }) => label)}
+      renderFeature={(feature, index) => (
         <motion.li
-          key={`${layerKey}-${territory}`}
+          key={`${layerKey}-${feature}`}
           className="flex gap-2"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={getTerritoryTransition(index, shouldReduceMotion)}
+          transition={getFeatureTransition(index, shouldReduceMotion)}
         >
           <span aria-hidden="true">—</span>
-          <span>{territory}</span>
+          <span>{feature}</span>
         </motion.li>
       )}
     >
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
-          key={`${layerKey}-${activeTerritory?.label ?? 'period-overview'}`}
+          key={`${layerKey}-${activeFeature?.label ?? 'period-overview'}`}
           aria-live="polite"
           className="space-y-5"
           initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 10 }}
@@ -312,12 +461,12 @@ export default function HistoryMapLayer({
             }
           }}
         >
-          {activeTerritory ? (
+          {activeFeature ? (
             <>
               <h2 className="text-2xl leading-tight font-bold lg:text-3xl">
-                {activeTerritory.label}
+                {activeFeature.label}
               </h2>
-              {activeTerritory.description.map(paragraph => (
+              {activeFeature.description.map(paragraph => (
                 <p key={paragraph}>{paragraph}</p>
               ))}
             </>

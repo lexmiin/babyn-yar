@@ -1,0 +1,67 @@
+{
+  "routes": [
+    {
+      "source": "BY_way1.svg",
+      "component": "Layer2Way1",
+      "color": "#c2ecee",
+      "segments": [
+        {
+          "type": "polyline",
+          "index": 0,
+          "points": [4, 3, 2],
+          "delay": 2.45,
+          "duration": 0.38
+        },
+        {
+          "type": "polyline",
+          "index": 2,
+          "reverse": true,
+          "delay": 2.45,
+          "duration": 0.92
+        },
+        {
+          "type": "polyline",
+          "index": 0,
+          "points": [2, 1, 0],
+          "delay": 3.19,
+          "duration": 0.3
+        },
+        {
+          "type": "line",
+          "index": 0,
+          "reverse": true,
+          "delay": 2.93,
+          "duration": 0.24
+        },
+        {
+          "type": "polyline",
+          "index": 1,
+          "points": [1, 0],
+          "delay": 3.13,
+          "duration": 0.22
+        },
+        {
+          "type": "polyline",
+          "index": 1,
+          "points": [1, 2],
+          "delay": 3.13,
+          "duration": 0.22
+        }
+      ],
+      "arrowheads": [
+        { "path": 0, "delay": 3.49 },
+        { "path": 1, "delay": 3.35 },
+        { "path": 2, "delay": 3.35 }
+      ]
+    },
+    {
+      "source": "BY_way2.svg",
+      "component": "Layer2Way2",
+      "color": "#f84048",
+      "segments": [
+        { "type": "polyline", "index": 1, "delay": 2.57, "duration": 1.08 }
+      ],
+      "arrowheads": [{ "path": 0, "delay": 3.65 }]
+    }
+  ]
+}

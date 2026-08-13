@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_16" data-name="Layer 16" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 894.14 783.2">
+  <defs>
+    <style>
+      .cls-1, .cls-2, .cls-3 {
+        fill: none;
+      }
+
+      .cls-4 {
+        fill: #fff;
+        opacity: .3;
+      }
+
+      .cls-5 {
+        clip-path: url(#clippath-2);
+      }
+
+      .cls-2 {
+        stroke: #fff;
+        stroke-linejoin: round;
+        stroke-width: 2px;
+      }
+
+      .cls-3 {
+        stroke: #c2ecee;
+        stroke-miterlimit: 10;
+        stroke-width: 6.88px;
+      }
+
+      .cls-6 {
+        clip-path: url(#clippath);
+      }
+    </style>
+    <clipPath id="clippath">
+      <rect class="cls-1" x=".32" y="-878.06" width="893.81" height="783.21"/>
+    </clipPath>
+    <clipPath id="clippath-2">
+      <rect class="cls-1" x=".32" y="0" width="893.81" height="783.21"/>
+    </clipPath>
+  </defs>
+  <g class="cls-6">
+    <polyline class="cls-3" points="188.69 -501.41 134.79 -464.32 82.61 -264 -9.63 -261.12 -156.05 54.48"/>
+    <polyline class="cls-3" points="82.61 -264 368.26 -250.78 422.25 -258.04 459.62 -359.61 614.86 -333.42 645.14 -321.08 744.07 -246.07 1237.18 112.27"/>
+  </g>
+  <g class="cls-5">
+    <polygon class="cls-2" points="666.45 69.31 646.74 83.39 639.16 91.83 634.18 103.96 630.93 115.88 628.32 133.2 588.92 54.8 614.04 38.34 620.1 50.04 640.46 36.18 666.45 69.31"/>
+    <polygon class="cls-4" points="666.45 69.31 646.74 83.39 639.16 91.83 634.18 103.96 630.93 115.88 628.32 133.2 588.92 54.8 614.04 38.34 620.1 50.04 640.46 36.18 666.45 69.31"/>
+  </g>
+</svg>
