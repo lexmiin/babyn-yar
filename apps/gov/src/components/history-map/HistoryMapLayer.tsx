@@ -21,7 +21,7 @@ const FEATURE_EXIT_STAGGER_MS = 55
 const MAP_VIEW_BOX = '0 0 894.14 783.2'
 const LABEL_X = 29
 const LABEL_WIDTH = 204
-const LABEL_LINE_START_X = 247
+const LABEL_LINE_GAP = 14
 const LABEL_HEIGHT = 24
 const ACTIVE_LABEL_Y = 176
 
@@ -242,6 +242,8 @@ export default function HistoryMapLayer({
     useMapFeatureSelection(selectableFeatures, layerKey)
   const activeLabelIsTwoLines = Boolean(activeFeature?.mapLabel.lines)
   const activeLabelHeight = activeLabelIsTwoLines ? 39 : LABEL_HEIGHT
+  const activeLabelWidth = activeFeature?.mapLabel.width ?? LABEL_WIDTH
+  const activeLabelLineStartX = LABEL_X + activeLabelWidth + LABEL_LINE_GAP
   const activeLabelY = ACTIVE_LABEL_Y - activeLabelHeight / 2
 
   const map = (
@@ -335,7 +337,7 @@ export default function HistoryMapLayer({
               }}
             >
               <line
-                x1={LABEL_LINE_START_X}
+                x1={activeLabelLineStartX}
                 y1={ACTIVE_LABEL_Y}
                 x2={activeFeature.mapLabel.anchor[0]}
                 y2={activeFeature.mapLabel.anchor[1]}
@@ -344,7 +346,7 @@ export default function HistoryMapLayer({
                 vectorEffect="non-scaling-stroke"
               />
               <circle
-                cx={LABEL_LINE_START_X}
+                cx={activeLabelLineStartX}
                 cy={ACTIVE_LABEL_Y}
                 r="4.2"
                 fill="white"
@@ -358,7 +360,7 @@ export default function HistoryMapLayer({
               <rect
                 x={LABEL_X}
                 y={activeLabelY}
-                width={LABEL_WIDTH}
+                width={activeLabelWidth}
                 height={activeLabelHeight}
                 rx={activeLabelHeight / 2}
                 fill="white"
@@ -367,7 +369,7 @@ export default function HistoryMapLayer({
                 vectorEffect="non-scaling-stroke"
               />
               <text
-                x={LABEL_X + LABEL_WIDTH / 2}
+                x={LABEL_X + activeLabelWidth / 2}
                 y={ACTIVE_LABEL_Y}
                 fill="#111"
                 fontFamily="Roboto, sans-serif"
@@ -377,10 +379,10 @@ export default function HistoryMapLayer({
               >
                 {activeFeature.mapLabel.lines ? (
                   <>
-                    <tspan x={LABEL_X + LABEL_WIDTH / 2} dy="-2.5">
+                    <tspan x={LABEL_X + activeLabelWidth / 2} dy="-2.5">
                       {activeFeature.mapLabel.lines[0]}
                     </tspan>
-                    <tspan x={LABEL_X + LABEL_WIDTH / 2} dy="14">
+                    <tspan x={LABEL_X + activeLabelWidth / 2} dy="14">
                       {activeFeature.mapLabel.lines[1]}
                     </tspan>
                   </>
