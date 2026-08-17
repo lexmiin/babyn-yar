@@ -65,11 +65,11 @@ func (handler S3Handler) Upload(file io.ReadSeeker, filename, contentType string
 	return url, nil
 }
 
-func (handler S3Handler) Delete(keys []*string) error {
+func (handler S3Handler) Delete(keys []string) error {
 	var objects []types.ObjectIdentifier
 	for _, key := range keys {
 		objects = append(objects, types.ObjectIdentifier{
-			Key: key,
+			Key: &key,
 		})
 	}
 	_, err := handler.client.DeleteObjects(context.TODO(), &s3.DeleteObjectsInput{

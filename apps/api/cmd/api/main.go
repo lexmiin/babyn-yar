@@ -24,7 +24,7 @@ const (
 type application struct {
 	config       config.Config
 	models       data.Models
-	storage      *storage.S3Handler
+	storage      storage.Storage
 	sessionStore sessions.Store
 	logger       *jsonlog.Logger
 }

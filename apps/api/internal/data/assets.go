@@ -149,7 +149,7 @@ func (m AssetModel) DeleteMultiple(ids []int64) error {
 	return nil
 }
 
-func (m AssetModel) GetFileNames(ids []int64) ([]*string, error) {
+func (m AssetModel) GetFileNames(ids []int64) ([]string, error) {
 	if len(ids) < 1 {
 		return nil, ErrRecordNotFound
 	}
@@ -167,10 +167,10 @@ func (m AssetModel) GetFileNames(ids []int64) ([]*string, error) {
 		return nil, err
 	}
 
-	filenames, err := pgx.CollectRows(rows, func(row pgx.CollectableRow) (*string, error) {
+	filenames, err := pgx.CollectRows(rows, func(row pgx.CollectableRow) (string, error) {
 		var filename string
 		err := row.Scan(&filename)
-		return &filename, err
+		return filename, err
 	})
 
 	if err != nil {
