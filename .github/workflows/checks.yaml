@@ -29,6 +29,37 @@ jobs:
       - name: set up nix
         uses: cachix/install-nix-action@v31.11.1
 
+      - name: resolve pnpm store
+        id: pnpm-store
+        run: |
+          if ! store_path="$(nix develop --command pnpm store path --silent)"; then
+            echo "failed to resolve pnpm store path" >&2
+            exit 1
+          fi
+          if [[ -z "$store_path" ]]; then
+            echo "pnpm store path is empty" >&2
+            exit 1
+          fi
+          printf 'path=%s\n' "$store_path" >> "$GITHUB_OUTPUT"
+
+      - name: restore pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-store.outputs.path }}
+          key: ${{ runner.os }}-${{ runner.arch }}-pnpm-11-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ runner.arch }}-pnpm-11-
+
+      - name: restore go caches
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: ${{ runner.os }}-${{ runner.arch }}-go-${{ hashFiles('flake.lock', 'apps/api/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ runner.arch }}-go-
+
       - name: install dependencies
         run: nix develop --command pnpm install --frozen-lockfile
 
