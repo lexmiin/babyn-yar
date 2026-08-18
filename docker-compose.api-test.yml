@@ -1,0 +1,68 @@
+name: babyn-yar-api-test
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    env_file: .env
+    environment:
+      API_ENV: development
+      API_PORT: 8000
+      DATABASE_URL: postgres://babyn_yar:babyn_yar@db:5432/babyn_yar?sslmode=disable
+      REDIS_URL: redis:6379
+    ports:
+      - '127.0.0.1:8000:8000'
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'wget',
+          '--quiet',
+          '--spider',
+          'http://localhost:8000/v1/healthcheck'
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: babyn_yar
+      POSTGRES_USER: babyn_yar
+      POSTGRES_PASSWORD: babyn_yar
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7.0.11-alpine
+    command: redis-server --save "" --appendonly no
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  migrate:
+    image: migrate/migrate:v4.16.2
+    volumes:
+      - ./migrations:/migrations:ro
+    entrypoint:
+      - migrate
+      - -path
+      - /migrations
+      - -database
+      - postgres://babyn_yar:babyn_yar@db:5432/babyn_yar?sslmode=disable
+    command: up
+    depends_on:
+      db:
+        condition: service_healthy
