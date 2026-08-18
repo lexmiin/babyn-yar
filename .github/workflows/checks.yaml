@@ -26,33 +26,14 @@ jobs:
       - name: checkout
         uses: actions/checkout@v7
 
-      - name: set up pnpm
-        uses: pnpm/action-setup@v6
-        with:
-          version: 11.20.0
-
-      - name: set up node
-        uses: actions/setup-node@v7
-        with:
-          node-version: 22
-          cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
-
-      - name: set up go
-        uses: actions/setup-go@v7
-        with:
-          go-version: '1.26.x'
-          cache: true
-          cache-dependency-path: apps/api/go.sum
-
-      - name: set up just
-        uses: extractions/setup-just@v4
+      - name: set up nix
+        uses: cachix/install-nix-action@v31.11.1
 
       - name: install dependencies
-        run: pnpm install --frozen-lockfile
+        run: nix develop --command pnpm install --frozen-lockfile
 
       - name: build
-        run: pnpm run build
+        run: nix develop --command pnpm run build
 
       - name: api integration test
-        run: just test
+        run: nix develop --command just test
