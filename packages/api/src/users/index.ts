@@ -14,10 +14,8 @@ export namespace UserAPI {
     return v.parse(UserSchema.ListResponse, response)
   }
 
-  export async function remove(ids: number[]) {
-    const url = new URL(BASE_URL)
-    url.search = toSearchParams({ ids: ids.join(',') }).toString()
-    return fetcher(url, { method: 'DELETE' })
+  export async function remove(id: number) {
+    return fetcher(`${BASE_URL}/${id}`, { method: 'DELETE' })
   }
 
   export async function me() {

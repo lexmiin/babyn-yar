@@ -17,13 +17,13 @@ export const userToasts = {
     toast.error('Зміни не збережено', {
       description: 'Не вдалося зберегти ваші налаштування'
     }),
-  deleteUsersSuccess: () =>
+  deleteUserSuccess: () =>
     toast.success('Операція успішна', {
-      description: 'Користувачі були видалені'
+      description: 'Користувача було видалено'
     }),
-  deleteUsersError: () =>
+  deleteUserError: () =>
     toast.error('Виникла помилка', {
-      description: 'Не вдалось видалити користувачів. Спробуйте ще раз.'
+      description: 'Не вдалося видалити користувача. Спробуйте ще раз.'
     }),
   resetPasswordSuccess: () =>
     toast.success('Пароль змінено', {

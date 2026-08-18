@@ -248,7 +248,7 @@ func TestAdminUpdateUserThroughHTTP(t *testing.T) {
 	})
 }
 
-func TestDeleteUsersPreservesAnAdmin(t *testing.T) {
+func TestDeleteUserPreservesAnAdmin(t *testing.T) {
 	testAPI := newAPITest(t)
 	adminClient, adminID := authenticatedPublicationClient(
 		t,
@@ -264,16 +264,22 @@ func TestDeleteUsersPreservesAnAdmin(t *testing.T) {
 		"publisher",
 	)
 
-	deleteURL := fmt.Sprintf("%s/v1/users?ids=%d,%d", testAPI.server.URL, adminID, publisherID)
-	response := publicationJSONRequest(t, adminClient, http.MethodDelete, deleteURL, nil)
+	adminDeleteURL := fmt.Sprintf("%s/v1/users/%d", testAPI.server.URL, adminID)
+	response := publicationJSONRequest(t, adminClient, http.MethodDelete, adminDeleteURL, nil)
 	defer response.Body.Close()
 	require.Equal(t, http.StatusUnprocessableEntity, response.StatusCode)
 
 	models := data.NewModels(testAPI.db)
 	_, err := models.Users.GetByID(adminID)
 	require.NoError(t, err)
+
+	publisherDeleteURL := fmt.Sprintf("%s/v1/users/%d", testAPI.server.URL, publisherID)
+	response = publicationJSONRequest(t, adminClient, http.MethodDelete, publisherDeleteURL, nil)
+	defer response.Body.Close()
+	require.Equal(t, http.StatusOK, response.StatusCode)
+
 	_, err = models.Users.GetByID(publisherID)
-	require.NoError(t, err, "bulk deletion must be atomic")
+	assert.ErrorIs(t, err, data.ErrRecordNotFound)
 
 	_, secondAdminID := createAuthenticatedUser(
 		t,
@@ -282,13 +288,11 @@ func TestDeleteUsersPreservesAnAdmin(t *testing.T) {
 		"remaining-admin@example.com",
 		"admin",
 	)
-	response = publicationJSONRequest(t, adminClient, http.MethodDelete, deleteURL, nil)
+	response = publicationJSONRequest(t, adminClient, http.MethodDelete, adminDeleteURL, nil)
 	defer response.Body.Close()
 	require.Equal(t, http.StatusOK, response.StatusCode)
 
 	_, err = models.Users.GetByID(adminID)
-	assert.ErrorIs(t, err, data.ErrRecordNotFound)
-	_, err = models.Users.GetByID(publisherID)
 	assert.ErrorIs(t, err, data.ErrRecordNotFound)
 	_, err = models.Users.GetByID(secondAdminID)
 	require.NoError(t, err)

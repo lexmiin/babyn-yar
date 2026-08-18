@@ -345,25 +345,21 @@ func (app *application) adminUpdateUserHandler(w http.ResponseWriter, r *http.Re
 	}
 }
 
-func (app *application) deleteUsersHandler(w http.ResponseWriter, r *http.Request) {
-	v := validator.New()
-
-	qs := r.URL.Query()
-
-	ids := app.readIntList(qs, "ids", v)
-
-	if !v.Valid() {
-		app.failedValidationResponse(w, r, v.Errors)
+func (app *application) deleteUserHandler(w http.ResponseWriter, r *http.Request) {
+	userID, err := app.readIDParam(r)
+	if err != nil {
+		app.notFoundResponse(w, r)
 		return
 	}
 
-	err := app.models.Users.DeleteMultiple(ids)
+	err = app.models.Users.Delete(userID)
 	if err != nil {
 		switch {
 		case errors.Is(err, data.ErrRecordNotFound):
 			app.notFoundResponse(w, r)
 		case errors.Is(err, data.ErrLastAdmin):
-			v.AddError("ids", "at least one administrator must remain")
+			v := validator.New()
+			v.AddError("id", "at least one administrator must remain")
 			app.failedValidationResponse(w, r, v.Errors)
 		default:
 			app.serverErrorResponse(w, r, err)
@@ -371,7 +367,7 @@ func (app *application) deleteUsersHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	err = app.writeJSON(w, http.StatusOK, envelope{"message": "users successfully deleted"}, nil)
+	err = app.writeJSON(w, http.StatusOK, envelope{"message": "user successfully deleted"}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}

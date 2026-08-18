@@ -23,7 +23,7 @@
   import TrashIcon from 'phosphor-svelte/lib/TrashIcon'
   import LockOpenIcon from 'phosphor-svelte/lib/LockOpenIcon'
   import { formatDate } from '$lib/format-date'
-  import { useUsers, useDeleteUsers } from '$lib/users/query'
+  import { useUsers, useDeleteUser } from '$lib/users/query'
   import type { UserSchema } from '@babyn-yar/schema'
   import TableIconCell from '$components/TableIconCell.svelte'
   import ResetPasswordDialog from '$components/ResetPasswordDialog.svelte'
@@ -39,7 +39,7 @@
 
   const loggedUser = getLoggedUserContext()
   const users = useUsers()
-  const deleteUser = useDeleteUsers()
+  const deleteUser = useDeleteUser()
 
   function handleShowResetPasswordDialog(user: UserSchema.User) {
     selectedUser = user
@@ -58,7 +58,7 @@
 
   function confirmDeletion() {
     if (!selectedUser) return
-    deleteUser.mutate([selectedUser.id])
+    deleteUser.mutate(selectedUser.id)
     isAlertOpen = false
     selectedUser = undefined
   }
@@ -157,10 +157,9 @@
   {/if}
 
   <Alert bind:open={isAlertOpen}>
-    <AlertTitle>Видалення користувачів</AlertTitle>
+    <AlertTitle>Видалення користувача</AlertTitle>
     <AlertDescription>
-      Ви дійсно хочете видалити обраних користувачів? Цю дію неможливо
-      скасувати.
+      Ви дійсно хочете видалити цього користувача? Цю дію неможливо скасувати.
     </AlertDescription>
     <AlertActions>
       <Button variant="ghost" onclick={cancelDeletion}>Скасувати</Button>
