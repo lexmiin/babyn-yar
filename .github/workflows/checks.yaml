@@ -43,7 +43,7 @@ jobs:
           printf 'path=%s\n' "$store_path" >> "$GITHUB_OUTPUT"
 
       - name: restore pnpm cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ${{ steps.pnpm-store.outputs.path }}
           key: ${{ runner.os }}-${{ runner.arch }}-pnpm-11-${{ hashFiles('pnpm-lock.yaml') }}
@@ -51,7 +51,7 @@ jobs:
             ${{ runner.os }}-${{ runner.arch }}-pnpm-11-
 
       - name: restore go caches
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             ~/go/pkg/mod
