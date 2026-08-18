@@ -438,7 +438,11 @@ func (m UserModel) UpdateByAdmin(user *User, permission *string) error {
 	return nil
 }
 
-func (m UserModel) DeleteMultiple(ids []int64) error {
+func (m UserModel) Delete(id int64) error {
+	if id < 1 {
+		return ErrRecordNotFound
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
@@ -454,20 +458,19 @@ func (m UserModel) DeleteMultiple(ids []int64) error {
 		return err
 	}
 
-	var adminCount int
-	var deletedAdminCount int
+	var remainingAdmins int
 	err = tx.QueryRow(ctx, `
-		SELECT count(*), count(*) FILTER (WHERE user_id = ANY($2))
+		SELECT count(*)
 		FROM users_permissions
-		WHERE permission_id = $1`, adminPermissionID, ids).Scan(&adminCount, &deletedAdminCount)
+		WHERE permission_id = $1 AND user_id <> $2`, adminPermissionID, id).Scan(&remainingAdmins)
 	if err != nil {
 		return err
 	}
-	if adminCount-deletedAdminCount < 1 {
+	if remainingAdmins < 1 {
 		return ErrLastAdmin
 	}
 
-	result, err := tx.Exec(ctx, `DELETE FROM users WHERE id = ANY($1)`, ids)
+	result, err := tx.Exec(ctx, `DELETE FROM users WHERE id = $1`, id)
 	if err != nil {
 		return err
 	}

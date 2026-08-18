@@ -26,13 +26,13 @@ export function useUsers() {
   }))
 }
 
-export function useDeleteUsers() {
+export function useDeleteUser() {
   const filters = useUserFilters()
   const client = useQueryClient()
 
   return createMutation(() => ({
-    mutationFn: async (userIds: number[]) => UserAPI.remove(userIds),
-    onMutate: async userIds => {
+    mutationFn: async (userId: number) => UserAPI.remove(userId),
+    onMutate: async userId => {
       await client.cancelQueries({ queryKey: userKeys.all })
       const prevUsers = client.getQueryData<UserSchema.ListResponse>(
         userKeys.table(filters.current)
@@ -46,7 +46,7 @@ export function useDeleteUsers() {
           if (!old) return old
           return {
             ...old,
-            users: old.users.filter(user => !userIds.includes(user.id))
+            users: old.users.filter(user => user.id !== userId)
           }
         }
       )
@@ -57,11 +57,11 @@ export function useDeleteUsers() {
       client.invalidateQueries({ queryKey: userKeys.all })
     },
     onSuccess: () => {
-      userToasts.deleteUsersSuccess()
+      userToasts.deleteUserSuccess()
     },
-    onError: (error, _userIds, context) => {
+    onError: (error, _userId, context) => {
       console.error(error)
-      userToasts.deleteUsersError()
+      userToasts.deleteUserError()
       if (context?.prevUsers) {
         client.setQueryData(userKeys.all, context.prevUsers)
       }
@@ -84,8 +84,13 @@ export function useEditUser() {
   const client = useQueryClient()
 
   return createMutation(() => ({
-    mutationFn: ({ userId, input }: { userId: number; input: UserSchema.Edit }) =>
-      UserAPI.update(userId, input),
+    mutationFn: ({
+      userId,
+      input
+    }: {
+      userId: number
+      input: UserSchema.Edit
+    }) => UserAPI.update(userId, input),
     onSuccess: () => {
       client.invalidateQueries({ queryKey: userKeys.all })
       client.invalidateQueries({ queryKey: authKeys.me() })

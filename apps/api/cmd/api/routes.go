@@ -38,7 +38,7 @@ func (app *application) routes() http.Handler {
 	router.Patch("/v1/users", app.requireAuthenticatedUser(app.updateUserHandler))
 	router.Patch("/v1/users/{id}", app.requirePermission("admin", app.adminUpdateUserHandler))
 	router.Patch("/v1/users/{id}/password", app.requirePermission("admin", app.resetUserPasswordHandler))
-	router.Delete("/v1/users", app.requirePermission("admin", app.deleteUsersHandler))
+	router.Delete("/v1/users/{id}", app.requirePermission("admin", app.deleteUserHandler))
 
 	// gallery
 	router.Get("/v1/gallery", app.listGalleryImagesHandler)
