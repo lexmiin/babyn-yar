@@ -10,7 +10,8 @@ import {
   type HistoryMapLayerData,
   type HistoryMapFeature,
   type HistoryMapOverlay,
-  type HistoryMapRoute
+  type HistoryMapRoute,
+  type HistoryMapSymbol
 } from './layers'
 import { useMapFeatureSelection } from './useMapFeatureSelection'
 
@@ -219,6 +220,62 @@ function RouteOverlay({
   })
 }
 
+function SymbolOverlay({
+  symbols,
+  featureOffset,
+  activeFeatureIndex,
+  getFeatureControlProps,
+  shouldReduceMotion
+}: {
+  symbols: readonly HistoryMapSymbol[]
+  featureOffset: number
+  activeFeatureIndex: number | null
+  getFeatureControlProps: ReturnType<
+    typeof useMapFeatureSelection
+  >['getFeatureControlProps']
+  shouldReduceMotion: boolean | null
+}) {
+  return symbols.map(({ id, delay, duration = 0.32, Component }, index) => {
+    const selectionIndex = featureOffset + index
+    const isActive = activeFeatureIndex === selectionIndex
+
+    return (
+      <motion.div
+        key={id}
+        className="pointer-events-none absolute inset-0"
+        initial={{
+          opacity: 0,
+          scale: shouldReduceMotion ? 1 : 0.96
+        }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{
+          opacity: 0,
+          scale: shouldReduceMotion ? 1 : 0.96,
+          transition: {
+            duration: shouldReduceMotion ? 0 : 0.18,
+            delay: 0,
+            ease: [0.64, 0, 0.78, 0]
+          }
+        }}
+        transition={{
+          duration: shouldReduceMotion ? 0 : duration,
+          delay: shouldReduceMotion ? 0 : delay,
+          ease: [0.22, 1, 0.36, 1]
+        }}
+      >
+        <Component
+          {...getFeatureControlProps(selectionIndex)}
+          className={`pointer-events-none absolute inset-0 h-full w-full cursor-pointer focus-visible:outline-none [&_path]:pointer-events-auto [&_polyline]:pointer-events-auto ${
+            isActive
+              ? 'drop-shadow-[0_0_5px_rgba(255,255,255,.95)]'
+              : 'focus-visible:drop-shadow-[0_0_5px_#fff]'
+          }`}
+        />
+      </motion.div>
+    )
+  })
+}
+
 export default function HistoryMapLayer({
   layerKey,
   layer: {
@@ -237,9 +294,11 @@ export default function HistoryMapLayer({
   layer: HistoryMapLayerData
 }) {
   const shouldReduceMotion = useReducedMotion()
-  const selectableFeatures = [...features, ...routes]
+  const selectableFeatures = [...features, ...routes, ...symbols]
+  const listedFeatures = [...features, ...symbols]
   const { activeFeature, activeFeatureIndex, getFeatureControlProps } =
     useMapFeatureSelection(selectableFeatures, layerKey)
+  const showActiveFeatureLabel = activeFeature?.showLabel !== false
   const activeLabelIsTwoLines = Boolean(activeFeature?.mapLabel.lines)
   const activeLabelHeight = activeLabelIsTwoLines ? 39 : LABEL_HEIGHT
   const activeLabelWidth = activeFeature?.mapLabel.width ?? LABEL_WIDTH
@@ -293,15 +352,17 @@ export default function HistoryMapLayer({
           key={`symbols-${layerKey}`}
           className="pointer-events-none absolute inset-0"
         >
-          <DecorativeOverlays
-            overlays={symbols}
+          <SymbolOverlay
+            symbols={symbols}
+            featureOffset={features.length + routes.length}
+            activeFeatureIndex={activeFeatureIndex}
+            getFeatureControlProps={getFeatureControlProps}
             shouldReduceMotion={shouldReduceMotion}
-            scaleIn
           />
         </motion.div>
       </AnimatePresence>
       <AnimatePresence mode="wait">
-        {activeFeature && (
+        {activeFeature && showActiveFeatureLabel && (
           <motion.div
             key={activeFeature.label}
             aria-live="polite"
@@ -325,7 +386,7 @@ export default function HistoryMapLayer({
         className="pointer-events-none absolute inset-0 hidden h-full w-full xl:block"
       >
         <AnimatePresence mode="wait">
-          {activeFeature && (
+          {activeFeature && showActiveFeatureLabel && (
             <motion.g
               key={activeFeature.label}
               initial={{ opacity: 0, y: shouldReduceMotion ? 0 : -5 }}
@@ -429,7 +490,7 @@ export default function HistoryMapLayer({
       mapAspectRatio={HISTORY_MAP_BASE.aspectRatio}
       mapSource={mapSource}
       featureLabel={featureLabel}
-      features={selectableFeatures.map(({ label }) => label)}
+      features={listedFeatures.map(({ label }) => label)}
       renderFeature={(feature, index) => (
         <motion.li
           key={`${layerKey}-${feature}`}
@@ -465,9 +526,11 @@ export default function HistoryMapLayer({
         >
           {activeFeature ? (
             <>
-              <h2 className="text-2xl leading-tight font-bold lg:text-3xl">
-                {activeFeature.label}
-              </h2>
+              {showActiveFeatureLabel && (
+                <h2 className="text-2xl leading-tight font-bold lg:text-3xl">
+                  {activeFeature.label}
+                </h2>
+              )}
               {activeFeature.description.map(paragraph => (
                 <p key={paragraph}>{paragraph}</p>
               ))}
