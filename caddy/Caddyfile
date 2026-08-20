@@ -3,6 +3,17 @@ http://babyn-yar.gov.ua, https://babyn-yar.gov.ua {
 }
 
 babynyar.gov.ua {
+	@cacheableHTML method GET HEAD
+	header @cacheableHTML {
+		Cache-Control "public, max-age=0, must-revalidate"
+		Cloudflare-CDN-Cache-Control "public, max-age=60, stale-while-revalidate=300"
+		defer
+		match {
+			status 200
+			header Content-Type text/html*
+		}
+	}
+
 	reverse_proxy gov:4321
 }
 
