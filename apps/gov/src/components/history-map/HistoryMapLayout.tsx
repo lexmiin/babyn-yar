@@ -1,14 +1,11 @@
-import { useLayoutEffect, useRef, type ReactNode, type WheelEvent } from 'react'
+import { useId, type ReactNode, type WheelEvent } from 'react'
 
 type HistoryMapLayoutProps = {
-  layerKey: number
   title: ReactNode
   map: ReactNode
   mapAspectRatio: string
   mapSource: string
-  featureLabel: string
-  features: readonly string[]
-  renderFeature?: (feature: string, index: number) => ReactNode
+  belowMap?: ReactNode
   children: ReactNode
 }
 
@@ -27,29 +24,20 @@ function handOffScrollAtBoundary(event: WheelEvent<HTMLDivElement>) {
 }
 
 export default function HistoryMapLayout({
-  layerKey,
   title,
   map,
   mapAspectRatio,
   mapSource,
-  featureLabel,
-  features,
-  renderFeature,
+  belowMap,
   children
 }: HistoryMapLayoutProps) {
-  const scrollContainerRef = useRef<HTMLDivElement>(null)
-
-  useLayoutEffect(() => {
-    if (scrollContainerRef.current) scrollContainerRef.current.scrollTop = 0
-  }, [layerKey])
+  const titleId = useId()
 
   return (
-    <section
-      aria-labelledby="history-map-title"
-      className="mx-auto max-w-[1600px] md:pb-20"
-    >
+    <div className="mx-auto max-w-[1600px] md:pb-20">
       <div
-        ref={scrollContainerRef}
+        role="region"
+        aria-labelledby={titleId}
         tabIndex={0}
         data-history-map-scroll-container
         onWheel={handOffScrollAtBoundary}
@@ -57,7 +45,7 @@ export default function HistoryMapLayout({
       >
         <div className="min-w-0">
           <h1
-            id="history-map-title"
+            id={titleId}
             className="mb-4 text-[clamp(1.875rem,3vw,3.25rem)] leading-[0.92] font-bold tracking-[-0.035em]"
           >
             {title}
@@ -75,32 +63,16 @@ export default function HistoryMapLayout({
             </figcaption>
           </figure>
 
-          <section aria-labelledby="history-map-features" className="mt-7">
-            <h2
-              id="history-map-features"
-              className="text-xl leading-tight font-bold"
-            >
-              {featureLabel}
-            </h2>
-            <ul className="mt-3 grid gap-x-8 gap-y-1 text-base leading-snug sm:grid-cols-2 lg:text-lg">
-              {features.map((feature, index) =>
-                renderFeature ? (
-                  renderFeature(feature, index)
-                ) : (
-                  <li key={feature} className="flex gap-2">
-                    <span aria-hidden="true">—</span>
-                    <span>{feature}</span>
-                  </li>
-                )
-              )}
-            </ul>
-          </section>
+          {belowMap}
         </div>
 
-        <aside className="text-base leading-[1.38] md:mt-[4.25rem] lg:text-lg">
+        <aside
+          aria-label="Історична довідка"
+          className="text-base leading-[1.38] md:mt-[4.25rem] lg:text-lg"
+        >
           {children}
         </aside>
       </div>
-    </section>
+    </div>
   )
 }

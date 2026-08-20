@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="borders" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 894.14 783.2">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+    </style>
+    <filter id="luminosity-noclip" x="-9306.08" y="-10687.86" width="5750.77" height="32766" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feFlood flood-color="#fff" result="bg"/>
+      <feBlend in="SourceGraphic" in2="bg"/>
+    </filter>
+    <mask id="mask" x="-9306.08" y="-10687.86" width="5750.77" height="32766" maskUnits="userSpaceOnUse"/>
+  </defs>
+  <polygon class="cls-1" points="578.09 266.52 571.51 269.48 563.18 250.92 552.25 226.54 543.75 207.59 550.33 204.64 559.55 225.19 567.98 243.98 578.09 266.52"/>
+</svg>

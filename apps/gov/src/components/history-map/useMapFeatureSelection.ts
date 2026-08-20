@@ -1,63 +1,69 @@
-import { useEffect, useState, type KeyboardEvent } from 'react'
+import { useState, type FocusEvent, type KeyboardEvent } from 'react'
 import type { HistoryMapFeature } from './layers'
 
 type SelectableMapFeature = Pick<HistoryMapFeature, 'id' | 'label'>
 
 export function useMapFeatureSelection<T extends SelectableMapFeature>(
   features: readonly T[],
-  selectionScope: number
+  detailsId?: string
 ) {
-  const [selection, setSelection] = useState<{
-    scope: number
-    featureIndex: number | null
-  }>({ scope: selectionScope, featureIndex: null })
-  const activeFeatureIndex =
-    selection.scope === selectionScope ? selection.featureIndex : null
+  const [activeFeatureId, setActiveFeatureId] = useState<string | null>(null)
+  const [hoveredFeatureId, setHoveredFeatureId] = useState<string | null>(null)
+  const [focusedFeatureId, setFocusedFeatureId] = useState<string | null>(null)
+  const labelFeatureId = focusedFeatureId ?? hoveredFeatureId
 
-  useEffect(() => {
-    setSelection(current =>
-      current.scope === selectionScope && current.featureIndex === null
-        ? current
-        : { scope: selectionScope, featureIndex: null }
-    )
-  }, [selectionScope])
-
-  function toggleFeature(index: number) {
-    setSelection(current => ({
-      scope: selectionScope,
-      featureIndex:
-        current.scope === selectionScope && current.featureIndex === index
-          ? null
-          : index
-    }))
+  function toggleFeature(id: string) {
+    setActiveFeatureId(current => (current === id ? null : id))
   }
 
-  function getFeatureControlProps(index: number) {
-    const isActive = activeFeatureIndex === index
-    const label = features[index].label
+  function getFeatureControlProps(feature: SelectableMapFeature) {
+    const isActive = activeFeatureId === feature.id
 
     return {
-      focusable: 'false' as const,
       role: 'button' as const,
       tabIndex: 0,
-      'aria-label': `${isActive ? 'Сховати' : 'Показати'} підпис: ${label}`,
+      'aria-label': `Інформація про об’єкт: ${feature.label}`,
       'aria-pressed': isActive,
+      ...(detailsId ? { 'aria-controls': detailsId } : {}),
+      onMouseEnter() {
+        setHoveredFeatureId(feature.id)
+      },
+      onMouseLeave() {
+        setHoveredFeatureId(current =>
+          current === feature.id ? null : current
+        )
+      },
+      onFocus(event: FocusEvent<SVGSVGElement>) {
+        if (event.currentTarget.matches(':focus-visible')) {
+          setFocusedFeatureId(feature.id)
+        }
+      },
+      onBlur() {
+        setFocusedFeatureId(current =>
+          current === feature.id ? null : current
+        )
+      },
       onClick() {
-        toggleFeature(index)
+        toggleFeature(feature.id)
       },
       onKeyDown(event: KeyboardEvent<SVGSVGElement>) {
         if (event.key !== 'Enter' && event.key !== ' ') return
 
         event.preventDefault()
-        toggleFeature(index)
+        if (!event.repeat) {
+          setFocusedFeatureId(feature.id)
+          toggleFeature(feature.id)
+        }
       }
     }
   }
 
   return {
     activeFeature:
-      activeFeatureIndex === null ? null : features[activeFeatureIndex],
-    activeFeatureIndex,
+      features.find(feature => feature.id === activeFeatureId) ?? null,
+    activeFeatureId,
+    labelFeature:
+      features.find(feature => feature.id === labelFeatureId) ?? null,
     getFeatureControlProps
   }
 }

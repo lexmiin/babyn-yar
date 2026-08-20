@@ -90,18 +90,49 @@ function stripGeneratedImports(source) {
 }
 
 function makeTerritoryFillThemeable(svg, sourceName) {
-  const fillClass = svg.match(
-    /\.(cls-[\w-]+)\s*\{[^}]*opacity:\s*\.3\s*;?[^}]*\}/s
-  )?.[1]
+  const rules = [...svg.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map(
+    ([, selectors, declarations]) => ({
+      classes: [...selectors.matchAll(/\.(cls-[\w-]+)/g)].map(
+        ([, className]) => className
+      ),
+      declarations
+    })
+  )
+  const fillClasses = new Set(
+    rules
+      .filter(({ declarations }) => /fill:\s*#fff\s*;?/i.test(declarations))
+      .flatMap(({ classes }) => classes)
+  )
+  const opacityByClass = new Map()
 
-  if (!fillClass) {
+  for (const { classes, declarations } of rules) {
+    const opacity = declarations.match(
+      /opacity:\s*(\.?\d+(?:\.\d+)?)\s*;?/i
+    )?.[1]
+
+    if (opacity) {
+      for (const className of classes) opacityByClass.set(className, opacity)
+    }
+  }
+
+  const themedClass =
+    [...fillClasses].find(className => opacityByClass.has(className)) ??
+    [...fillClasses][0]
+  const property = themedClass ? 'fill' : 'stroke'
+  const fallbackClass = rules
+    .filter(({ declarations }) => /stroke:\s*#fff\s*;?/i.test(declarations))
+    .flatMap(({ classes }) => classes)[0]
+  const targetClass = themedClass ?? fallbackClass
+
+  if (!targetClass) {
     throw new Error(
-      `Cannot find the neutral territory fill in "${sourceName}".`
+      `Cannot find a neutral white fill or stroke in "${sourceName}".`
     )
   }
 
-  const classAttribute = `class="${fillClass}"`
-  const themedAttribute = `${classAttribute} style="fill:var(--territory-fill,#fff);opacity:var(--territory-fill-opacity,.3);pointer-events:visiblePainted;transition:fill var(--territory-fill-duration,180ms) ease,opacity var(--territory-fill-duration,180ms) ease"`
+  const classAttribute = `class="${targetClass}"`
+  const neutralOpacity = opacityByClass.get(targetClass) ?? '1'
+  const themedAttribute = `${classAttribute} style="${property}:var(--territory-fill,#fff);opacity:var(--territory-fill-opacity,${neutralOpacity});pointer-events:visiblePainted;transition:${property} var(--territory-fill-duration,180ms) ease,opacity var(--territory-fill-duration,180ms) ease"`
 
   if (!svg.includes(classAttribute)) {
     throw new Error(
