@@ -11,6 +11,8 @@ babynyar.work {
 }
 
 api.babynyar.gov.ua, api.babynyar.work {
+	encode
+
 	handle /v1/assets* {
 		request_body {
 			max_size 500MB
