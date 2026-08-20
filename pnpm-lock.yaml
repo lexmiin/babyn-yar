@@ -58,7 +58,7 @@ importers:
         specifier: ^0.8.0
         version: 0.8.1(prettier-plugin-astro@0.14.1)(prettier-plugin-svelte@4.1.1(prettier@3.9.6)(svelte@5.56.9(@typescript-eslint/types@8.67.0)))(prettier@3.9.6)
       turbo:
-        specifier: ^2.10.3
+        specifier: 2.10.10
         version: 2.10.10
 
   apps/admin:
