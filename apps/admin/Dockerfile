@@ -1,14 +1,16 @@
 FROM node:22.23.2-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 AS base
+ARG PNPM_VERSION
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME/bin:$PATH"
-RUN corepack enable pnpm && corepack install -g pnpm@11.10.0
+RUN test -n "$PNPM_VERSION" && corepack enable pnpm && corepack install -g pnpm@"$PNPM_VERSION"
 
 FROM base AS builder
+ARG TURBO_VERSION
 RUN apk add --no-cache libc6-compat
 RUN apk update
 
 WORKDIR /app
-RUN pnpm add -g turbo@2.10.3
+RUN test -n "$TURBO_VERSION" && pnpm add -g turbo@"$TURBO_VERSION"
 COPY . .
 RUN turbo prune @babyn-yar/admin --docker
 
