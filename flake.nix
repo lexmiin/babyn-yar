@@ -37,6 +37,10 @@
       in {
         formatter = pkgs.alejandra;
 
+        packages.api = pkgs.callPackage ./apps/api/default.nix {
+          buildGoModule = pkgs.buildGoModule.override {go = pkgs.go;};
+        };
+
         devShells.default = pkgs.mkShell {
           packages = [
             pkgs.go

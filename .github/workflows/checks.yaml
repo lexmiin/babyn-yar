@@ -66,5 +66,8 @@ jobs:
       - name: build
         run: nix develop --command pnpm run build
 
+      - name: build production API package
+        run: nix build .#api
+
       - name: api integration test
         run: nix develop --command just test
