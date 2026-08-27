@@ -47,6 +47,9 @@
         "REDIS_URL",
         "SESSION_SECRET",
         "CORS_ORIGINS",
+        "CLOUDFLARE_API_TOKEN",
+        "CLOUDFLARE_ZONE_ID",
+        "GOV_PUBLIC_URL",
         "GOCACHE",
         "GOMODCACHE",
         "GOPATH"

@@ -20,6 +20,7 @@ type Models struct {
 	Permissions   PermissionModel
 	GalleryImages GalleryModel
 	Publications  PublicationModel
+	CachePurges   CachePurgeRequestModel
 }
 
 func NewModels(db *pgxpool.Pool) Models {
@@ -30,5 +31,6 @@ func NewModels(db *pgxpool.Pool) Models {
 		Permissions:   PermissionModel{DB: db},
 		GalleryImages: GalleryModel{DB: db},
 		Publications:  PublicationModel{DB: db},
+		CachePurges:   CachePurgeRequestModel{DB: db},
 	}
 }

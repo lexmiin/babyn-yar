@@ -19,17 +19,28 @@ type GalleryModel struct {
 }
 
 func (m GalleryModel) Insert(img *GalleryImage) error {
-	query := `
-		INSERT INTO gallery_images (id, url)
-		VALUES ($1, $2)
-		RETURNING id`
-
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	args := []any{img.ID, img.URL}
+	tx, err := m.DB.Begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer func() { _ = tx.Rollback(ctx) }()
 
-	return m.DB.QueryRow(ctx, query, args...).Scan(&img.ID)
+	err = tx.QueryRow(ctx, `
+		INSERT INTO gallery_images (id, url)
+		VALUES ($1, $2)
+		RETURNING id
+	`, img.ID, img.URL).Scan(&img.ID)
+	if err != nil {
+		return err
+	}
+	if err := enqueueCachePurge(ctx, tx, "gallery"); err != nil {
+		return err
+	}
+
+	return tx.Commit(ctx)
 }
 
 func (m GalleryModel) Get(id int64) (*GalleryImage, error) {
@@ -95,14 +106,20 @@ func (m GalleryModel) Delete(id int64) error {
 	if id < 1 {
 		return ErrRecordNotFound
 	}
-	query := `
-		DELETE FROM gallery_images
-		WHERE id = $1`
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	result, err := m.DB.Exec(ctx, query, id)
+	tx, err := m.DB.Begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer func() { _ = tx.Rollback(ctx) }()
+
+	result, err := tx.Exec(ctx, `
+		DELETE FROM gallery_images
+		WHERE id = $1
+	`, id)
 	if err != nil {
 		return err
 	}
@@ -111,6 +128,9 @@ func (m GalleryModel) Delete(id int64) error {
 	if rowsAffected == 0 {
 		return ErrRecordNotFound
 	}
+	if err := enqueueCachePurge(ctx, tx, "gallery"); err != nil {
+		return err
+	}
 
-	return nil
+	return tx.Commit(ctx)
 }

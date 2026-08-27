@@ -10,6 +10,7 @@ import (
 	"github.com/boj/redistore/v2"
 	"github.com/gorilla/sessions"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/lex-unix/babyn-yar/internal/cachepurge"
 	"github.com/lex-unix/babyn-yar/internal/config"
 	"github.com/lex-unix/babyn-yar/internal/data"
 	"github.com/lex-unix/babyn-yar/internal/storage"
@@ -26,6 +27,7 @@ type application struct {
 	storage      storage.Storage
 	sessionStore sessions.Store
 	logger       *slog.Logger
+	cachePurger  cachePurger
 }
 
 func main() {
@@ -41,6 +43,11 @@ func main() {
 
 func run(logger *slog.Logger) error {
 	cfg, err := config.NewConfig()
+	if err != nil {
+		return err
+	}
+
+	purger, err := newCachePurger(cfg)
 	if err != nil {
 		return err
 	}
@@ -88,6 +95,7 @@ func run(logger *slog.Logger) error {
 		storage:      storageHandler,
 		sessionStore: store,
 		logger:       logger,
+		cachePurger:  purger,
 	}
 
 	err = app.serve()
@@ -96,6 +104,17 @@ func run(logger *slog.Logger) error {
 	}
 
 	return nil
+}
+
+func newCachePurger(cfg config.Config) (cachePurger, error) {
+	if cfg.Env != "production" {
+		return nopCachePurger{}, nil
+	}
+
+	return cachepurge.NewCloudflareClient(
+		cfg.Cloudflare.APIToken,
+		cfg.Cloudflare.ZoneID,
+	)
 }
 
 func openDB(cfg config.Config) (*pgxpool.Pool, error) {
