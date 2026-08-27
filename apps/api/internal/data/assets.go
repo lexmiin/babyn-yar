@@ -128,25 +128,63 @@ func (m AssetModel) DeleteMultiple(ids []int64) error {
 		return ErrRecordNotFound
 	}
 
-	query := `
-		DELETE FROM assets
-		WHERE id = ANY($1)`
-
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	result, err := m.DB.Exec(ctx, query, ids)
+	tx, err := m.DB.Begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer func() { _ = tx.Rollback(ctx) }()
+
+	rows, err := tx.Query(ctx, `
+		SELECT id
+		FROM assets
+		WHERE id = ANY($1)
+		FOR UPDATE
+	`, ids)
+	if err != nil {
+		return err
+	}
+	lockedAssets := 0
+	for rows.Next() {
+		lockedAssets++
+	}
+	if err := rows.Err(); err != nil {
+		rows.Close()
+		return err
+	}
+	rows.Close()
+	if lockedAssets == 0 {
+		return ErrRecordNotFound
+	}
+
+	var affectsGallery bool
+	err = tx.QueryRow(ctx, `
+		SELECT EXISTS (
+			SELECT 1
+			FROM gallery_images
+			WHERE id = ANY($1)
+		)
+	`, ids).Scan(&affectsGallery)
 	if err != nil {
 		return err
 	}
 
-	rowsAffected := result.RowsAffected()
-
-	if rowsAffected == 0 {
-		return ErrRecordNotFound
+	_, err = tx.Exec(ctx, `
+		DELETE FROM assets
+		WHERE id = ANY($1)
+	`, ids)
+	if err != nil {
+		return err
+	}
+	if affectsGallery {
+		if err := enqueueCachePurge(ctx, tx, "gallery"); err != nil {
+			return err
+		}
 	}
 
-	return nil
+	return tx.Commit(ctx)
 }
 
 func (m AssetModel) GetFileNames(ids []int64) ([]string, error) {

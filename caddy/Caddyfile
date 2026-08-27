@@ -6,11 +6,21 @@ babynyar.gov.ua {
 	@cacheableHTML method GET HEAD
 	header @cacheableHTML {
 		Cache-Control "public, max-age=0, must-revalidate"
-		Cloudflare-CDN-Cache-Control "public, max-age=60, stale-while-revalidate=300"
 		defer
 		match {
 			status 200
 			header Content-Type text/html*
+		}
+	}
+	# Caddy adapts the ? operator into a separate handler that loses the response
+	# guards above, so express "only when absent" in the response matcher instead.
+	header @cacheableHTML {
+		Cloudflare-CDN-Cache-Control "public, max-age=86400, stale-while-revalidate=300"
+		defer
+		match {
+			status 200
+			header Content-Type text/html*
+			header !Cloudflare-CDN-Cache-Control
 		}
 	}
 

@@ -387,6 +387,9 @@ func (m PublicationModel) Create(input CreatePublicationInput, publisherID int64
 	if err != nil {
 		return nil, publicationWriteError(err)
 	}
+	if err := enqueueCachePurge(ctx, tx, input.Kind); err != nil {
+		return nil, err
+	}
 
 	if err := tx.Commit(ctx); err != nil {
 		return nil, err
@@ -440,6 +443,13 @@ func (m PublicationModel) AddTranslation(id int64, expectedVersion int32, input 
 	if err != nil {
 		return nil, publicationWriteError(err)
 	}
+	kind, err := publicationKind(ctx, tx, id)
+	if err != nil {
+		return nil, err
+	}
+	if err := enqueueCachePurge(ctx, tx, kind); err != nil {
+		return nil, err
+	}
 
 	if err := tx.Commit(ctx); err != nil {
 		return nil, err
@@ -486,6 +496,13 @@ func (m PublicationModel) UpdateTranslation(id int64, locale string, expectedVer
 	if result.RowsAffected() == 0 {
 		return nil, ErrRecordNotFound
 	}
+	kind, err := publicationKind(ctx, tx, id)
+	if err != nil {
+		return nil, err
+	}
+	if err := enqueueCachePurge(ctx, tx, kind); err != nil {
+		return nil, err
+	}
 
 	if err := tx.Commit(ctx); err != nil {
 		return nil, err
@@ -503,6 +520,11 @@ func (m PublicationModel) DeleteTranslation(id int64, locale string) error {
 	}
 	defer tx.Rollback(ctx)
 
+	kind, err := publicationKind(ctx, tx, id)
+	if err != nil {
+		return err
+	}
+
 	if err := advancePublicationVersion(ctx, tx, id); err != nil {
 		return err
 	}
@@ -517,7 +539,19 @@ func (m PublicationModel) DeleteTranslation(id int64, locale string) error {
 	if result.RowsAffected() == 0 {
 		return ErrRecordNotFound
 	}
+	if err := enqueueCachePurge(ctx, tx, kind); err != nil {
+		return err
+	}
 	return tx.Commit(ctx)
+}
+
+func publicationKind(ctx context.Context, tx pgx.Tx, id int64) (string, error) {
+	var kind string
+	err := tx.QueryRow(ctx, `SELECT kind FROM publications WHERE id = $1`, id).Scan(&kind)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return "", ErrRecordNotFound
+	}
+	return kind, err
 }
 
 func publicationSortColumn(filters Filters) string {

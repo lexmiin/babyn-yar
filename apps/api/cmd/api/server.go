@@ -13,6 +13,17 @@ import (
 )
 
 func (app *application) serve() error {
+	workerContext, stopWorker := context.WithCancel(context.Background())
+	workerStopped := make(chan struct{})
+	go func() {
+		defer close(workerStopped)
+		app.runCachePurgeWorker(workerContext)
+	}()
+	defer func() {
+		stopWorker()
+		<-workerStopped
+	}()
+
 	srv := http.Server{
 		Addr:     fmt.Sprintf(":%d", app.config.Port),
 		Handler:  app.routes(),
