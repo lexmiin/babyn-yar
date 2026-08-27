@@ -1,9 +1,11 @@
 export const languages = {
   en: 'EN',
-  ua: 'UA'
+  uk: 'UA'
 }
 
-export const defaultLang = 'ua'
+export type Language = keyof typeof languages
+
+export const defaultLang = 'uk'
 
 export const ui = {
   en: {
@@ -82,7 +84,7 @@ export const ui = {
     'error.return': 'Return home',
     'error.meta': 'NM Babyn Yar'
   },
-  ua: {
+  uk: {
     'site.title': 'Національний історико-меморіальний заповідник "Бабин Яр"',
     'page.events.title': 'Події',
     'page.events.description': 'Переглянути усі події',
@@ -160,20 +162,13 @@ export const ui = {
   }
 } as const
 
-export function getLangFromUrl(url: URL) {
-  const [, lang] = url.pathname.split('/')
-  if (lang && lang in ui) return lang as keyof typeof ui
+export function getLang(locale: string | undefined): Language {
+  if (locale && locale in ui) return locale as Language
   return defaultLang
 }
 
-export function useTranslations(lang: keyof typeof ui) {
+export function useTranslations(lang: Language) {
   return function t(key: keyof (typeof ui)[typeof defaultLang]) {
     return ui[lang][key] || ui[defaultLang][key]
-  }
-}
-
-export function useTranslatedPath(lang: keyof typeof ui) {
-  return function translatePath(path: string, l: string = lang) {
-    return l === defaultLang ? path : `/${l}${path}`
   }
 }

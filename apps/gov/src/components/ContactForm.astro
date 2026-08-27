@@ -1,9 +1,9 @@
 ---
 import { ContactForm as ContactFormReact } from '@/components/ui'
-import { getLangFromUrl } from '@babyn-yar/i18n'
+import { getLang } from '@babyn-yar/i18n'
 import { EMAIL } from '@/constants'
 
-const lang = getLangFromUrl(Astro.url)
+const lang = getLang(Astro.currentLocale)
 ---
 
 <ContactFormReact client:load lang={lang} email={EMAIL} />

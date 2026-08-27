@@ -1,12 +1,13 @@
 ---
-import { getLangFromUrl, useTranslations, useTranslatedPath } from '@babyn-yar/i18n'
+import { getLang, useTranslations } from '@babyn-yar/i18n'
+import { createLocalizedPath } from '@/i18n-routing'
 import { EMAIL } from '@/constants'
 import { Youtube, Instagram, Facebook } from 'lucide-react'
 import { SocialLink, FooterSection, FooterSectionItem } from '@/components/ui'
 
-const lang = getLangFromUrl(Astro.url)
+const lang = getLang(Astro.currentLocale)
 const t = useTranslations(lang)
-const translatePath = useTranslatedPath(lang)
+const translatePath = createLocalizedPath(lang)
 ---
 
 <footer class="mt-20 mb-5 space-y-1 px-4 md:px-[calc(39px+3rem)]">

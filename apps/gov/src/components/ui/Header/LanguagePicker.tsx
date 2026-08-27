@@ -1,25 +1,21 @@
-import { defaultLang, languages } from '@babyn-yar/i18n'
-import { useTranslatedPath } from '@babyn-yar/i18n'
+import { languages, type Language } from '@babyn-yar/i18n'
 
 interface LanguagePickerProps {
-  lang: keyof typeof languages
+  lang: Language
+  paths: Record<Language, string>
 }
 
-export default function LanguagePicker({ lang }: LanguagePickerProps) {
-  const translatePath = useTranslatedPath(lang)
-
+export default function LanguagePicker({ lang, paths }: LanguagePickerProps) {
   return (
     <label className="relative w-fit text-center text-lg uppercase md:w-32">
       <select
         className="mx-1 flex-1 appearance-none rounded bg-white px-0.5 md:mx-4 md:px-1"
         value={lang}
         onChange={e => {
-          const newLang = e.currentTarget.value
-          const isDefault = newLang == defaultLang
-          const path = isDefault
-            ? window.location.pathname.slice(lang.length + 1) // length of lang + /
-            : window.location.pathname
-          window.location.pathname = translatePath(path, newLang)
+          const newLang = e.currentTarget.value as Language
+          window.location.assign(
+            `${paths[newLang]}${window.location.search}${window.location.hash}`
+          )
         }}
       >
         {Object.entries(languages).map(([code, name]) => (

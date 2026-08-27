@@ -1,5 +1,6 @@
 ---
-import { getLangFromUrl, useTranslations, useTranslatedPath } from '@babyn-yar/i18n'
+import { getLang, useTranslations } from '@babyn-yar/i18n'
+import { createLocalizedPath, getLocalizedPaths } from '@/i18n-routing'
 import {
   HeaderSection,
   HeaderDropdownItem,
@@ -9,9 +10,10 @@ import {
   MobileNavToggle
 } from '@/components/ui'
 
-const lang = getLangFromUrl(Astro.url)
+const lang = getLang(Astro.currentLocale)
 const t = useTranslations(lang)
-const translatePath = useTranslatedPath(lang)
+const translatePath = createLocalizedPath(lang)
+const languagePaths = getLocalizedPaths(Astro.url.pathname)
 ---
 
 <header class="fixed top-0 z-10 w-full bg-white">
@@ -105,7 +107,7 @@ const translatePath = useTranslatedPath(lang)
         </HeaderLink>
       </HeaderSection>
       <div class="md:border-l md:border-l-black">
-        <LanugagePicker client:load lang={lang} />
+        <LanugagePicker client:load lang={lang} paths={languagePaths} />
       </div>
       <MobileNavToggle client:load />
     </nav>
