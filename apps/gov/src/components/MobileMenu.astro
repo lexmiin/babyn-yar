@@ -1,10 +1,11 @@
 ---
 import { MobileNavContent } from '@/components/ui'
-import { getLangFromUrl, useTranslations, useTranslatedPath } from '@babyn-yar/i18n'
+import { getLang, useTranslations } from '@babyn-yar/i18n'
+import { createLocalizedPath } from '@/i18n-routing'
 
-const lang = getLangFromUrl(Astro.url)
+const lang = getLang(Astro.currentLocale)
 const t = useTranslations(lang)
-const translatePath = useTranslatedPath(lang)
+const translatePath = createLocalizedPath(lang)
 ---
 
 <nav

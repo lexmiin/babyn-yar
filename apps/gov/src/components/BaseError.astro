@@ -1,15 +1,16 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro'
-import { getLangFromUrl, useTranslations, useTranslatedPath } from '@babyn-yar/i18n'
+import { getLang, useTranslations } from '@babyn-yar/i18n'
+import { createLocalizedPath } from '@/i18n-routing'
 
 interface Props {
   code: number
 }
 
 const { code } = Astro.props
-const lang = getLangFromUrl(Astro.url)
+const lang = getLang(Astro.currentLocale)
 const t = useTranslations(lang)
-const translatePath = useTranslatedPath(lang)
+const translatePath = createLocalizedPath(lang)
 
 const meta = `${code} | ${t('error.meta')}`
 ---

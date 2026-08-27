@@ -1,5 +1,6 @@
 ---
-import { getLangFromUrl, useTranslatedPath } from '@babyn-yar/i18n'
+import { getLang } from '@babyn-yar/i18n'
+import { createLocalizedPath } from '@/i18n-routing'
 
 export interface Props {
   href: string
@@ -7,8 +8,8 @@ export interface Props {
 
 const { href } = Astro.props
 
-const lang = getLangFromUrl(Astro.url)
-const translatePath = useTranslatedPath(lang)
+const lang = getLang(Astro.currentLocale)
+const translatePath = createLocalizedPath(lang)
 ---
 
 <div class="mx-auto">

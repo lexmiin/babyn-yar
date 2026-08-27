@@ -4,6 +4,7 @@ import Footer from '@/components/Footer.astro'
 import { Head, HeadSEO } from '@/components/ui'
 import '@/styles/roboto.css'
 import MobileMenu from '@/components/MobileMenu.astro'
+import { getLang, useTranslations } from '@babyn-yar/i18n'
 import '../styles/global.css'
 
 export interface Props {
@@ -12,18 +13,16 @@ export interface Props {
 }
 
 const { title, description } = Astro.props
+const lang = getLang(Astro.currentLocale)
+const t = useTranslations(lang)
+const ogImage = lang === 'en' ? '/og-image-en.png' : '/og-image.png'
 ---
 
 <!doctype html>
-<html lang="uk">
+<html lang={lang}>
   <head>
     <Head />
-    <HeadSEO
-      {title}
-      {description}
-      ogImage="/og-image.png"
-      siteTitle='Національний історико-меморіальний заповідник "Бабин Яр"'
-    />
+    <HeadSEO {title} {description} {ogImage} siteTitle={t('site.title')} />
   </head>
   <body class="relative">
     <Header />
