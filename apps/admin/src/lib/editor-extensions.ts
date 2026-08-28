@@ -8,6 +8,8 @@ import { Video } from './video-extension'
 
 export const extensions = [
   StarterKit.configure({
+    link: false,
+    underline: false,
     heading: {
       HTMLAttributes: {
         class:
