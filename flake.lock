@@ -104,11 +104,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1787060709,
-        "narHash": "sha256-JNiZplQOqywcAq/3S51M07rcEC5TUxIfZF54sthd/3o=",
+        "lastModified": 1787906838,
+        "narHash": "sha256-BVoCD5auserFdtRIvXkALWYtrFMrXJS/8JDsEEiH44Y=",
         "owner": "purpleclay",
         "repo": "go-overlay",
-        "rev": "c382c1dfc9213a79c457b10e4a26239ec6bc8c00",
+        "rev": "34bdca05fbef02ce7dd69873fbe45197d6fdd2c4",
         "type": "github"
       },
       "original": {
