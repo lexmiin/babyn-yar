@@ -8,7 +8,10 @@ import { Video } from './video'
 import { generateHTML as tipTapGenerateHTML } from '@tiptap/html'
 
 export const extensions = [
-  StarterKit,
+  StarterKit.configure({
+    link: false,
+    underline: false
+  }),
   Link,
   TextAlign.configure({
     types: ['heading', 'paragraph']
