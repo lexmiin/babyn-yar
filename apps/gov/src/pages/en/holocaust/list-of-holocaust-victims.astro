@@ -7,31 +7,9 @@ export const prerender = false
 
 const fullname = Astro.url.searchParams.get('fullname')
 const info = Astro.url.searchParams.get('info')
+const page = Number(Astro.url.searchParams.get('page') || '1')
 
-if (Astro.request.method === 'POST') {
-  const formData = await Astro.request.formData()
-  const fullname = formData.get('fullname')
-  const info = formData.get('info')
-
-  const redirectUrl = new URL(Astro.url.href)
-  redirectUrl.searchParams.set('page', '1')
-
-  if (fullname && typeof fullname === 'string') {
-    redirectUrl.searchParams.set('fullname', fullname)
-  } else {
-    redirectUrl.searchParams.delete('fullname')
-  }
-
-  if (info && typeof info === 'string') {
-    redirectUrl.searchParams.set('info', info)
-  } else {
-    redirectUrl.searchParams.delete('info')
-  }
-
-  return Astro.redirect(redirectUrl.toString())
-}
-
-const { victims, metadata } = await VictimAPI.list({ fullname, info })
+const { victims, metadata } = await VictimAPI.list({ fullname, info, page })
 ---
 
 {
@@ -50,9 +28,10 @@ const { victims, metadata } = await VictimAPI.list({ fullname, info })
         </div>
         <div class="mb-10">
           <form
-            method="POST"
+            method="GET"
             class="rounded border border-stone-300 bg-stone-200 px-8 py-4 text-base"
           >
+            <input type="hidden" name="page" value="1" />
             <div class="grid grid-cols-1 gap-x-5 gap-y-5 md:grid-cols-2">
               <label class="block w-full text-base">
                 Full name

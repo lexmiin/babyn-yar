@@ -16,7 +16,8 @@ export namespace VictimSchema {
 
   export const Filters = v.object({
     fullname: v.nullish(v.string()),
-    info: v.nullish(v.string())
+    info: v.nullish(v.string()),
+    page: v.optional(v.number())
   })
 
   export type Victim = v.InferInput<typeof Victim>
