@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
@@ -13,8 +14,9 @@ import (
 
 func (app *application) serve() error {
 	srv := http.Server{
-		Addr:    fmt.Sprintf(":%d", app.config.Port),
-		Handler: app.routes(),
+		Addr:     fmt.Sprintf(":%d", app.config.Port),
+		Handler:  app.routes(),
+		ErrorLog: slog.NewLogLogger(app.logger.Handler(), slog.LevelError),
 	}
 
 	shutdownError := make(chan error)
@@ -24,9 +26,7 @@ func (app *application) serve() error {
 		signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 		s := <-quit
 
-		app.logger.PrintInfo("shutting down server", map[string]string{
-			"signal": s.String(),
-		})
+		app.logger.Info("shutting down server", "signal", s.String())
 
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
@@ -34,10 +34,11 @@ func (app *application) serve() error {
 		shutdownError <- srv.Shutdown(ctx)
 	}()
 
-	app.logger.PrintInfo("starting server", map[string]string{
-		"addr": srv.Addr,
-		"env":  app.config.Env,
-	})
+	app.logger.Info(
+		"starting server",
+		"addr", srv.Addr,
+		"env", app.config.Env,
+	)
 
 	err := srv.ListenAndServe()
 	if !errors.Is(err, http.ErrServerClosed) {
@@ -49,9 +50,7 @@ func (app *application) serve() error {
 		return err
 	}
 
-	app.logger.PrintInfo("stopped server", map[string]string{
-		"addr": srv.Addr,
-	})
+	app.logger.Info("stopped server", "addr", srv.Addr)
 
 	return nil
 }

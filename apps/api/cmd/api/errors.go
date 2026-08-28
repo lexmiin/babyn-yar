@@ -1,14 +1,21 @@
 package main
 
 import (
+	"log/slog"
 	"net/http"
 )
 
 func (app *application) logError(r *http.Request, err error) {
-	app.logger.PrintError(err, map[string]string{
-		"request_method": r.Method,
-		"request_url":    r.URL.String(),
-	})
+	app.logger.ErrorContext(
+		r.Context(),
+		"request failed",
+		"err", err,
+		slog.Group(
+			"request",
+			"method", r.Method,
+			"url", r.URL.String(),
+		),
+	)
 }
 
 func (app *application) errorResponse(w http.ResponseWriter, r *http.Request, status int, message any) {

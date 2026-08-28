@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"io"
+	"log/slog"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
@@ -14,7 +15,6 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lex-unix/babyn-yar/internal/config"
 	"github.com/lex-unix/babyn-yar/internal/data"
-	"github.com/lex-unix/babyn-yar/internal/jsonlog"
 	"github.com/stretchr/testify/require"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/modules/postgres"
@@ -36,7 +36,7 @@ func newAPITest(t *testing.T) *apiTest {
 		config:       cfg,
 		models:       data.NewModels(db),
 		sessionStore: sessions.NewCookieStore([]byte("test-session-secret")),
-		logger:       jsonlog.New(io.Discard, jsonlog.LevelInfo),
+		logger:       slog.New(slog.NewJSONHandler(io.Discard, nil)),
 	}
 
 	server := httptest.NewServer(app.routes())
