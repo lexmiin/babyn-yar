@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"log/slog"
 	"net/http"
 	"os"
 	"time"
@@ -12,7 +12,6 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lex-unix/babyn-yar/internal/config"
 	"github.com/lex-unix/babyn-yar/internal/data"
-	"github.com/lex-unix/babyn-yar/internal/jsonlog"
 	"github.com/lex-unix/babyn-yar/internal/storage"
 )
 
@@ -26,23 +25,25 @@ type application struct {
 	models       data.Models
 	storage      storage.Storage
 	sessionStore sessions.Store
-	logger       *jsonlog.Logger
+	logger       *slog.Logger
 }
 
 func main() {
-	if err := run(); err != nil {
-		fmt.Println(err)
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+		Level: slog.LevelInfo,
+	}))
+
+	if err := run(logger); err != nil {
+		logger.Error("application failed", "err", err)
 		os.Exit(1)
 	}
 }
 
-func run() error {
+func run(logger *slog.Logger) error {
 	cfg, err := config.NewConfig()
 	if err != nil {
 		return err
 	}
-
-	logger := jsonlog.New(os.Stdout, jsonlog.LevelInfo)
 
 	db, err := openDB(cfg)
 	if err != nil {
@@ -51,7 +52,7 @@ func run() error {
 
 	defer db.Close()
 
-	logger.PrintInfo("database connection pool established", nil)
+	logger.Info("database connection pool established")
 
 	store, err := newSessionStore(cfg)
 	if err != nil {
@@ -59,14 +60,14 @@ func run() error {
 	}
 	defer store.Close()
 
-	logger.PrintInfo("redis store initialized", nil)
+	logger.Info("redis store initialized")
 
 	storageHandler, err := storage.NewS3Handler(cfg)
 	if err != nil {
 		return err
 	}
 
-	logger.PrintInfo("storage handler initialized", nil)
+	logger.Info("storage handler initialized")
 
 	if cfg.Seed {
 		err := data.SeedInitialUser(
@@ -78,7 +79,7 @@ func run() error {
 		if err != nil {
 			return err
 		}
-		logger.PrintInfo("initialized new user", nil)
+		logger.Info("initialized new user")
 	}
 
 	app := &application{
