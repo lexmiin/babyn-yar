@@ -4,6 +4,10 @@ on:
     branches:
       - main
 
+concurrency:
+  group: publish-main
+  cancel-in-progress: true
+
 env:
   REGISTRY: ghcr.io
   ACTOR: ${{ github.repository_owner }}
