@@ -277,6 +277,9 @@ importers:
       globals:
         specifier: ^17.7.0
         version: 17.11.0
+      sharp:
+        specifier: ^0.35.4
+        version: 0.35.4(@types/node@26.2.0)
       typescript:
         specifier: 'catalog:'
         version: 6.0.3

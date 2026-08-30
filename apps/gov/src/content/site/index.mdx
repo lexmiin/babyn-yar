@@ -4,9 +4,12 @@ description:
   Головна сторінка Національного історико-меморіального заповідника "Бабин Яр"
 ---
 
-import { LinkButton, Image } from '@/components/ui'
+import { AstroImage, LinkButton } from '@/components/ui'
+import babynYarImage from '@/assets/main/img_0.webp'
+import menorahImage from '@/assets/main/img_1.webp'
+import synagogueImage from '@/assets/main/img_2.webp'
 
-<Image src="/assets/main/img_0.webp" alt="Babyn Yar" />
+<AstroImage src={babynYarImage} alt="Babyn Yar" priority />
 
 ## Бабин Яр – Національний історико-меморіальний заповідник.
 
@@ -16,7 +19,7 @@ import { LinkButton, Image } from '@/components/ui'
 {/* prettier-ignore */}
 <LinkButton href="/babyn-yar-national-historical-memorial-preserve">дізнатися більше</LinkButton>
 
-<Image src="/assets/main/img_1.webp" alt="Mehorah" />
+<AstroImage src={menorahImage} alt="Mehorah" />
 
 ## Менора
 
@@ -26,7 +29,7 @@ import { LinkButton, Image } from '@/components/ui'
 Києва. Відкриття бронзового семісвічника, символа єврейської культури, відбулося
 на 50-ту річницю трагедії Бабиного Яру в 1991 р.
 
-<Image src="/assets/main/img_2.webp" alt="TODO" />
+<AstroImage src={synagogueImage} alt="TODO" />
 
 ## Символічна Синагога "Місце для роздумів"
 
