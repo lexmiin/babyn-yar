@@ -1,5 +1,6 @@
 export { default as LinkButton } from './LinkButton.astro'
 export { default as Image } from './Image.astro'
+export { default as AstroImage } from './AstroImage.astro'
 export { default as Video } from './Video.astro'
 export { default as Maps } from './Maps.astro'
 export { default as SocialLink } from './SocialLink.astro'

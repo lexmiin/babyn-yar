@@ -3,9 +3,12 @@ title: Home
 description: Home page for National Historical and Memorial Reserve "Babyn Yar"
 ---
 
-import { Image, LinkButton } from '@/components/ui'
+import { AstroImage, LinkButton } from '@/components/ui'
+import babynYarImage from '@/assets/main/img_0.webp'
+import menorahImage from '@/assets/main/img_1.webp'
+import synagogueImage from '@/assets/main/img_2.webp'
 
-<Image src="/assets/main/img_0.webp" alt="Babyn Yar" />
+<AstroImage src={babynYarImage} alt="Babyn Yar" priority />
 
 ## Babyn Yar is a National Historical and Memorial Reserve
 
@@ -16,7 +19,7 @@ human life.
 {/* prettier-ignore */}
 <LinkButton href="/babyn-yar-national-historical-memorial-preserve">learn more</LinkButton>
 
-<Image src="/assets/main/img_1.webp" alt="Mehorah" />
+<AstroImage src={menorahImage} alt="Mehorah" />
 
 ## Menorah
 
@@ -27,7 +30,7 @@ Jews who were executed during the occupation of Kyiv. The unveiling of the
 bronze seven-branched candelabrum, a symbol of Jewish culture, occurred on the
 50th anniversary of the Babyn Yar tragedy in 1991.
 
-<Image src="/assets/main/img_2.webp" alt="TODO" />
+<AstroImage src={synagogueImage} alt="TODO" />
 
 ## The symbolic Synagogue "Place for Reflection"
 

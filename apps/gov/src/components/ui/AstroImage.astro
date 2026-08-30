@@ -1,0 +1,22 @@
+---
+import { Image } from 'astro:assets'
+import type { ImageMetadata } from 'astro'
+
+export interface Props {
+  src: ImageMetadata
+  alt: string
+  priority?: boolean
+}
+
+const { src, alt, priority = false } = Astro.props
+---
+
+<div class="relative my-8 h-auto w-full">
+  <Image
+    {src}
+    {alt}
+    layout="full-width"
+    {priority}
+    class="!-mx-4 h-auto w-[calc(100%+2rem)] max-w-[calc(100%+2rem)] md:!-mx-[calc(39px+2rem)] md:w-[calc(100%+((2rem+39px)*2))] md:max-w-[calc(100%+((2rem+39px)*2))] lg:!-mx-[calc(39px+3rem)] lg:w-[calc(100%+((3rem+39px)*2))] lg:max-w-[calc(100%+((3rem+39px)*2))]"
+  />
+</div>
