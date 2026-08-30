@@ -99,3 +99,22 @@ db-sync remote="babynyar" bucket="db-backup":
     rclone copyto "{{ remote }}:{{ bucket }}/$latest" "$backup_path"
     gunzip -c "$backup_path" > "$dump_path"
     docker compose -f docker-compose.dev.yml exec -T db psql -U postgres -d postgres < "$dump_path"
+
+deploy-prod user host:
+    just remote-deploy {{ user }} {{ host }}
+    just purge-gov-cache
+
+remote-deploy user host:
+    ssh {{ user }}@{{ host }} 'set -e; cd ~/babyn-yar; docker compose pull api admin gov; docker compose up -d --wait'
+
+purge-gov-cache:
+    fnox exec --profile production -- just _purge-gov-cache
+
+[private]
+_purge-gov-cache:
+    @curl --silent --show-error --fail-with-body \
+        --request POST \
+        "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/purge_cache" \
+        --header "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+        --json '{"hosts":["babynyar.gov.ua"]}' \
+        | jq -e '.success == true' >/dev/null

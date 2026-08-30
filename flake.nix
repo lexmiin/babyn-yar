@@ -5,6 +5,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     go-overlay.url = "github:purpleclay/go-overlay";
     flake-utils.url = "github:numtide/flake-utils";
+    fnox.url = "github:lexmiin/fnox-nix";
   };
 
   outputs = {
@@ -12,6 +13,7 @@
     nixpkgs,
     flake-utils,
     go-overlay,
+    fnox,
   }:
     {
       overlays.default = final: prev: {
@@ -26,6 +28,7 @@
           overlays = [
             go-overlay.overlays.default
             self.overlays.default
+            fnox.overlays.default
           ];
         };
 
@@ -50,6 +53,8 @@
             pkgs.jq
             pkgs.pnpm_11
             pkgs.actionlint
+            pkgs.fnox
+            pkgs.curl
           ];
         };
       }
