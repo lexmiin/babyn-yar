@@ -64,11 +64,18 @@ build-backup os="linux" arch="amd64":
 
 remote-setup user host: build-backup
     ssh {{ user }}@{{ host }} 'mkdir -p /home/{{ user }}/babyn-yar /home/{{ user }}/.local/bin'
+    scp {{ api_dir }}/bin/dbbackup {{ user }}@{{ host }}:/home/{{ user }}/.local/bin/dbbackup
+    ssh {{ user }}@{{ host }} 'chmod +x /home/{{ user }}/.local/bin/dbbackup'
+    just remote-sync {{ user }} {{ host }}
+
+remote-sync user host:
     scp docker-compose.yml {{ user }}@{{ host }}:/home/{{ user }}/babyn-yar/docker-compose.yml
     fnox export --profile production | ssh {{ user }}@{{ host }} 'cat > /home/{{ user }}/babyn-yar/.env && chmod 600 /home/{{ user }}/babyn-yar/.env'
     scp -r caddy {{ user }}@{{ host }}:/home/{{ user }}/babyn-yar/
-    scp {{ api_dir }}/bin/dbbackup {{ user }}@{{ host }}:/home/{{ user }}/.local/bin/dbbackup
-    ssh {{ user }}@{{ host }} 'chmod +x /home/{{ user }}/.local/bin/dbbackup'
+
+remote-deploy user host:
+    just remote-sync {{ user }} {{ host }}
+    ssh {{ user }}@{{ host }} 'set -e; cd ~/babyn-yar; docker compose pull api admin gov; docker compose up -d --wait'
 
 [confirm("Are you sure you want to apply migrations on remote?")]
 remote-migrations-up user host:
@@ -100,18 +107,15 @@ db-sync remote="babynyar" bucket="db-backup":
     gunzip -c "$backup_path" > "$dump_path"
     docker compose -f docker-compose.dev.yml exec -T db psql -U postgres -d postgres < "$dump_path"
 
-deploy-prod user host:
+deploy-production user host:
     just remote-deploy {{ user }} {{ host }}
-    just purge-gov-cache
+    just purge-cdn-cache
 
-remote-deploy user host:
-    ssh {{ user }}@{{ host }} 'set -e; cd ~/babyn-yar; docker compose pull api admin gov; docker compose up -d --wait'
-
-purge-gov-cache:
-    fnox exec --profile production -- just _purge-gov-cache
+purge-cdn-cache:
+    fnox exec --profile production -- just _purge-cdn-cache
 
 [private]
-_purge-gov-cache:
+_purge-cdn-cache:
     @curl --silent --show-error --fail-with-body \
         --request POST \
         "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/purge_cache" \
