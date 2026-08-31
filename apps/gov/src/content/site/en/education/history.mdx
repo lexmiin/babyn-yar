@@ -3,24 +3,36 @@ title: History
 description: History
 ---
 
-import { Image, Video } from '@/components/ui'
+import { AstroImage, Video } from '@/components/ui'
+import noticeImage from '@/assets/history/img_0.webp'
+import peopleInRavineImage from '@/assets/history/img_1.webp'
+import barbedWireImage from '@/assets/history/img_2.webp'
 
 {/* prettier-ignore */}
 <Video src="https://static.babynyar.work/history/01-en.mp4" poster="/assets/history/poster.webp" />
 
 September 19, 1941: The 6th German army entered Kyiv.
 
-<Image src="/assets/history/img_0.webp" alt="TODO" />
+<AstroImage
+  src={noticeImage}
+  alt="Occupation notice in Russian and Ukrainian ordering Kyiv's Jews to assemble on September 29, 1941"
+/>
 
 September 28, 1941: Leaflets appeared in the city ordering Jews to come to Babyn
 Yar.
 
-<Image src="/assets/history/img_1.webp" alt="TODO" />
+<AstroImage
+  src={peopleInRavineImage}
+  alt="A crowd of people walking through a ravine"
+/>
 
 September 29, 1941: Executions began. Over 100,000 people were killed during the
 two-year occupation.
 
-<Image src="/assets/history/img_2.webp" alt="TODO" />
+<AstroImage
+  src={barbedWireImage}
+  alt="Barracks behind several rows of barbed-wire fencing"
+/>
 
 May 1942: Near Babyn Yar, the Nazis established the Syrets concentration camp.
 

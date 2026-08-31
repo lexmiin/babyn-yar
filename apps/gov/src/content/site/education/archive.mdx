@@ -3,9 +3,14 @@ title: Архів
 description: Архів
 ---
 
-import { Image } from '@/components/ui'
+import { AstroImage } from '@/components/ui'
+import memorialCandlesImage from '@/assets/archive/img_0.webp'
 
-<Image src="/assets/archive/img_0.webp" alt="Photo by The Gate Agency" />
+<AstroImage
+  src={memorialCandlesImage}
+  alt="Ряди червоних лампадок пам’яті"
+  priority
+/>
 
 <div className="not-prose space-y-3">
   {/* prettier-ignore */}

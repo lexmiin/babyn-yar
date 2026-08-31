@@ -3,24 +3,33 @@ title: Історія
 description: Історія
 ---
 
-import { Image, Video } from '@/components/ui'
+import { AstroImage, Video } from '@/components/ui'
+import noticeImage from '@/assets/history/img_0.webp'
+import peopleInRavineImage from '@/assets/history/img_1.webp'
+import barbedWireImage from '@/assets/history/img_2.webp'
 
 {/* prettier-ignore */}
 <Video src="https://static.babynyar.work/history/01-ua.mp4" poster="/assets/history/poster.webp" />
 
 19-го вересня 1941. Війська 6-ї німецької армії увійшли до Києва
 
-<Image src="/assets/history/img_0.webp" alt="TODO" />
+<AstroImage
+  src={noticeImage}
+  alt="Оголошення окупаційної влади російською та українською мовами з наказом євреям Києва зібратися 29 вересня 1941 року"
+/>
 
 28-го вересня 1941. В місті з’явилися листівки, де євреям було наказано прийти
 до Бабиного Яру
 
-<Image src="/assets/history/img_1.webp" alt="TODO" />
+<AstroImage src={peopleInRavineImage} alt="Натовп людей іде через яр" />
 
 29-го вересня 1941. розпочалися страти. Впродовж двох років окупації було вбито
 понад 100.000 людей
 
-<Image src="/assets/history/img_2.webp" alt="TODO" />
+<AstroImage
+  src={barbedWireImage}
+  alt="Бараки за кількома рядами огорожі з колючого дроту"
+/>
 
 Травень 1942. Неподалік Бабиного Яру нацисти організували Сирецькій
 концентраційний табір. За роки його існування там загинуло більш ніж 25.000
