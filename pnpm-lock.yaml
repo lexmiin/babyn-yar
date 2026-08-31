@@ -249,6 +249,9 @@ importers:
       react-dom:
         specifier: ^19.2.7
         version: 19.2.8(react@19.2.8)
+      sharp:
+        specifier: ^0.35.4
+        version: 0.35.4(@types/node@26.4.0)
       tailwindcss:
         specifier: ^4.3.2
         version: 4.3.3
@@ -277,9 +280,6 @@ importers:
       globals:
         specifier: ^17.7.0
         version: 17.11.0
-      sharp:
-        specifier: ^0.35.4
-        version: 0.35.4(@types/node@26.4.0)
       typescript:
         specifier: 'catalog:'
         version: 6.0.3

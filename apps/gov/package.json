@@ -31,6 +31,7 @@
     "lucide-react": "^0.577.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
+    "sharp": "^0.35.4",
     "tailwindcss": "^4.3.2"
   },
   "devDependencies": {
@@ -42,7 +43,6 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-astro": "^3.0.1",
     "globals": "^17.7.0",
-    "sharp": "^0.35.4",
     "typescript": "catalog:",
     "typescript-eslint": "^8.62.1"
   }
