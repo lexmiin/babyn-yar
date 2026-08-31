@@ -9,11 +9,15 @@ import {
   LanugagePicker,
   MobileNavToggle
 } from '@/components/ui'
+import logoEn from '@/assets/logo-en.webp'
+import logoUk from '@/assets/logo.webp'
+import { Image } from 'astro:assets'
 
 const lang = getLang(Astro.currentLocale)
 const t = useTranslations(lang)
 const translatePath = createLocalizedPath(lang)
 const languagePaths = getLocalizedPaths(Astro.url.pathname)
+const logo = lang === 'en' ? logoEn : logoUk
 ---
 
 <header class="fixed top-0 z-10 w-full bg-white">
@@ -25,9 +29,12 @@ const languagePaths = getLocalizedPaths(Astro.url.pathname)
       aria-label="Go to home page"
       class="md:mr-6 lg:mr-12"
     >
-      <img
-        src=`/logo${lang == 'en' ? '-en' : ''}.webp`
-        alt="Site logo"
+      <Image
+        src={logo}
+        alt=""
+        width={176}
+        densities={[1, 2]}
+        priority
         class="w-44"
       />
     </a>
