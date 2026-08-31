@@ -1,3 +1,7 @@
+---
+import { Font } from 'astro:assets'
+---
+
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width" />
 <meta name="theme-color" content="#ffffff" />
@@ -20,45 +24,10 @@
   href="/favicons/favicon-16x16.png"
 />
 <link rel="manifest" href="/favicons/site.webmanifest" />
-<link
-  rel="preload"
-  href="/fonts/RobotoCondensed-Regular.ttf"
-  as="font"
-  type="font/ttf"
-  crossorigin="anonymous"
-/>
-<link
-  rel="preload"
-  href="/fonts/RobotoCondensed-Bold.ttf"
-  as="font"
-  type="font/ttf"
-  crossorigin="anonymous"
-/>
-<link
-  rel="preload"
-  href="/fonts/RobotoCondensed-BoldItalic.ttf"
-  as="font"
-  type="font/ttf"
-  crossorigin="anonymous"
-/>
-<link
-  rel="preload"
-  href="/fonts/RobotoCondensed-Italic.ttf"
-  as="font"
-  type="font/ttf"
-  crossorigin="anonymous"
-/>
-<link
-  rel="preload"
-  href="/fonts/RobotoCondensed-Light.ttf"
-  as="font"
-  type="font/ttf"
-  crossorigin="anonymous"
-/>
-<link
-  rel="preload"
-  href="/fonts/RobotoCondensed-LightItalic.ttf"
-  as="font"
-  type="font/ttf"
-  crossorigin="anonymous"
+<Font
+  cssVariable="--font-roboto"
+  preload={[
+    { weight: 400, style: 'normal' },
+    { weight: 700, style: 'normal' }
+  ]}
 />
