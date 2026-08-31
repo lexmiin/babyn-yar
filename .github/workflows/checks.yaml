@@ -47,15 +47,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-${{ runner.arch }}-pnpm-11-
 
-      - name: restore go caches
+      - name: restore go module cache
         uses: actions/cache@v6
         with:
-          path: |
-            ~/go/pkg/mod
-            ~/.cache/go-build
-          key: ${{ runner.os }}-${{ runner.arch }}-go-${{ hashFiles('flake.lock', 'apps/api/go.sum') }}
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-${{ runner.arch }}-go-mod-${{ hashFiles('apps/api/go.sum') }}
           restore-keys: |
-            ${{ runner.os }}-${{ runner.arch }}-go-
+            ${{ runner.os }}-${{ runner.arch }}-go-mod-
+
+      - name: restore go build cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/go-build
+          key: ${{ runner.os }}-${{ runner.arch }}-go-build-${{ hashFiles('flake.nix', 'flake.lock', 'apps/api/go.sum') }}
 
       - name: install dependencies
         run: nix develop --command pnpm install --frozen-lockfile
