@@ -15,10 +15,7 @@ const { title, description, content, attachemnts } = Astro.props
 const html = generateHTML(content)
 ---
 
-<MainLayout
-  title={title}
-  description={description}
->
+<MainLayout title={title} description={description}>
   <div class="cms-content">
     <Fragment set:html={html} />
     {

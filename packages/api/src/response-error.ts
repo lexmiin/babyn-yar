@@ -27,10 +27,13 @@ export class ResponseError extends Error {
   }
 
   get formErrors() {
-    return Object.entries(this.error).reduce((errors, [key, value]) => {
-      errors[key] = [{ message: value }]
-      return errors
-    }, {} as Record<string, { message: string }[]>)
+    return Object.entries(this.error).reduce(
+      (errors, [key, value]) => {
+        errors[key] = [{ message: value }]
+        return errors
+      },
+      {} as Record<string, { message: string }[]>
+    )
   }
 
   isUnauthorized(): this is { error: string } {

@@ -11,8 +11,9 @@ export default function CarouselThumb(props: Props) {
     <div className="aspect-video min-w-0 flex-[0_0_16%] overflow-hidden pl-2">
       <button
         onClick={onClick}
-        className={`${selected ? 'opacity-100' : 'opacity-40'
-          } transition-opacity duration-150`}
+        className={`${
+          selected ? 'opacity-100' : 'opacity-40'
+        } transition-opacity duration-150`}
         type="button"
       >
         <img
