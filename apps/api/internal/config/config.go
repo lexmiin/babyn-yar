@@ -40,8 +40,8 @@ type Config struct {
 		TrustedOrigins []string `env:"CORS_ORIGINS"`
 	}
 	Cloudflare struct {
-		APIToken     string `env:"CLOUDFLARE_API_TOKEN" envDefault:""`
-		ZoneID       string `env:"CLOUDFLARE_ZONE_ID" envDefault:""`
+		APIToken      string `env:"CLOUDFLARE_API_TOKEN" envDefault:""`
+		ZoneID        string `env:"CLOUDFLARE_ZONE_ID" envDefault:""`
 		PublicSiteURL string `env:"GOV_PUBLIC_URL" envDefault:"https://babynyar.gov.ua"`
 	}
 	Seed bool `env:"SEED_USER" envDefault:"false"`
