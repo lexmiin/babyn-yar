@@ -31,14 +31,21 @@ type application struct {
 }
 
 func main() {
-	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
-		Level: slog.LevelInfo,
-	}))
+	logger := newLogger(os.Getenv("API_ENV"))
 
 	if err := run(logger); err != nil {
 		logger.Error("application failed", "err", err)
 		os.Exit(1)
 	}
+}
+
+func newLogger(env string) *slog.Logger {
+	options := &slog.HandlerOptions{Level: slog.LevelInfo}
+	if env == "production" {
+		return slog.New(slog.NewJSONHandler(os.Stdout, options))
+	}
+
+	return slog.New(slog.NewTextHandler(os.Stdout, options))
 }
 
 func run(logger *slog.Logger) error {
