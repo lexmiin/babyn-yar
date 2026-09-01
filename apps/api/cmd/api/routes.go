@@ -1,14 +1,22 @@
 package main
 
 import (
+	"log/slog"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/httplog/v3"
 )
 
 func (app *application) routes() http.Handler {
 	router := chi.NewRouter()
 
+	router.Use(requestID)
+	router.Use(httplog.RequestLogger(app.logger, &httplog.Options{
+		Level:         slog.LevelInfo,
+		RecoverPanics: true,
+	}))
+	router.Use(requestIDHeader)
 	router.Use(app.enableCORS())
 	router.Use(app.authenticate)
 

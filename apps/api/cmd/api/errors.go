@@ -3,6 +3,8 @@ package main
 import (
 	"log/slog"
 	"net/http"
+
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 func (app *application) logError(r *http.Request, err error) {
@@ -10,6 +12,7 @@ func (app *application) logError(r *http.Request, err error) {
 		r.Context(),
 		"request failed",
 		"err", err,
+		"request_id", middleware.GetReqID(r.Context()),
 		slog.Group(
 			"request",
 			"method", r.Method,
