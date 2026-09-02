@@ -1,4 +1,6 @@
 ---
+import { Image } from 'astro:assets'
+
 interface Props {
   src: string
   alt: string
@@ -7,8 +9,17 @@ interface Props {
 const { src, alt } = Astro.props
 ---
 
-<div class="md:float-left">
+<div class="w-full md:float-left md:mr-4">
   <div class="aspect-[16/9] overflow-hidden pb-2 md:pr-4">
-    <img src={src} alt={alt} class="h-full w-full object-cover" />
+    <Image
+      {src}
+      {alt}
+      inferSize
+      widths={[400, 800, 960]}
+      sizes="(min-width: 768px) 480px, calc(100vw - 2rem)"
+      format="webp"
+      quality="mid"
+      class="h-full w-full object-cover"
+    />
   </div>
 </div>
