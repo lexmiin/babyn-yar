@@ -1,7 +1,14 @@
+x-logging: &default-logging
+  driver: local
+  options:
+    max-size: '20m'
+    max-file: '3'
+
 services:
   caddy:
     image: caddy:2.11.4-alpine
     restart: unless-stopped
+    logging: *default-logging
     ports:
       - 80:80
       - 443:443
@@ -20,6 +27,7 @@ services:
   gov:
     image: ghcr.io/lexmiin/babyn-yar-gov:latest
     restart: unless-stopped
+    logging: *default-logging
     expose:
       - 4321
     depends_on:
@@ -28,6 +36,7 @@ services:
   admin:
     image: ghcr.io/lexmiin/babyn-yar-admin:latest
     restart: unless-stopped
+    logging: *default-logging
     expose:
       - 80
     depends_on:
@@ -36,6 +45,7 @@ services:
   api:
     image: ghcr.io/lexmiin/babyn-yar-api:latest
     restart: unless-stopped
+    logging: *default-logging
     env_file: .env
     expose:
       - 8000
@@ -52,6 +62,7 @@ services:
   db:
     image: postgres:16-alpine
     restart: always
+    logging: *default-logging
     environment:
       - 'POSTGRES_PASSWORD=${POSTGRES_PASSWORD}'
       - 'POSTGRES_USER=${POSTGRES_USER}'
@@ -68,6 +79,7 @@ services:
   redis:
     image: redis:7.0.11-alpine
     restart: always
+    logging: *default-logging
     command: redis-server --save 20 1 --loglevel warning
     volumes:
       - redis:/data
@@ -76,6 +88,7 @@ services:
       interval: 10s
   migrate:
     image: migrate/migrate:v4.16.2
+    logging: *default-logging
     profiles:
       - 'tools'
     volumes:
