@@ -9,6 +9,15 @@ import tailwindcss from '@tailwindcss/vite'
 // https://astro.build/config
 export default defineConfig({
   site: 'https://babynyar.gov.ua',
+  image: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'public.babynyar.work',
+        pathname: '/**'
+      }
+    ]
+  },
   fonts: [
     {
       provider: fontProviders.local(),
