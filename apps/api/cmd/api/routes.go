@@ -15,6 +15,9 @@ func (app *application) routes() http.Handler {
 	router.Use(httplog.RequestLogger(app.logger, &httplog.Options{
 		Level:         slog.LevelInfo,
 		RecoverPanics: true,
+		Skip: func(r *http.Request, _ int) bool {
+			return r.URL.Path == "/v1/healthcheck"
+		},
 	}))
 	router.Use(requestIDHeader)
 	router.Use(app.enableCORS())
