@@ -8,6 +8,7 @@ import {
 } from 'framer-motion'
 import { ArrowDown } from 'lucide-react'
 import { HISTORY_MAP_SCENES } from './scenes'
+import SceneRenderer from './SceneRenderer'
 
 const SCROLL_HEIGHT_PER_STAGE = 120
 
@@ -35,7 +36,6 @@ export default function HistoryMap() {
     HISTORY_MAP_SCENES.length
   )
   const scene = HISTORY_MAP_SCENES[activeStep]
-  const Scene = scene.Component
 
   return (
     <MotionConfig reducedMotion="user">
@@ -57,7 +57,7 @@ export default function HistoryMap() {
           </div>
           <div>
             <AnimatePresence mode="wait" initial={false}>
-              <Scene key={scene.id} layer={scene.layer} />
+              <SceneRenderer key={scene.id} scene={scene} />
             </AnimatePresence>
           </div>
           <AnimatePresence>

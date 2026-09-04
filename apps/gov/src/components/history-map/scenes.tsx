@@ -1,6 +1,4 @@
-import FeatureMapScene from './FeatureMapScene'
-import OverlayMapScene from './OverlayMapScene'
-import VideoMapScene from './VideoMapScene'
+import { LAYER_FOUR_POI_SCENE } from './layerFour'
 import {
   HISTORY_MAP_LAYERS,
   LAYER_ONE_FEATURE_SCENE,
@@ -9,52 +7,43 @@ import {
   LAYER_THREE_VIDEO_SCENE,
   LAYER_TWO_FEATURE_SCENE
 } from './layers'
-import type { HistoryMapScene, HistoryMapSceneProps } from './sceneTypes'
-
-function LayerOneFeaturesScene(props: HistoryMapSceneProps) {
-  return <FeatureMapScene {...props} scene={LAYER_ONE_FEATURE_SCENE} />
-}
-
-function LayerTwoFeaturesScene(props: HistoryMapSceneProps) {
-  return <FeatureMapScene {...props} scene={LAYER_TWO_FEATURE_SCENE} />
-}
-
-function LayerThreeMapScene(props: HistoryMapSceneProps) {
-  return <OverlayMapScene {...props} scene={LAYER_THREE_MAP_SCENE} />
-}
-
-function LayerThreeVideoScene(props: HistoryMapSceneProps) {
-  return <VideoMapScene {...props} scene={LAYER_THREE_VIDEO_SCENE} />
-}
-
-function LayerThreeFeaturesScene(props: HistoryMapSceneProps) {
-  return <FeatureMapScene {...props} scene={LAYER_THREE_FEATURE_SCENE} />
-}
+import type { HistoryMapScene } from './sceneTypes'
 
 export const HISTORY_MAP_SCENES: readonly HistoryMapScene[] = [
   {
     id: 'before-1941-features',
     layer: HISTORY_MAP_LAYERS.before1941,
-    Component: LayerOneFeaturesScene
+    kind: 'features',
+    data: LAYER_ONE_FEATURE_SCENE
   },
   {
     id: 'occupation-features',
     layer: HISTORY_MAP_LAYERS.occupation,
-    Component: LayerTwoFeaturesScene
+    kind: 'features',
+    data: LAYER_TWO_FEATURE_SCENE
   },
   {
     id: 'postwar-map',
     layer: HISTORY_MAP_LAYERS.postwar,
-    Component: LayerThreeMapScene
+    kind: 'overlays',
+    data: LAYER_THREE_MAP_SCENE
   },
   {
     id: 'postwar-video',
     layer: HISTORY_MAP_LAYERS.postwar,
-    Component: LayerThreeVideoScene
+    kind: 'video',
+    data: LAYER_THREE_VIDEO_SCENE
   },
   {
     id: 'postwar-features',
     layer: HISTORY_MAP_LAYERS.postwar,
-    Component: LayerThreeFeaturesScene
+    kind: 'features',
+    data: LAYER_THREE_FEATURE_SCENE
+  },
+  {
+    id: 'present-day-pois',
+    layer: HISTORY_MAP_LAYERS.presentDay,
+    kind: 'pois',
+    data: LAYER_FOUR_POI_SCENE
   }
 ]

@@ -1,5 +1,10 @@
-import type { ComponentType } from 'react'
-import type { HistoryMapLayer } from './layers'
+import type {
+  HistoryMapFeatureSceneData,
+  HistoryMapLayer,
+  HistoryMapOverlaySceneData,
+  HistoryMapPoiSceneData,
+  HistoryMapVideoSceneData
+} from './layers'
 
 export type HistoryMapSceneProps = {
   layer: HistoryMapLayer
@@ -8,5 +13,9 @@ export type HistoryMapSceneProps = {
 export type HistoryMapScene = {
   id: string
   layer: HistoryMapLayer
-  Component: ComponentType<HistoryMapSceneProps>
-}
+} & (
+  | { kind: 'features'; data: HistoryMapFeatureSceneData }
+  | { kind: 'overlays'; data: HistoryMapOverlaySceneData }
+  | { kind: 'video'; data: HistoryMapVideoSceneData }
+  | { kind: 'pois'; data: HistoryMapPoiSceneData }
+)

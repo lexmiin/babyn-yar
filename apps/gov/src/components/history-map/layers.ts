@@ -116,6 +116,25 @@ export type HistoryMapVideoSceneData = {
   overview: readonly string[]
 }
 
+export type HistoryMapPoi = {
+  id: string
+  title: string
+  description: string
+  center: readonly [x: number, y: number]
+  image: {
+    src: string
+    alt: string
+  }
+}
+
+export type HistoryMapPoiSceneData = {
+  mapBase: HistoryMapBase
+  mapSource: string
+  BorderComponent: ComponentType<SVGProps<SVGSVGElement>>
+  pois: readonly HistoryMapPoi[]
+  overview: readonly string[]
+}
+
 const LAYER_ONE_FEATURES: readonly HistoryMapFeature[] = [
   {
     id: 'jewish-cemetery',
@@ -123,7 +142,11 @@ const LAYER_ONE_FEATURES: readonly HistoryMapFeature[] = [
     description: [
       'Рішення про побудову кладовища було ухвалене міською владою у 1888 році. Через брак коштів справа про відкриття нового єврейського кладовища тягнулася аж до 1894 р., коли єврейська громада нарешті зголосилася на асигнування потрібних сум на облаштування кладовища на Лук’янівці. Проект облаштування кладовища з потрібними спорудами (з них до сьогодні збереглася будівля колишньої контори кладовища) було складено ще 1892 р. і затверджено Київським губернським правлінням 1893 р. Перед німецько-радянською війною Єврейське кладовище займало площу близько 25 га. Під час окупації кладовище зазнало значної руйнації, нацисти використали значну частину надмогильних плит для побудови печей, на яких спалювали трупи розстріляних у Бабиному Яру. По війні поховання на цьому кладовищі подовжувалися до кінця 1940-х рр. Однак, згідно з Генеральним планом Києва, на місці усіх лук’янівських кладовищ мало бути створено паркову зону зі спорткомплексом, прокладено нові дороги. Тому міськрадою було ухвалено рішення про закриття кладовища і перенесення поховань на Куренівське єврейське кладовище. Остаточно Лук’янівське єврейське кладовище було ліквідовано згідно рішення 1962 р. У наступні десятиріччя значну частину території кладовища було забудовано, надгробки знищено.'
     ],
-    mapLabel: { anchor: [667, 414], width: 248 },
+    mapLabel: {
+      anchor: [667, 414],
+      lines: ['Лук’янівське Єврейське', 'кладовище'],
+      width: 248
+    },
     Component: Layer1Jew
   },
   {
@@ -141,7 +164,10 @@ const LAYER_ONE_FEATURES: readonly HistoryMapFeature[] = [
     description: [
       'Землю під це кладовище було відведено у 1902 році у розмірі 1926,5 кв. саж. Відомо, що поховання на цьому кладовищі здійснювалися ще у роки нацистської окупації. Коли саме було ухвалено рішення про його ліквідацію, наразі невідомо, але протягом 1960–1970-х рр. територію магометанського кладовища було значною мірою забудовано, жодних слідів поховань не збереглося.'
     ],
-    mapLabel: { anchor: [333, 413] },
+    mapLabel: {
+      anchor: [333, 413],
+      lines: ['Магометанське', 'кладовище']
+    },
     Component: Layer1Magomet
   },
   {
@@ -150,7 +176,11 @@ const LAYER_ONE_FEATURES: readonly HistoryMapFeature[] = [
     description: [
       'Перші поховання з’явилися на цьому місці ще наприкінці 18 століття. Кладовище досить швидко заповнювалося, і 1871 р. Київська міська управа одержала від Києво-Кирилівської богадільні документоване прохання на відведення нової ділянки під кладовище. Київський губернатор підтримав це прохання і 14 жовтня 1871 р. управа затвердила відведення у Кирилівському гаю місця для нового кладовища. На момент закриття 1929 р. кладовище займало територію площею 9,7 га. Нині майже всі надгробки і склепи на території Кирилівського православного кладовища знищено.'
     ],
-    mapLabel: { anchor: [700, 197], width: 248 },
+    mapLabel: {
+      anchor: [700, 197],
+      lines: ['Кирилівське православне', 'кладовище'],
+      width: 248
+    },
     Component: Layer1Kirill
   },
   {
@@ -485,13 +515,13 @@ const LAYER_THREE_FEATURES: readonly HistoryMapFeature[] = [
 ]
 
 export const HISTORY_MAP_BASE = {
-  src: '/assets/base_map.png',
+  src: '/assets/history-map/base_map_layer_1.png',
   alt: 'Історична топографічна карта території Бабиного Яру',
   aspectRatio: '894.14 / 783.2'
 } as const
 
 const LAYER_THREE_MAP_BASE = {
-  src: '/assets/history-map/BY_DigitalMaps_3_1.jpg',
+  src: '/assets/history-map/base_map_layer_3.jpg',
   alt: 'Історична карта території Бабиного Яру у 1943–1991 роках',
   aspectRatio: '894.14 / 783.2'
 } as const satisfies HistoryMapBase
@@ -534,6 +564,10 @@ export const HISTORY_MAP_LAYERS = {
   postwar: {
     id: 'postwar',
     title: 'Бабин Яр у 1943–1991 роках'
+  },
+  presentDay: {
+    id: 'present-day',
+    title: 'Незалежна Україна: повернення пам’яті'
   }
 } as const satisfies Record<string, HistoryMapLayer>
 

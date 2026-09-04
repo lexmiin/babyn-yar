@@ -24,6 +24,7 @@
     "@babyn-yar/i18n": "workspace:*",
     "@babyn-yar/schema": "workspace:*",
     "@babyn-yar/tiptap-utils": "workspace:*",
+    "@base-ui/react": "^1.7.0",
     "@heroicons/react": "^2.2.0",
     "@tailwindcss/typography": "^0.5.20",
     "@tailwindcss/vite": "^4.3.2",

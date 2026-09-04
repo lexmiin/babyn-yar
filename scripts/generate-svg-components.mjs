@@ -12,12 +12,17 @@ const HELP = `Usage:
   node scripts/generate-svg-components.mjs \\
     --input <svg-directory> \\
     --output <components.tsx> \\
-    --layer <positive-integer>
+    --layer <positive-integer> \\
+    [--include <regular-expression>] \\
+    [--mode <themeable|static>]
 
-The generator creates one named React component per *_neut.svg. Source names
-are converted to semantic exports, for example:
+The generator creates one named React component per matching SVG. By default it
+generates themeable components from *_neut.svg files. Use static mode for SVGs
+that should preserve their source appearance. Source names are converted to
+semantic exports, for example:
 
   BY_Bratske_neut.svg      -> Layer1Bratske
+  BY_Digital_Map_layer4_borders.svg -> Layer4Borders
 
 SVG IDs and class names are prefixed per component so multiple generated
 components can safely share one document. Territory fills can be themed with
@@ -48,15 +53,30 @@ function parseArguments(argv) {
   }
 
   const layer = Number(options.layer)
+  const mode = options.mode ?? 'themeable'
 
   if (!Number.isSafeInteger(layer) || layer < 1) {
     throw new Error('--layer must be a positive integer.')
   }
 
+  if (mode !== 'themeable' && mode !== 'static') {
+    throw new Error('--mode must be either "themeable" or "static".')
+  }
+
+  let include
+
+  try {
+    include = new RegExp(options.include ?? '_neut\\.svg$', 'i')
+  } catch {
+    throw new Error('--include must be a valid regular expression.')
+  }
+
   return {
     input: resolve(options.input),
     output: resolve(options.output),
-    layer
+    layer,
+    include,
+    mode
   }
 }
 
@@ -70,6 +90,7 @@ function toPascalCase(value) {
 
 function componentNameFor(sourceName, layer) {
   const stem = basename(sourceName, extname(sourceName))
+    .replace(/^BY_Digital_Map_layer\d+_/i, '')
     .replace(/^BY_/i, '')
     .replace(/_neut$/i, '')
   const subject = toPascalCase(stem)
@@ -143,10 +164,10 @@ function makeTerritoryFillThemeable(svg, sourceName) {
   return svg.replaceAll(classAttribute, themedAttribute)
 }
 
-async function generateComponent(svg, sourceName, componentName) {
+async function generateComponent(svg, sourceName, componentName, mode) {
   const sourceLabel = sourceName.replaceAll('*/', '* /')
   const component = await transform(
-    makeTerritoryFillThemeable(svg, sourceName),
+    mode === 'themeable' ? makeTerritoryFillThemeable(svg, sourceName) : svg,
     {
       dimensions: false,
       expandProps: 'end',
@@ -185,12 +206,17 @@ async function main() {
   const options = parseArguments(process.argv.slice(2))
   const entries = await readdir(options.input, { withFileTypes: true })
   const sourceNames = entries
-    .filter(entry => entry.isFile() && /_neut\.svg$/i.test(entry.name))
+    .filter(
+      entry =>
+        entry.isFile() &&
+        /\.svg$/i.test(entry.name) &&
+        options.include.test(entry.name)
+    )
     .map(entry => entry.name)
     .sort((left, right) => left.localeCompare(right, 'en'))
 
   if (sourceNames.length === 0) {
-    throw new Error(`No *_neut.svg files found in ${options.input}`)
+    throw new Error(`No matching SVG files found in ${options.input}`)
   }
 
   const components = []
@@ -207,7 +233,9 @@ async function main() {
 
     componentNames.add(componentName)
     const svg = await readFile(resolve(options.input, sourceName), 'utf8')
-    components.push(await generateComponent(svg, sourceName, componentName))
+    components.push(
+      await generateComponent(svg, sourceName, componentName, options.mode)
+    )
   }
 
   const prettierOptions = (await resolveConfig(resolve('package.json'))) ?? {}
