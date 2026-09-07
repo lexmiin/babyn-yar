@@ -1,3 +1,4 @@
+import MapImage from './MapImage'
 import {
   AnimatePresence,
   motion,
@@ -252,13 +253,7 @@ export default function FeatureMapScene({
         ease: [0.22, 1, 0.36, 1]
       }}
     >
-      <img
-        data-history-map-base
-        src={mapBase.src}
-        alt={mapBase.alt}
-        className="absolute inset-0 h-full w-full object-contain select-none"
-        draggable={false}
-      />
+      <MapImage mapBase={mapBase} />
 
       <div className="pointer-events-none absolute inset-0">
         <MapOverlays overlays={backgroundOverlays} />

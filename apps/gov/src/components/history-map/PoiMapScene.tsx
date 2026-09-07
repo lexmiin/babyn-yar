@@ -1,3 +1,4 @@
+import MapImage from './MapImage'
 import { Popover } from '@base-ui/react/popover'
 import { motion, type Transition } from 'framer-motion'
 import { X } from 'lucide-react'
@@ -169,13 +170,7 @@ export default function PoiMapScene({
           }}
           transition={{ duration: 0.36, ease: [0.22, 1, 0.36, 1] }}
         >
-          <img
-            data-history-map-base
-            src={mapBase.src}
-            alt={mapBase.alt}
-            className="absolute inset-0 h-full w-full object-contain select-none"
-            draggable={false}
-          />
+          <MapImage mapBase={mapBase} />
           <motion.div
             className="pointer-events-none absolute inset-0"
             initial={{ opacity: 0 }}

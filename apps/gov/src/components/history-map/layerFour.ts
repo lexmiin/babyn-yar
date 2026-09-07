@@ -157,7 +157,7 @@ const LAYER_FOUR_POI_CONTENT = {
 
 export const LAYER_FOUR_POI_SCENE = {
   mapBase: {
-    src: '/assets/history-map/base_map_layer_4.jpg',
+    id: 'presentDay',
     alt: 'Сучасна карта території Бабиного Яру',
     aspectRatio: '894.14 / 783.2'
   },

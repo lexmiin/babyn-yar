@@ -1,12 +1,14 @@
 import { motion } from 'framer-motion'
 import HistoryMapLayout from './HistoryMapLayout'
-import type { HistoryMapVideoSceneData } from './layers'
-import type { HistoryMapSceneProps } from './sceneTypes'
+import type { HistoryMapLayer, HistoryMapVideoSceneData } from './layers'
 
 export default function VideoMapScene({
   layer,
   scene
-}: HistoryMapSceneProps & { scene: HistoryMapVideoSceneData }) {
+}: {
+  layer: HistoryMapLayer
+  scene: HistoryMapVideoSceneData
+}) {
   const { aspectRatio, src, caption, overview } = scene
 
   return (

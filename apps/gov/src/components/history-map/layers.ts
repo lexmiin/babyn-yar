@@ -69,18 +69,15 @@ export type HistoryMapOverlay = {
   Component: ComponentType<SVGProps<SVGSVGElement>>
 }
 
-export type HistoryMapSelectableOverlay = HistoryMapOverlay & {
+type HistoryMapSelectableOverlay = HistoryMapOverlay & {
   label: string
   mapLabel: HistoryMapFeature['mapLabel']
 }
 
-export type HistoryMapSymbol = HistoryMapFeature & {
-  delay: number
-  duration?: number
-}
+export type HistoryMapSymbol = HistoryMapFeature & HistoryMapOverlay
 
 export type HistoryMapBase = {
-  src: string
+  id: 'before1941' | 'postwar' | 'presentDay'
   alt: string
   aspectRatio: string
 }
@@ -515,13 +512,13 @@ const LAYER_THREE_FEATURES: readonly HistoryMapFeature[] = [
 ]
 
 export const HISTORY_MAP_BASE = {
-  src: '/assets/history-map/base_map_layer_1.png',
+  id: 'before1941',
   alt: 'Історична топографічна карта території Бабиного Яру',
   aspectRatio: '894.14 / 783.2'
 } as const
 
 const LAYER_THREE_MAP_BASE = {
-  src: '/assets/history-map/base_map_layer_3.jpg',
+  id: 'postwar',
   alt: 'Історична карта території Бабиного Яру у 1943–1991 роках',
   aspectRatio: '894.14 / 783.2'
 } as const satisfies HistoryMapBase

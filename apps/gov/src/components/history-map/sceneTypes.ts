@@ -6,10 +6,6 @@ import type {
   HistoryMapVideoSceneData
 } from './layers'
 
-export type HistoryMapSceneProps = {
-  layer: HistoryMapLayer
-}
-
 export type HistoryMapScene = {
   id: string
   layer: HistoryMapLayer

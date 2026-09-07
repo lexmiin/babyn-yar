@@ -1,15 +1,18 @@
+import MapImage from './MapImage'
 import { motion } from 'framer-motion'
 import ActiveMapLabel from './ActiveMapLabel'
 import HistoryMapLayout from './HistoryMapLayout'
 import MapOverlays from './MapOverlays'
-import type { HistoryMapOverlaySceneData } from './layers'
-import type { HistoryMapSceneProps } from './sceneTypes'
+import type { HistoryMapLayer, HistoryMapOverlaySceneData } from './layers'
 import { useMapFeatureSelection } from './useMapFeatureSelection'
 
 export default function OverlayMapScene({
   layer,
   scene
-}: HistoryMapSceneProps & { scene: HistoryMapOverlaySceneData }) {
+}: {
+  layer: HistoryMapLayer
+  scene: HistoryMapOverlaySceneData
+}) {
   const { mapBase, mapSource, overlays, overview } = scene
   const { activeFeatureId, labelFeature, getFeatureControlProps } =
     useMapFeatureSelection(overlays)
@@ -41,13 +44,7 @@ export default function OverlayMapScene({
             ease: [0.22, 1, 0.36, 1]
           }}
         >
-          <img
-            data-history-map-base
-            src={mapBase.src}
-            alt={mapBase.alt}
-            className="absolute inset-0 h-full w-full object-contain select-none"
-            draggable={false}
-          />
+          <MapImage mapBase={mapBase} />
           <MapOverlays
             overlays={overlays}
             activeOverlayId={activeFeatureId}

@@ -1,6 +1,38 @@
 ---
 import HistoryMap from '@/components/history-map/HistoryMap'
 import BaseLayout from '@/layouts/BaseLayout.astro'
+import { getImage } from 'astro:assets'
+import type { ImageMetadata } from 'astro'
+import before1941 from '@/assets/history-map/base_map_layer_1.png'
+import postwar from '@/assets/history-map/base_map_layer_3.jpg'
+import presentDay from '@/assets/history-map/base_map_layer_4.jpg'
+import type { MapImages } from '@/components/history-map/MapImage'
+
+async function mapVariants(src: ImageMetadata) {
+  const widths = [480, 768, 1200, 1800, src.width]
+    .filter(width => width <= src.width)
+    .filter((width, index, all) => all.indexOf(width) === index)
+  const variants = await Promise.all(
+    widths.map(width => getImage({ src, width, format: 'webp', quality: 90 }))
+  )
+  return {
+    src: variants[variants.length - 1].src,
+    srcSet: variants
+      .map((image, index) => `${image.src} ${widths[index]}w`)
+      .join(', '),
+    width: src.width,
+    height: src.height
+  }
+}
+
+const [before1941Images, postwarImages, presentDayImages] = await Promise.all(
+  [before1941, postwar, presentDay].map(mapVariants)
+)
+const images: MapImages = {
+  before1941: before1941Images,
+  postwar: postwarImages,
+  presentDay: presentDayImages
+}
 ---
 
 <BaseLayout
@@ -8,5 +40,5 @@ import BaseLayout from '@/layouts/BaseLayout.astro'
   description="Історична карта Бабиного Яру та прилеглих територій до 1941 року."
   flushMobileFooter
 >
-  <HistoryMap client:load />
+  <HistoryMap client:load images={images} />
 </BaseLayout>
