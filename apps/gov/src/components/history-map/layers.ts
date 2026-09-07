@@ -48,6 +48,9 @@ export type HistoryMapFeature = {
   id: string
   label: string
   showLabel?: boolean
+  // Entrance timing in seconds; omitted values use the scene stagger.
+  delay?: number
+  duration?: number
   description: readonly string[]
   mapZIndex?: number
   mapLabel: {
@@ -352,6 +355,9 @@ const LAYER_TWO_SYMBOLS: readonly HistoryMapSymbol[] = [
 const LAYER_THREE_FEATURES: readonly HistoryMapFeature[] = [
   {
     id: 'layer3-lager',
+    // Former camp territory, then the housing and park around it.
+    delay: 0.24,
+    duration: 0.35,
     label: 'Територія колишнього Сирецького концтабору',
     mapZIndex: 1,
     description: [
@@ -366,6 +372,8 @@ const LAYER_THREE_FEATURES: readonly HistoryMapFeature[] = [
   },
   {
     id: 'layer3-sirec',
+    delay: 0.88,
+    duration: 0.35,
     label: 'Забудова мікрорайону Сирець',
     description: [
       'У другій половині 1940-х років міська влада ухвалила новий генеральний план забудови районів Сирця та Бабиного Яру, який передбачав будівництво нового житла та зміну вигляду території.'
@@ -379,6 +387,8 @@ const LAYER_THREE_FEATURES: readonly HistoryMapFeature[] = [
   },
   {
     id: 'layer3-park-2',
+    delay: 1.24,
+    duration: 0.35,
     label: 'Сирецький парк',
     description: [
       'Заснований у 1957 році на місці колишнього пустиря вздовж вулиці Парково-Сирецької у Шевченківському районі. Його головною історичною та відмінною рисою є відкрита у 1953 році Мала Південно-Західна, нині Київська дитяча, залізниця, яка стала невіддільною частиною зеленої зони.'
@@ -388,6 +398,8 @@ const LAYER_THREE_FEATURES: readonly HistoryMapFeature[] = [
   },
   {
     id: 'layer3-point-4',
+    delay: 1.56,
+    duration: 0.35,
     label: 'Сирецька дитяча залізниця та віадук',
     description: [
       'Київська дитяча залізниця (Мала Південно-Західна залізниця) була офіційно відкрита 2 серпня 1953 року. Вона має колію протяжністю 2,75 км та дві залізничні станції — «Вишеньку» та «Яблуньку».',
@@ -402,6 +414,9 @@ const LAYER_THREE_FEATURES: readonly HistoryMapFeature[] = [
   },
   {
     id: 'layer3-park',
+    // Reshaped terrain and a cemetery replaced by the television centre.
+    delay: 2.04,
+    duration: 0.35,
     label: 'Парк культури та відпочинку',
     description: [
       'З 1950-х років урочище, де відбувалися розстріли, систематично замулювали відходами цегельного заводу, щоб вирівняти рельєф і створити на місці масових розстрілів часів нацистської окупації звичайну зелену зону у вигляді парку культури та відпочинку. Це зрештою призвело до Куренівської трагедії 1961 року.',
@@ -416,6 +431,8 @@ const LAYER_THREE_FEATURES: readonly HistoryMapFeature[] = [
   },
   {
     id: 'layer3-point-1',
+    delay: 2.14,
+    duration: 0.35,
     label: 'Знищене Єврейське кладовище',
     description: [
       'У 1958 році частину могил з Єврейського кладовища перенесли на Берковецьке кладовище. У 1962 році кладовище закрили й розпочали його ліквідацію. Згодом на його території збудували Київський телецентр.'
@@ -429,6 +446,8 @@ const LAYER_THREE_FEATURES: readonly HistoryMapFeature[] = [
   },
   {
     id: 'layer3-point-2',
+    delay: 2.78,
+    duration: 0.35,
     label: 'Київський телецентр («Олівець»)',
     description: [
       'Відомий київський хмарочос заввишки 97 метрів будували у 1983–1992 роках. Спочатку телецентр планували розмістити на Печерську, але згодом перенесли на ділянку біля обласної лікарні, на місце Лук’янівського єврейського кладовища.',
@@ -443,6 +462,9 @@ const LAYER_THREE_FEATURES: readonly HistoryMapFeature[] = [
   },
   {
     id: 'layer3-karer',
+    // Quarry and pumping lead to accumulation behind the dam, then the flood.
+    delay: 3.78,
+    duration: 0.35,
     label: 'Кар’єр Петрівських цегельних заводів',
     description: [
       'У 1950 та 1952 роках виконком Київської міськради ухвалив рішення заповнювати Бабин Яр відходами виробництва Петрівських цегельних заводів, розташованих поблизу на Сирецькій вулиці, 33. Кар’єр був джерелом непридатних для виробництва цегли земляних порід.'
@@ -456,6 +478,8 @@ const LAYER_THREE_FEATURES: readonly HistoryMapFeature[] = [
   },
   {
     id: 'layer3-perekach',
+    delay: 4.22,
+    duration: 0.35,
     label: 'Перекачування пульпи для намиву Бабиного Яру',
     description: [
       'Непридатні для цегельного виробництва земляні породи змішували з водою й у вигляді пульпи трубами відводили у відроги Бабиного Яру.'
@@ -469,6 +493,8 @@ const LAYER_THREE_FEATURES: readonly HistoryMapFeature[] = [
   },
   {
     id: 'layer3-pulpa',
+    delay: 4.94,
+    duration: 0.65,
     label: 'Місце накопичення пульпи',
     description: [
       'За десять років до відрогів яру намили понад 4 мільйони кубічних метрів ґрунту, зокрема до відрогу № 3, де пізніше сталася аварія, — 3 мільйони 191 тисячу м³. Загальна площа намиву становила близько одного квадратного кілометра, а його шар сягав 30 метрів.'
@@ -482,6 +508,8 @@ const LAYER_THREE_FEATURES: readonly HistoryMapFeature[] = [
   },
   {
     id: 'layer3-damba',
+    delay: 4.58,
+    duration: 0.35,
     label: 'Земляна дамба',
     description: [
       'Намив виконували на висоті від 40 до 60 метрів над промисловим і житловим районом Куренівка. Замість передбаченої проєктом бетонної дамби спорудили земляну, яка не відповідала ані проєкту, ані нормам безпеки. 13 березня 1961 року дамба прорвалася.'
@@ -491,6 +519,8 @@ const LAYER_THREE_FEATURES: readonly HistoryMapFeature[] = [
   },
   {
     id: 'layer3-razliv',
+    delay: 5.59,
+    duration: 0.8,
     label: 'Куренівська трагедія',
     description: [
       '13 березня 1961 року маса рідкої пульпи ринула вниз. Початкова висота валу сягала 14 метрів, приблизна ширина — 14 метрів, а швидкість — 5 метрів за секунду. Пульпа дісталася Куренівки й залила площу близько 30 гектарів.',
@@ -501,6 +531,9 @@ const LAYER_THREE_FEATURES: readonly HistoryMapFeature[] = [
   },
   {
     id: 'layer3-point-3',
+    // Reveal the official monument before the final flood sequence.
+    delay: 3.38,
+    duration: 0.35,
     label: 'Радянський пам’ятник',
     description: [
       'Офіційний державний пам’ятник «Радянським громадянам і військовополоненим солдатам і офіцерам Радянської Армії, розстріляним німецькими фашистами в Бабиному Яру» встановили 2 липня 1976 року у верхів’ях Бабиного Яру. Пам’ятник є багатофігурною композицією з бронзи.',

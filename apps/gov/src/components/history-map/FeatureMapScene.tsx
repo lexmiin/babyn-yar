@@ -1,4 +1,5 @@
 import MapImage from './MapImage'
+import FloodReveal from './FloodReveal'
 import {
   AnimatePresence,
   motion,
@@ -24,12 +25,13 @@ const FEATURE_EXIT_DURATION_MS = 320
 const FEATURE_EXIT_STAGGER_MS = 55
 
 function getFeatureTransition(
-  index: number,
+  { delay, duration = 0.44 }: Pick<HistoryMapFeature, 'delay' | 'duration'>,
+  index = 0,
   initialDelayMs = FEATURE_INITIAL_DELAY_MS
 ): Transition {
   return {
-    duration: 0.44,
-    delay: (initialDelayMs + index * FEATURE_STAGGER_MS) / 1000,
+    duration,
+    delay: delay ?? (initialDelayMs + index * FEATURE_STAGGER_MS) / 1000,
     ease: [0.22, 1, 0.36, 1]
   }
 }
@@ -58,6 +60,8 @@ function FeatureOverlay({
   >['getFeatureControlProps']
   initialDelayMs: number
 }) {
+  const shouldReduceMotion = useReducedMotion()
+
   return (
     <AnimatePresence mode="wait">
       <motion.div
@@ -76,6 +80,18 @@ function FeatureOverlay({
         {features.map((feature, index) => {
           const { id, mapZIndex, Component } = feature
           const isActive = activeFeatureId === id
+          const revealFlood = id === 'layer3-razliv' && !shouldReduceMotion
+
+          const overlay = (
+            <Component
+              {...getFeatureControlProps(feature)}
+              className={`pointer-events-none absolute inset-0 h-full w-full cursor-pointer transition-[filter] duration-150 outline-none focus-visible:drop-shadow-[0_0_5px_#fff] [&_circle]:pointer-events-auto [&_path]:pointer-events-auto [&_polygon]:pointer-events-auto ${
+                isActive
+                  ? '[--territory-fill-opacity:.48] [--territory-fill:#941f37]'
+                  : '[--territory-fill-opacity:.3] [--territory-fill:#fff] hover:[--territory-fill-opacity:.48] hover:[--territory-fill:#941f37]'
+              }`}
+            />
+          )
 
           return (
             <motion.div
@@ -83,10 +99,14 @@ function FeatureOverlay({
               className="pointer-events-none absolute inset-0"
               style={{ zIndex: mapZIndex }}
               variants={{
-                hidden: { opacity: 0 },
+                hidden: {
+                  opacity: revealFlood ? 1 : 0
+                },
                 visible: {
                   opacity: 1,
-                  transition: getFeatureTransition(index, initialDelayMs)
+                  transition: {
+                    ...getFeatureTransition(feature, index, initialDelayMs)
+                  }
                 },
                 exit: {
                   opacity: 0,
@@ -94,14 +114,19 @@ function FeatureOverlay({
                 }
               }}
             >
-              <Component
-                {...getFeatureControlProps(feature)}
-                className={`pointer-events-none absolute inset-0 h-full w-full cursor-pointer transition-[filter] duration-150 focus-visible:drop-shadow-[0_0_5px_#fff] focus-visible:outline-none [&_circle]:pointer-events-auto [&_path]:pointer-events-auto [&_polygon]:pointer-events-auto ${
-                  isActive
-                    ? '[--territory-fill-opacity:.48] [--territory-fill:#941f37]'
-                    : '[--territory-fill-opacity:.3] [--territory-fill:#fff] hover:[--territory-fill-opacity:.48] hover:[--territory-fill:#941f37]'
-                }`}
-              />
+              {revealFlood ? (
+                <FloodReveal
+                  transition={getFeatureTransition(
+                    feature,
+                    index,
+                    initialDelayMs
+                  )}
+                >
+                  {overlay}
+                </FloodReveal>
+              ) : (
+                overlay
+              )}
             </motion.div>
           )
         })}
@@ -232,7 +257,10 @@ export default function FeatureMapScene({
   const featureListHeadingId = useId()
   const featureDetailsId = useId()
   const selectableFeatures = [...features, ...routes, ...symbols]
-  const listedFeatures = [...features, ...symbols]
+  const listedFeatures = [
+    ...features,
+    ...symbols.map(symbol => ({ ...symbol, duration: symbol.duration ?? 0.32 }))
+  ]
   const {
     activeFeature,
     activeFeatureId,
@@ -291,7 +319,7 @@ export default function FeatureMapScene({
             className="block"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={getFeatureTransition(0)}
+            transition={getFeatureTransition({})}
             exit={{
               opacity: 0,
               y: -10,
@@ -317,16 +345,20 @@ export default function FeatureMapScene({
             {featureLabel}
           </h2>
           <ul className="mt-3 grid gap-x-8 gap-y-1 text-base leading-snug sm:grid-cols-2 lg:text-lg">
-            {listedFeatures.map(({ id, label }, index) => (
+            {listedFeatures.map((feature, index) => (
               <motion.li
-                key={id}
+                key={feature.id}
                 className="flex gap-2"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={getFeatureTransition(index)}
+                transition={getFeatureTransition(
+                  feature,
+                  index,
+                  featureInitialDelayMs
+                )}
               >
                 <span aria-hidden="true">—</span>
-                <span>{label}</span>
+                <span>{feature.label}</span>
               </motion.li>
             ))}
           </ul>

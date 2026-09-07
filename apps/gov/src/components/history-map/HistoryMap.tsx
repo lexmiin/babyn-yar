@@ -92,7 +92,7 @@ export default function HistoryMap({ images }: { images: MapImages }) {
               {`Етап ${activeStep + 1} з ${HISTORY_MAP_SCENES.length}: ${scene.layer.title}`}
             </div>
             <div>
-              <AnimatePresence mode="wait" initial={false}>
+              <AnimatePresence mode="wait">
                 <SceneRenderer key={scene.id} scene={scene} />
               </AnimatePresence>
             </div>
