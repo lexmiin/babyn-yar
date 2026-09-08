@@ -4,6 +4,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro'
 import { getImage } from 'astro:assets'
 import type { ImageMetadata } from 'astro'
 import before1941 from '@/assets/history-map/base_map_layer_1.png'
+import occupation from '@/assets/history-map/base_map_layer_2.jpg'
 import postwar from '@/assets/history-map/base_map_layer_3.jpg'
 import presentDay from '@/assets/history-map/base_map_layer_4.jpg'
 import type { MapImages } from '@/components/history-map/MapImage'
@@ -25,11 +26,13 @@ async function mapVariants(src: ImageMetadata) {
   }
 }
 
-const [before1941Images, postwarImages, presentDayImages] = await Promise.all(
-  [before1941, postwar, presentDay].map(mapVariants)
-)
+const [before1941Images, occupationImages, postwarImages, presentDayImages] =
+  await Promise.all(
+    [before1941, occupation, postwar, presentDay].map(mapVariants)
+  )
 const images: MapImages = {
   before1941: before1941Images,
+  occupation: occupationImages,
   postwar: postwarImages,
   presentDay: presentDayImages
 }

@@ -80,7 +80,7 @@ type HistoryMapSelectableOverlay = HistoryMapOverlay & {
 export type HistoryMapSymbol = HistoryMapFeature & HistoryMapOverlay
 
 export type HistoryMapBase = {
-  id: 'before1941' | 'postwar' | 'presentDay'
+  id: 'before1941' | 'occupation' | 'postwar' | 'presentDay'
   alt: string
   aspectRatio: string
 }
@@ -550,6 +550,12 @@ export const HISTORY_MAP_BASE = {
   aspectRatio: '894.14 / 783.2'
 } as const
 
+const LAYER_TWO_MAP_BASE = {
+  id: 'occupation',
+  alt: 'Карта території Бабиного Яру під час нацистської окупації',
+  aspectRatio: '894.14 / 783.2'
+} as const satisfies HistoryMapBase
+
 const LAYER_THREE_MAP_BASE = {
   id: 'postwar',
   alt: 'Історична карта території Бабиного Яру у 1943–1991 роках',
@@ -620,7 +626,7 @@ export const LAYER_ONE_FEATURE_SCENE = {
 } as const satisfies HistoryMapFeatureSceneData
 
 export const LAYER_TWO_FEATURE_SCENE = {
-  mapBase: HISTORY_MAP_BASE,
+  mapBase: LAYER_TWO_MAP_BASE,
   mapSource: 'Джерело картографічної основи другого шару уточнюється',
   featureLabel: 'Об’єкти другого шару:',
   features: LAYER_TWO_FEATURES,
