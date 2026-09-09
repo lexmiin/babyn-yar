@@ -195,12 +195,14 @@ func TestWritePublicationsThroughHTTP(t *testing.T) {
 		assert.Zero(t, count)
 	})
 
-	t.Run("document values must be URLs", func(t *testing.T) {
-		invalidCommand := createCommand
-		invalidCommand.Documents = []string{"not a URL"}
-		response := createPublicationRequest(t, testAPI, publisherClient, invalidCommand)
-		defer response.Body.Close()
-		assert.Equal(t, http.StatusUnprocessableEntity, response.StatusCode)
+	t.Run("document values must be HTTPS URLs", func(t *testing.T) {
+		for _, document := range []string{"not a URL", "JaVaScRiPt://example/payload", "data://example/text/html,payload"} {
+			invalidCommand := createCommand
+			invalidCommand.Documents = []string{document}
+			response := createPublicationRequest(t, testAPI, publisherClient, invalidCommand)
+			response.Body.Close()
+			assert.Equal(t, http.StatusUnprocessableEntity, response.StatusCode)
+		}
 	})
 
 	var created publicationResponse

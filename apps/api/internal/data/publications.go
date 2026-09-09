@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"net/url"
+	"strings"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
@@ -151,9 +152,13 @@ func ValidatePublicationTranslation(v *validator.Validator, occurredOn time.Time
 	v.Check(len(fields.Content) > 0 && json.Valid(fields.Content), "content", "must be valid JSON")
 	v.Check(fields.Cover != "", "cover", "must not be empty")
 	for _, document := range fields.Documents {
-		parsed, err := url.ParseRequestURI(document)
-		v.Check(err == nil && parsed.Scheme != "" && parsed.Host != "", "documents", "must contain valid URLs")
+		v.Check(validPublicationDocumentURL(document), "documents", "must contain valid HTTPS URLs")
 	}
+}
+
+func validPublicationDocumentURL(document string) bool {
+	parsed, err := url.ParseRequestURI(document)
+	return err == nil && strings.EqualFold(parsed.Scheme, "https") && parsed.Host != ""
 }
 
 func (m PublicationModel) GetAll(kind string, locale string, missingLocale string, title string, filters Filters) ([]*PublicationSummary, Metadata, error) {
