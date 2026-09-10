@@ -120,5 +120,5 @@ _purge-cdn-cache:
         --request POST \
         "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/purge_cache" \
         --header "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
-        --json '{"hosts":["babynyar.gov.ua"]}' \
+        --json '{"tags":["babynyar-html"]}' \
         | jq -e '.success == true' >/dev/null
