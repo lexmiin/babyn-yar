@@ -6,6 +6,7 @@ babynyar.gov.ua {
 	@cacheableHTML method GET HEAD
 	header @cacheableHTML {
 		Cache-Control "public, max-age=0, must-revalidate"
+		Cache-Tag "babynyar-html"
 		defer
 		match {
 			status 200
