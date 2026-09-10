@@ -15,6 +15,11 @@ export default defineConfig({
         protocol: 'https',
         hostname: 'public.babynyar.work',
         pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'static.babynyar.work',
+        pathname: '/**'
       }
     ]
   },
