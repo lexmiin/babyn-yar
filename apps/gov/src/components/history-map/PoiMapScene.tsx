@@ -113,7 +113,7 @@ function PoiPopover({
               <Popover.Title className="text-lg leading-tight font-bold sm:text-xl">
                 {poi.title}
               </Popover.Title>
-              <Popover.Description className="text-base leading-relaxed text-neutral-700">
+              <Popover.Description className="text-base leading-relaxed whitespace-pre-line text-neutral-700">
                 {poi.description}
               </Popover.Description>
               <Popover.Close
