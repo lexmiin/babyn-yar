@@ -89,9 +89,9 @@ func (client *CloudflareClient) PurgePrefixes(ctx context.Context, prefixes []st
 	}
 	if !result.Success {
 		if len(result.Errors) > 0 {
-			return fmt.Errorf("Cloudflare purge failed (status %d, code %d): %s", response.StatusCode, result.Errors[0].Code, result.Errors[0].Message)
+			return fmt.Errorf("cloudflare purge failed (status %d, code %d): %s", response.StatusCode, result.Errors[0].Code, result.Errors[0].Message)
 		}
-		return fmt.Errorf("Cloudflare purge failed with status %d", response.StatusCode)
+		return fmt.Errorf("cloudflare purge failed with status %d", response.StatusCode)
 	}
 
 	return nil

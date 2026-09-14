@@ -37,6 +37,11 @@
         go-migrate-pg = pkgs.go-migrate.overrideAttrs (_oldAttrs: {
           tags = ["postgres"];
         });
+
+        # Staticcheck cannot analyze code targeting a newer Go version than its build toolchain.
+        gotools = pkgs.go-tools.override {
+          buildGoModule = pkgs.buildGoModule.override {go = pkgs.go;};
+        };
       in {
         formatter = pkgs.alejandra;
 
@@ -46,7 +51,7 @@
             pkgs.nodejs
             pkgs.air
             go-migrate-pg
-            pkgs.go-tools
+            gotools
             pkgs.govulncheck
             pkgs.just
             pkgs.rclone
