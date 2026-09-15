@@ -31,5 +31,8 @@ export const LAYER_FOUR_POI_POSITIONS = [
   { id: '13', center: [182.25, 701.47] },
   { id: '14', center: [150.01, 542.98] },
   { id: '15', center: [581.98, 576.51] },
-  { id: '16', center: [568.23, 548.51] }
+  { id: '16', center: [568.23, 548.51] },
+  { id: '17', center: [505.15, 348.88] },
+  { id: '18', center: [515.81, 271.22] },
+  { id: '19', center: [609.35, 299.1] }
 ] as const satisfies readonly HistoryMapPoiPosition[]
