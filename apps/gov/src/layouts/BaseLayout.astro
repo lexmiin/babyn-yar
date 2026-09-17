@@ -10,9 +10,15 @@ export interface Props {
   title: string
   description: string
   flushMobileFooter?: boolean
+  noindex?: boolean
 }
 
-const { title, description, flushMobileFooter = false } = Astro.props
+const {
+  title,
+  description,
+  flushMobileFooter = false,
+  noindex = false
+} = Astro.props
 const lang = getLang(Astro.currentLocale)
 const t = useTranslations(lang)
 const ogImage = lang === 'en' ? '/og-image-en.png' : '/og-image.png'
@@ -22,7 +28,13 @@ const ogImage = lang === 'en' ? '/og-image-en.png' : '/og-image.png'
 <html lang={lang}>
   <head>
     <Head />
-    <HeadSEO {title} {description} {ogImage} siteTitle={t('site.title')} />
+    <HeadSEO
+      {title}
+      {description}
+      {ogImage}
+      {noindex}
+      siteTitle={t('site.title')}
+    />
   </head>
   <body class="relative">
     <Header />

@@ -1,0 +1,315 @@
+---
+import { Image } from 'astro:assets'
+import type { ImageMetadata } from 'astro'
+import { LAYER_FOUR_POI_CONTENT } from './history-map/layerFour'
+import { PLACES_GUIDE_ASSIGNMENTS } from './history-map/placesGuide'
+
+interface Props {
+  lang: 'uk' | 'en'
+}
+
+const { lang } = Astro.props
+const labels =
+  lang === 'en'
+    ? {
+        all: 'View all',
+        navigation: 'Places guide',
+        previous: 'Previous place',
+        next: 'Next place',
+        descriptionUnavailable: 'The description has not yet been provided.',
+        unavailable: 'The description and image have not yet been provided.'
+      }
+    : {
+        all: 'Переглянути всі',
+        navigation: 'Путівник місцями',
+        previous: 'Попереднє місце',
+        next: 'Наступне місце',
+        descriptionUnavailable: 'Опис цього місця ще не надано.',
+        unavailable: 'Опис і зображення для цього місця ще не надані.'
+      }
+
+const imageModules = import.meta.glob<{ default: ImageMetadata }>(
+  '../assets/history-map/pois/*.webp',
+  { eager: true }
+)
+const imagesByFilename = Object.fromEntries(
+  Object.entries(imageModules).map(([path, module]) => [
+    path.split('/').pop(),
+    module.default
+  ])
+)
+
+const places = PLACES_GUIDE_ASSIGNMENTS.map(assignment => {
+  if (!('contentKey' in assignment)) {
+    const localized = lang === 'en' ? assignment.en : undefined
+    const filename = assignment.image?.src.split('/').pop()
+    return {
+      ...assignment,
+      title: localized?.title ?? assignment.assignedTitle,
+      description: localized?.description ?? assignment.description,
+      alt: localized?.alt ?? assignment.image?.alt,
+      image: filename ? imagesByFilename[filename] : undefined
+    }
+  }
+
+  const content = LAYER_FOUR_POI_CONTENT[assignment.contentKey]
+  const localized = lang === 'en' && 'en' in content ? content.en : undefined
+  const filename = content.image.src.split('/').pop()!
+  return {
+    ...assignment,
+    semanticId: content.semanticId,
+    title: localized?.title ?? content.title,
+    description: localized?.description ?? content.description,
+    alt: localized?.alt ?? content.image.alt,
+    image: imagesByFilename[filename]
+  }
+})
+---
+
+<section class="-mx-4 text-black md:mx-auto md:max-w-[60rem]" data-places-guide>
+  <nav
+    class="guide-nav relative z-[1] rounded-b-lg border border-[#dedede] bg-white shadow-[0_4px_12px_rgba(0,0,0,0.04)] md:rounded-lg"
+    aria-label={labels.navigation}
+  >
+    {
+      places.map(place => (
+        <span
+          class="pointer-events-none absolute top-0 size-px scroll-mt-32 opacity-0"
+          id={place.id}
+          aria-hidden="true"
+        />
+      ))
+    }
+    <div
+      class="grid grid-cols-[3rem_minmax(0,1fr)_3rem] items-center gap-1 px-1 pt-4 pb-3 md:grid-cols-[3.5rem_minmax(0,1fr)_3.5rem] md:px-3 md:pt-5 md:pb-4"
+    >
+      <button
+        class="grid size-11 cursor-pointer place-items-center border-0 bg-transparent focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#ec2125] disabled:cursor-default disabled:opacity-[0.22]"
+        type="button"
+        data-previous
+        aria-label={labels.previous}
+      >
+        <svg
+          class="w-7 fill-none stroke-current stroke-[1.75] [stroke-linecap:round] [stroke-linejoin:round]"
+          aria-hidden="true"
+          viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"></path></svg
+        >
+      </button>
+
+      <div
+        class="flex snap-x snap-mandatory [scrollbar-width:none] gap-3 overflow-x-auto overscroll-x-contain [&::-webkit-scrollbar]:hidden"
+        data-thumbnail-strip
+      >
+        {
+          places.map((place, index) => (
+            <a
+              class="thumbnail grid h-20 w-24 flex-[0_0_6rem] snap-center place-items-center overflow-hidden border-[3px] border-transparent bg-[#f1f1f1] text-base font-bold text-[#555] focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#ec2125] aria-[current=location]:border-[#ec2125] md:h-24 md:w-[7.5rem] md:basis-[7.5rem] [&_img]:h-full [&_img]:w-full [&_img]:object-cover"
+              href={`#${place.id}`}
+              data-guide-link
+              aria-label={`${index + 1}. ${place.title}`}
+            >
+              {place.image ? (
+                <Image
+                  src={place.image}
+                  alt=""
+                  widths={[160, 320]}
+                  sizes="96px"
+                  loading="lazy"
+                  decoding="async"
+                />
+              ) : (
+                <span aria-hidden="true">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+              )}
+            </a>
+          ))
+        }
+      </div>
+
+      <button
+        class="grid size-11 cursor-pointer place-items-center border-0 bg-transparent focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#ec2125] disabled:cursor-default disabled:opacity-[0.22]"
+        type="button"
+        data-next
+        aria-label={labels.next}
+      >
+        <svg
+          class="w-7 fill-none stroke-current stroke-[1.75] [stroke-linecap:round] [stroke-linejoin:round]"
+          aria-hidden="true"
+          viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg
+        >
+      </button>
+    </div>
+
+    <details class="group border-t border-[#dedede]" data-place-list>
+      <summary
+        class="flex min-h-14 cursor-pointer list-none items-center justify-center gap-2 px-4 py-3 text-base font-bold focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#ec2125] [&::-webkit-details-marker]:hidden"
+      >
+        <span>{labels.all}</span>
+        <svg
+          class="w-5 fill-none stroke-current stroke-[1.75] transition-transform duration-150 [stroke-linecap:round] [stroke-linejoin:round] group-open:rotate-180 motion-reduce:transition-none"
+          aria-hidden="true"
+          viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg
+        >
+      </summary>
+      <ol
+        class="m-0 grid max-h-[min(60vh,38rem)] list-none gap-1 overflow-y-auto px-4 pt-2 pb-5 md:grid-cols-2 md:px-6"
+      >
+        {
+          places.map(place => (
+            <li>
+              <a
+                class="block border-l-[3px] border-transparent px-3 py-[0.6rem] text-[1.05rem] leading-[1.2] focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#ec2125] aria-[current=location]:border-l-[#ec2125] aria-[current=location]:font-bold"
+                href={`#${place.id}`}
+                data-guide-link
+              >
+                {place.title}
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </details>
+  </nav>
+
+  <div class="mt-0 md:mt-4">
+    {
+      places.map(place => (
+        <article
+          hidden
+          data-guide-item
+          data-guide-id={place.id}
+          data-semantic-id={place.semanticId}
+        >
+          {place.image && place.alt ? (
+            <Image
+              class="aspect-3/2 w-full object-cover"
+              src={place.image}
+              alt={place.alt}
+              widths={[480, 768, 1200]}
+              sizes="(min-width: 1024px) 960px, (min-width: 768px) calc(100vw - 142px), calc(100vw - 32px)"
+              loading="lazy"
+              decoding="async"
+            />
+          ) : null}
+          <div class="max-w-[76ch] px-4 pt-8 pb-16 md:px-0">
+            <h1 class="mt-0 mb-6 text-[clamp(2rem,7vw,3.4rem)] leading-[1.04] font-bold">
+              {place.title}
+            </h1>
+            {place.description ? (
+              place.description
+                .split('\n\n')
+                .map(paragraph => (
+                  <p class="mt-[1em] text-[clamp(1.125rem,2vw,1.25rem)] leading-[1.45] first-of-type:mt-0">
+                    {paragraph}
+                  </p>
+                ))
+            ) : (
+              <p class="text-[clamp(1.125rem,2vw,1.25rem)] leading-[1.45] text-[#555]">
+                {place.image
+                  ? labels.descriptionUnavailable
+                  : labels.unavailable}
+              </p>
+            )}
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</section>
+
+<noscript>
+  <style>
+    article[data-guide-item][hidden] {
+      display: block !important;
+    }
+  </style>
+</noscript>
+
+<script>
+  const guide = document.querySelector('[data-places-guide]')
+
+  if (guide instanceof HTMLElement) {
+    const items = Array.from(
+      guide.querySelectorAll<HTMLElement>('[data-guide-item]')
+    )
+    const ids = items.map(item => item.dataset.guideId!)
+    const links = Array.from(
+      guide.querySelectorAll<HTMLAnchorElement>('[data-guide-link]')
+    )
+    const previous = guide.querySelector<HTMLButtonElement>('[data-previous]')
+    const next = guide.querySelector<HTMLButtonElement>('[data-next]')
+    const details = guide.querySelector<HTMLDetailsElement>('[data-place-list]')
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+
+    const selectFromHash = (initial = false) => {
+      let id = location.hash.slice(1)
+      if (!ids.includes(id)) {
+        id = ids[0]
+        history.replaceState(
+          null,
+          '',
+          `${location.pathname}${location.search}#${id}`
+        )
+      }
+
+      const index = ids.indexOf(id)
+      items.forEach(item => {
+        item.hidden = item.dataset.guideId !== id
+      })
+      links.forEach(link => {
+        const current = link.hash === `#${id}`
+        if (current) link.setAttribute('aria-current', 'location')
+        else link.removeAttribute('aria-current')
+      })
+      if (previous) previous.disabled = index === 0
+      if (next) next.disabled = index === ids.length - 1
+
+      const thumbnail = guide.querySelector<HTMLAnchorElement>(
+        `.thumbnail[href="#${CSS.escape(id)}"]`
+      )
+      const strip = thumbnail?.parentElement
+      if (thumbnail && strip) {
+        strip.scrollTo({
+          left:
+            thumbnail.offsetLeft -
+            strip.clientWidth / 2 +
+            thumbnail.clientWidth / 2,
+          behavior: initial || reduceMotion.matches ? 'instant' : 'smooth'
+        })
+      }
+      window.scrollTo(0, 0)
+    }
+
+    const step = (offset: number) => {
+      const index = Math.max(0, ids.indexOf(location.hash.slice(1)))
+      const nextId = ids[index + offset]
+      if (nextId) location.hash = nextId
+    }
+
+    previous?.addEventListener('click', () => step(-1))
+    next?.addEventListener('click', () => step(1))
+    details?.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        details.open = false
+      })
+    })
+    details?.addEventListener('toggle', () => {
+      if (!details.open) return
+      const current = details.querySelector<HTMLAnchorElement>('[aria-current]')
+      const list = current?.closest('ol')
+      if (current && list) {
+        list.scrollTo({
+          top:
+            current.offsetTop -
+            list.clientHeight / 2 +
+            current.clientHeight / 2,
+          behavior: reduceMotion.matches ? 'instant' : 'smooth'
+        })
+      }
+    })
+    window.addEventListener('hashchange', () => selectFromHash())
+    window.addEventListener('load', () => selectFromHash(true), { once: true })
+    selectFromHash(true)
+  }
+</script>

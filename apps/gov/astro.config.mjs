@@ -64,6 +64,8 @@ export default defineConfig({
     react(),
     mdx(),
     sitemap({
+      filter: page =>
+        !/\/(?:en\/)?guides\/places\/?$/.test(new URL(page).pathname),
       i18n: {
         defaultLocale: 'uk',
         locales: {
