@@ -1,0 +1,236 @@
+---
+import { Play, Pause, Rewind, FastForward } from 'lucide-react'
+interface Props {
+  title: string
+  src?: string
+  testAudio?: boolean
+}
+const { title, src, testAudio = false } = Astro.props
+---
+
+<section
+  class="player fixed inset-x-0 bottom-0 z-5 border-t border-[#ddd] bg-white px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-4px_20px_#00000008]"
+  aria-label={`Аудіоплеєр: ${title}`}
+>
+  <div class="mx-auto max-w-3xl">
+    {
+      testAudio && (
+        <p class="sample text-center text-sm text-[#626262]">
+          Тестове аудіо ·{' '}
+          <a
+            class="underline"
+            href="https://samplelib.com/sample-mp3.html"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Samplelib
+          </a>
+        </p>
+      )
+    }
+    <p
+      class="status mb-[0.4rem] text-center text-base text-[#626262]"
+      role="status"
+    >
+      {src ? 'Натисніть Play, щоб слухати' : 'Аудіо незабаром'}
+    </p>
+    {
+      src && (
+        <audio
+          class="w-full"
+          src={src}
+          preload="metadata"
+          controls
+          aria-label={title}
+        />
+      )
+    }
+    <div class="custom-controls" hidden={!!src}>
+      <div class="flex justify-between text-base tabular-nums">
+        <span data-elapsed>0:00</span><span data-duration></span>
+      </div>
+      <input
+        class="seek h-6 w-full cursor-pointer accent-black"
+        type="range"
+        min="0"
+        max="0"
+        value="0"
+        step="1"
+        disabled
+        aria-label="Позиція відтворення"
+      />
+      <div class="buttons mt-2 grid items-center justify-items-center">
+        <button
+          type="button"
+          class="col-start-2"
+          data-skip="-10"
+          disabled
+          aria-label="Назад на 10 секунд"
+          ><Rewind size={25} /><span>−10</span></button
+        >
+        <button
+          type="button"
+          class="play size-16 rounded-full bg-black text-white"
+          disabled
+          aria-label="Відтворити"
+          ><span data-play><Play size={30} fill="currentColor" /></span><span
+            data-pause
+            hidden><Pause size={30} fill="currentColor" /></span
+          ></button
+        >
+        <button
+          type="button"
+          data-skip="10"
+          disabled
+          aria-label="Вперед на 10 секунд"
+          ><FastForward size={25} /><span>+10</span></button
+        >
+        <label class="grid gap-[0.2rem] text-center text-sm"
+          >Швидкість<select
+            class="min-h-11 text-base text-black disabled:text-[#777]"
+            disabled
+            aria-label="Швидкість відтворення"
+            ><option value="0.75">0.75×</option><option value="1" selected
+              >1×</option
+            ><option value="1.25">1.25×</option><option value="1.5">1.5×</option
+            ><option value="2">2×</option></select
+          ></label
+        >
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const player = document.querySelector<HTMLElement>('.player')
+  if (player) {
+    new ResizeObserver(() => {
+      document.body.style.setProperty(
+        '--audio-player-height',
+        `${player.offsetHeight + 24}px`
+      )
+    }).observe(player)
+    const audio = player.querySelector('audio')
+    if (audio) {
+      const controls = player.querySelector<HTMLElement>('.custom-controls')!
+      const play = player.querySelector<HTMLButtonElement>('.play')!
+      const seek = player.querySelector<HTMLInputElement>('.seek')!
+      const speed = player.querySelector<HTMLSelectElement>('select')!
+      const status = player.querySelector<HTMLElement>('.status')!
+      const elapsed = player.querySelector<HTMLElement>('[data-elapsed]')!
+      const duration = player.querySelector<HTMLElement>('[data-duration]')!
+      const format = (seconds: number) =>
+        `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`
+      const update = () => {
+        const ready =
+          Number.isFinite(audio.duration) && audio.duration > 0 && !audio.error
+        seek.disabled = !ready
+        seek.max = ready ? String(audio.duration) : '0'
+        seek.value = String(audio.currentTime)
+        seek.setAttribute('aria-valuetext', format(audio.currentTime))
+        elapsed.textContent = format(audio.currentTime)
+        duration.textContent = ready ? format(audio.duration) : ''
+        player
+          .querySelectorAll<HTMLButtonElement>('[data-skip]')
+          .forEach(button => {
+            button.disabled = !ready
+          })
+        play.setAttribute('aria-label', audio.paused ? 'Відтворити' : 'Пауза')
+        player.querySelector<HTMLElement>('[data-play]')!.hidden = !audio.paused
+        player.querySelector<HTMLElement>('[data-pause]')!.hidden = audio.paused
+      }
+      play.disabled = false
+      speed.disabled = false
+      controls.hidden = false
+      audio.hidden = true
+      play.addEventListener('click', async () => {
+        if (!audio.paused) {
+          audio.pause()
+          return
+        }
+        try {
+          await audio.play()
+        } catch {
+          status.textContent = 'Не вдалося відтворити аудіо. Спробуйте ще раз.'
+        }
+      })
+      seek.addEventListener('input', () => {
+        audio.currentTime = Number(seek.value)
+        update()
+      })
+      player
+        .querySelectorAll<HTMLButtonElement>('[data-skip]')
+        .forEach(button => {
+          button.addEventListener('click', () => {
+            audio.currentTime = Math.max(
+              0,
+              Math.min(
+                audio.duration,
+                audio.currentTime + Number(button.dataset.skip)
+              )
+            )
+            update()
+          })
+        })
+      speed.addEventListener('change', () => {
+        audio.playbackRate = Number(speed.value)
+      })
+      for (const event of [
+        'loadedmetadata',
+        'durationchange',
+        'timeupdate',
+        'pause',
+        'ended'
+      ])
+        audio.addEventListener(event, update)
+      audio.addEventListener('play', () => {
+        status.textContent = 'Відтворення'
+        update()
+      })
+      audio.addEventListener('pause', () => {
+        status.textContent = audio.ended ? 'Аудіо завершено' : 'Пауза'
+      })
+      audio.addEventListener('ended', () => {
+        status.textContent = 'Аудіо завершено'
+      })
+      audio.addEventListener('error', () => {
+        status.textContent =
+          'Не вдалося завантажити аудіо. Перевірте з’єднання та оновіть сторінку.'
+        update()
+      })
+      update()
+    }
+  }
+</script>
+
+<style>
+  /* Equal space either side of the play button keeps it on the centerline. */
+  .buttons {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) 64px repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+  button {
+    display: grid;
+    justify-items: center;
+    align-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  button:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+  button:focus-visible,
+  select:focus-visible,
+  input:focus-visible {
+    outline: 2px solid #000;
+    outline-offset: 4px;
+  }
+  [hidden] {
+    display: none !important;
+  }
+</style>

@@ -1,0 +1,167 @@
+---
+import type { Language } from '@babyn-yar/i18n'
+import { ArrowLeft } from 'lucide-react'
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import AudioGuidePlayer from './AudioGuidePlayer.astro'
+import AudioGuideRoute from './AudioGuideRoute.astro'
+import { getAudioGuide, recordings } from '@/components/audio-guide'
+import { createLocalizedPath } from '@/i18n-routing'
+
+interface Props {
+  lang: Language
+  id?: string
+}
+const { lang, id } = Astro.props
+const guide = getAudioGuide(lang)
+const stop = guide.stops.find(stop => stop.id === id)
+const path = createLocalizedPath(lang)
+const recording = stop && recordings[lang]?.[stop.id]
+const testAudio = !!stop && !recording && import.meta.env.DEV
+---
+
+<BaseLayout
+  title={stop ? `${stop.title} — ${guide.title}` : guide.title}
+  description={stop ? stop.paragraphs[0] : guide.introduction}
+>
+  <article
+    class:list={[
+      'audio-guide mx-auto mt-12 mb-20 max-w-3xl max-[600px]:mt-6',
+      { 'has-player': stop }
+    ]}
+    lang={guide.language}
+  >
+    <header class:list={{ 'text-center': !stop }}>
+      {
+        stop && (
+          <a
+            class="mb-8 inline-flex items-center gap-1.5 text-lg"
+            href={path('/guides/audio')}
+          >
+            <ArrowLeft size={18} aria-hidden="true" />
+            <span>Про аудіогід</span>
+          </a>
+        )
+      }
+      <p class="mb-[0.6rem] text-[#626262]">
+        Аудіогід{stop && ` · Точка ${Number(stop.id)} з 5`}
+      </p>
+      <h1
+        class:list={[
+          'leading-[1.1] font-bold',
+          stop
+            ? 'text-[clamp(2.25rem,6vw,3.5rem)]'
+            : 'text-[clamp(2.75rem,7vw,4.5rem)] uppercase'
+        ]}
+      >
+        {stop ? stop.title : guide.title}
+      </h1>
+      {stop && <p class="mt-5 text-[#626262]">{stop.location}</p>}
+    </header>
+    {
+      stop ? (
+        <section
+          class="mt-10 leading-[1.55] [&_p+p]:mt-5"
+          aria-label="Про цю точку маршруту"
+        >
+          {stop.paragraphs.map(paragraph => (
+            <p>{paragraph}</p>
+          ))}
+          <a
+            class="mt-6 inline-block underline underline-offset-[0.2em]"
+            href={stop.map}
+          >
+            Відкрити точку в Google Maps ↗
+          </a>
+        </section>
+      ) : (
+        <section class="mt-10 text-center leading-[1.55] [&_p+p]:mt-5">
+          <p>{guide.introduction}</p>
+          <p class="font-bold">{guide.duration}</p>
+          <p>{guide.instructions}</p>
+        </section>
+      )
+    }
+    <nav class="route mt-14" aria-labelledby="route-title">
+      <h2
+        id="route-title"
+        class:list={stop ? 'mb-8 text-2xl font-bold' : 'sr-only'}
+      >
+        Маршрут аудіогіду
+      </h2>
+      {
+        !stop ? (
+          <AudioGuideRoute lang={lang} />
+        ) : (
+          <ol class="list-none p-0">
+            {guide.stops.map((item, index) => (
+              <li class="relative pb-7">
+                <a
+                  class="group relative flex gap-5 text-[#626262] aria-[current=page]:text-black"
+                  href={path(`/guides/audio/${item.id}`)}
+                  aria-current={item.id === id ? 'page' : undefined}
+                >
+                  <span
+                    class="grid h-8 shrink-0 grow-0 basis-8 place-items-center rounded-full bg-[#eee] text-base text-[#555] group-aria-[current=page]:bg-black group-aria-[current=page]:text-white"
+                    aria-hidden="true"
+                  >
+                    {index + 1}
+                  </span>
+                  <span>
+                    <>
+                      <strong class="block text-[1.4rem] leading-[1.2] group-hover:underline group-hover:underline-offset-[0.15em]">
+                        {item.title}
+                      </strong>
+                      <span class="mt-[0.4rem] block text-lg leading-[1.3]">
+                        {item.location}
+                      </span>
+                    </>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        )
+      }
+    </nav>
+    {
+      !stop && (
+        <section
+          class="mt-12 border-t border-[#ddd] pt-8 text-lg leading-normal [&_p+p]:mt-5"
+          aria-label="Про проєкт"
+        >
+          {guide.credits.map(credit => (
+            <p>{credit}</p>
+          ))}
+        </section>
+      )
+    }
+    {
+      stop && (
+        <AudioGuidePlayer
+          title={stop.title}
+          src={recording || (testAudio ? '/audio/test-speech.mp3' : undefined)}
+          testAudio={testAudio}
+        />
+      )
+    }
+  </article>
+</BaseLayout>
+
+<style>
+  /* The connector spans adjacent stops, independently of their text height. */
+  li:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 0.95rem;
+    top: 1rem;
+    bottom: -1rem;
+    border-left: 2px solid #bbb;
+  }
+  a:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 5px;
+  }
+  :global(body:has(.has-player)) {
+    padding-bottom: var(--audio-player-height, 15rem);
+  }
+</style>

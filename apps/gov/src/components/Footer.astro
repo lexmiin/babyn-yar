@@ -19,6 +19,9 @@ const { flushMobile = false } = Astro.props
 >
   <div class="flex flex-col items-start justify-between gap-4 md:flex-row">
     <FooterSection>
+      <FooterSectionItem href={translatePath('/guides/audio')}>
+        {lang === 'en' ? 'Audio guide' : 'Аудіогід'}
+      </FooterSectionItem>
       <FooterSectionItem href={translatePath('/partners')}>
         {t('footer.partners')}
       </FooterSectionItem>
