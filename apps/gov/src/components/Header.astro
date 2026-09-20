@@ -22,12 +22,12 @@ const logo = lang === 'en' ? logoEn : logoUk
 
 <header class="fixed top-0 z-10 w-full bg-white">
   <div
-    class="mx-auto flex items-start justify-between px-4 pt-8 pb-3 md:justify-normal md:px-8 lg:px-12"
+    class="mx-auto flex items-start justify-between px-4 pt-8 pb-3 lg:justify-normal lg:px-12"
   >
     <a
       href={translatePath('/')}
       aria-label="Go to home page"
-      class="md:mr-6 lg:mr-12"
+      class="lg:mr-12"
     >
       <Image
         src={logo}
@@ -38,7 +38,7 @@ const logo = lang === 'en' ? logoEn : logoUk
         class="w-44"
       />
     </a>
-    <nav class="flex items-center justify-end md:justify-between">
+    <nav class="flex items-center justify-end lg:justify-between">
       <HeaderSection>
         <HeaderLink href={translatePath('/events')}>
           {t('header.events')}
@@ -113,7 +113,7 @@ const logo = lang === 'en' ? logoEn : logoUk
           {t('header.gallery')}
         </HeaderLink>
       </HeaderSection>
-      <div class="md:border-l md:border-l-black">
+      <div class="lg:border-l lg:border-l-black">
         <LanugagePicker client:load lang={lang} paths={languagePaths} />
       </div>
       <MobileNavToggle client:load />
