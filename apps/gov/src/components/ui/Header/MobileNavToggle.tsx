@@ -5,6 +5,15 @@ export default function MobileNavToggle() {
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
+    const desktop = window.matchMedia('(min-width: 1024px)')
+    const closeOnDesktop = ({ matches }: MediaQueryListEvent) =>
+      matches && setOpen(false)
+
+    desktop.addEventListener('change', closeOnDesktop)
+    return () => desktop.removeEventListener('change', closeOnDesktop)
+  }, [])
+
+  useEffect(() => {
     const body = document.getElementsByTagName('body')[0]
     const nav = document.querySelector('#mobile-nav')
     if (open) {
@@ -20,7 +29,7 @@ export default function MobileNavToggle() {
 
   return (
     <button
-      className="inline-flex items-center justify-center md:hidden"
+      className="inline-flex items-center justify-center lg:hidden"
       aria-label="Toggle Mobile Nav"
       onClick={() => setOpen(!open)}
     >
