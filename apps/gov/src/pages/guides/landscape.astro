@@ -1,0 +1,282 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+
+const periods = [
+  {
+    date: 'до 1941',
+    description: 'Бабин Яр до початку Другої світової війни',
+    scene: 'before-1941-features',
+    column: 1
+  },
+  {
+    date: '29–30 вересня 1941',
+    description:
+      'Нацистські окупанти розстріляли в Бабиному Яру біля 34 тисячі київських євреїв',
+    scene: 'occupation-features',
+    column: 2
+  },
+  {
+    date: '1941–1943',
+    title: 'Період масових розстрілів',
+    description:
+      'Бабин Яр став місцем масових розстрілів жертв нацистських злочинів',
+    scene: 'occupation-features',
+    column: 4
+  },
+  {
+    date: '1943–1991',
+    title: 'Радянський період забудови',
+    description: 'Зміни території Бабиного Яру після війни',
+    scene: 'postwar-development',
+    column: 5
+  },
+  {
+    date: '13 березня 1961',
+    title: 'Куренівська трагедія',
+    description:
+      'Прорив дамби спричинив докорінну зміну ландшафту Бабиного Яру',
+    scene: 'postwar-flood',
+    column: 6
+  },
+  {
+    date: '1991 – 2022',
+    title: 'Незалежна Україна: повернення пам’яті',
+    description:
+      'Процес повернення пам’яті про всіх жертв Бабиного Яру та формування меморіального простору',
+    scene: 'present-day-pois',
+    column: 7
+  },
+  {
+    date: '2022 – наші дні',
+    title: 'Повномасштабна війна росії проти України',
+    description:
+      'Бабин Яр стає свідком чергової війни та нових злочинів російського тоталітарного режиму',
+    scene: 'present-day-pois',
+    column: 8
+  }
+]
+---
+
+<BaseLayout
+  title="Ландшафт Бабиного Яру"
+  description="Як змінювалися Бабин Яр і простір навколо нього: інтерактивна мапа та історичні періоди."
+>
+  <article class="mx-auto mt-8 mb-20 max-w-[110rem]">
+    <h1 class="mb-6 text-[clamp(2.25rem,3vw,3rem)] leading-[1.1] font-bold">
+      Про проєкт
+    </h1>
+    <div class="grid gap-x-16 gap-y-6 text-lg md:grid-cols-2">
+      <div class="space-y-6">
+        <p>
+          Ландшафт Бабиного Яру — проєкт з інтерактивною мапою, що показує, як
+          змінювалися Бабин Яр і простір навколо нього від 1941 року до
+          сьогодення та як на ці зміни впливала політика пам’яті різних
+          історичних періодів.
+        </p>
+        <p>
+          На мапі можна простежити історію Бабиного Яру за такими періодами: до
+          1941 року; 1941–1943 роки; 1943–1991 роки — радянський період, зокрема
+          забудова території та Куренівська трагедія; незалежна Україна;
+          сучасний стан.
+        </p>
+      </div>
+      <div class="space-y-6">
+        <p>
+          Проєкт також містить інформацію про основні пам’ятні знаки та об’єкти,
+          що формують сучасний меморіальний ландшафт Бабиного Яру.
+        </p>
+        <p>
+          Проєкт створено до 85 річниці трагедії Бабиного Яру Національним
+          історико-меморіальним заповідником «Бабин Яр» у співпраці з
+          Посольством Федеративної Республіки Німеччина в Києві.
+        </p>
+      </div>
+    </div>
+
+    <nav class="timeline mt-14 xl:mt-20" aria-labelledby="timeline-title">
+      <h2 id="timeline-title" class="mb-6 text-[2rem] font-bold">Бабин Яр</h2>
+      <ol class="list-none p-0">
+        {
+          periods.map((period, index) => (
+            <li
+              class:list={{ above: [1, 2, 4, 6].includes(index) }}
+              style={`--column: ${period.column}`}
+            >
+              <a
+                href={`/history#${period.scene}`}
+                class="group block leading-[1.1] no-underline focus-visible:outline-2 focus-visible:outline-offset-6 focus-visible:outline-current xl:text-[clamp(1rem,1.1vw,1.375rem)]"
+              >
+                <h3 class="font-bold underline-offset-[0.2em] group-hover:underline group-focus-visible:underline xl:min-h-15">
+                  <span class="block text-[1.5rem] xl:text-[clamp(1.25rem,1.4vw,1.75rem)]">
+                    {period.date}
+                  </span>
+                  {period.title && <span class="block">{period.title}</span>}
+                </h3>
+                <p class="mt-4 max-w-[32ch]">{period.description}</p>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </nav>
+  </article>
+</BaseLayout>
+
+<script>
+  const timeline = document.querySelector<HTMLOListElement>('.timeline ol')
+
+  if (
+    timeline &&
+    !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  ) {
+    const duration = 1800
+    timeline.style.setProperty('--draw-duration', `${duration}ms`)
+    const observer = new IntersectionObserver(
+      entries => {
+        if (!entries.some(entry => entry.isIntersecting)) return
+
+        const horizontal = window.matchMedia('(min-width: 1280px)').matches
+        const line = timeline.getBoundingClientRect()
+        for (const period of timeline.querySelectorAll('li')) {
+          const bounds = period.getBoundingClientRect()
+          const progress = horizontal
+            ? (bounds.left - line.left) / line.width
+            : (bounds.top - line.top + 8) / line.height
+          period.style.setProperty('--reveal-delay', `${progress * duration}ms`)
+        }
+        timeline.classList.add('running')
+        observer.disconnect()
+      },
+      { threshold: 0.1 }
+    )
+
+    timeline.classList.add('animated')
+    observer.observe(timeline)
+  }
+</script>
+
+<style>
+  ol {
+    position: relative;
+    --line-start: scaleY(0);
+    margin-left: 0.5rem;
+  }
+  ol::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-left: 1px solid #888;
+    transform-origin: top left;
+  }
+  li {
+    position: relative;
+    padding: 0 0 2rem 1.5rem;
+  }
+  li::before {
+    content: '';
+    position: absolute;
+    width: 0.875rem;
+    height: 0.875rem;
+    border-radius: 50%;
+    background: #231f20;
+    left: -0.46875rem;
+    top: 0.5rem;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    ol.animated::before {
+      animation: draw-line var(--draw-duration) linear both paused;
+    }
+    ol.animated li {
+      animation: reveal-period 400ms ease-out var(--reveal-delay, 0ms) both
+        paused;
+    }
+    ol.running::before,
+    ol.running li {
+      animation-play-state: running;
+    }
+    ol.animated li:focus-within {
+      animation: none;
+    }
+  }
+  @keyframes draw-line {
+    from {
+      transform: var(--line-start);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+  @keyframes reveal-period {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @media (min-width: 1280px) {
+    .timeline {
+      position: relative;
+      padding-left: 9rem;
+    }
+    h2 {
+      position: absolute;
+      left: 0;
+      top: 13rem;
+      margin: 0;
+      transform: translateY(-50%);
+    }
+    ol {
+      --line-start: scaleX(0);
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(9, minmax(0, 1fr));
+      grid-template-rows: 13rem auto;
+      margin: 0;
+    }
+    ol::before {
+      content: '';
+      position: absolute;
+      top: 13rem;
+      width: 100%;
+      height: 0;
+      border-left: 0;
+      border-top: 2px solid #231f20;
+    }
+    li {
+      grid-column: var(--column) / span 2;
+      grid-row: 2;
+      margin-left: 1rem;
+      padding: 4rem 0.75rem 0 1rem;
+      border: 0;
+    }
+    li::before {
+      top: -0.5rem;
+      width: 1.125rem;
+      height: 1.125rem;
+      left: -0.5625rem;
+    }
+    li::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 7rem;
+      border-left: 1px solid #888;
+    }
+    li.above {
+      grid-row: 1;
+      padding-top: 0;
+    }
+    li.above::before {
+      top: auto;
+      bottom: -0.625rem;
+    }
+    li.above::after {
+      top: auto;
+      bottom: 0;
+    }
+  }
+</style>

@@ -61,5 +61,9 @@ const poiImages: Record<string, MapImageSource> = Object.fromEntries(
   description="Історична карта Бабиного Яру та прилеглих територій до 1941 року."
   flushMobileFooter
 >
-  <HistoryMap client:load images={images} poiImages={poiImages} />
+  <!-- URL fragments are only available in the browser. Avoid rendering the
+       first scene on the server before the requested scene is known. -->
+  <HistoryMap client:only="react" images={images} poiImages={poiImages}>
+    <div slot="fallback" class="min-h-screen" aria-busy="true"></div>
+  </HistoryMap>
 </BaseLayout>

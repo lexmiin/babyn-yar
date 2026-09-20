@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import {
   AnimatePresence,
   MotionConfig,
@@ -20,7 +20,14 @@ const SCROLL_HEIGHT_PER_STAGE = 120
 
 function useActiveHistoryStep(stepCount: number) {
   const trackRef = useRef<HTMLElement>(null)
-  const [activeStep, setActiveStep] = useState(0)
+  const [activeStep, setActiveStep] = useState(() =>
+    Math.max(
+      0,
+      HISTORY_MAP_SCENES.findIndex(
+        scene => `#${scene.id}` === window.location.hash
+      )
+    )
+  )
   const { scrollYProgress } = useScroll({
     target: trackRef,
     offset: ['start start', 'end end']
@@ -33,6 +40,29 @@ function useActiveHistoryStep(stepCount: number) {
     )
     setActiveStep(current => (current === nextStep ? current : nextStep))
   })
+
+  useLayoutEffect(() => {
+    function scrollToScene() {
+      const index = HISTORY_MAP_SCENES.findIndex(
+        scene => `#${scene.id}` === window.location.hash
+      )
+      const track = trackRef.current
+      if (index < 0 || !track) return
+
+      // Land inside the scene's scroll range, away from rounding boundaries.
+      const progress = (index + 0.1) / stepCount
+      const top =
+        window.scrollY +
+        track.getBoundingClientRect().top +
+        progress * (track.offsetHeight - window.innerHeight)
+      window.scrollTo({ top, behavior: 'instant' })
+      setActiveStep(index)
+    }
+
+    scrollToScene()
+    window.addEventListener('hashchange', scrollToScene)
+    return () => window.removeEventListener('hashchange', scrollToScene)
+  }, [stepCount])
 
   return { activeStep, trackRef }
 }
