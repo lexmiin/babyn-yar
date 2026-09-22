@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg id="points" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 894.14 783.2">
+  <!-- Client pin: 50.4762085, 30.4534768. Position matched to paths west of the Menorah on the static map. -->
   <defs>
     <style>
       .cls-1 {
@@ -14,6 +15,6 @@
       }
     </style>
   </defs>
-  <circle class="cls-2" cx="182.25" cy="701.47" r="3.36"/>
-  <circle class="cls-1" cx="182.25" cy="701.47" r="5.53"/>
+  <circle class="cls-2" cx="374" cy="256" r="3.36"/>
+  <circle class="cls-1" cx="374" cy="256" r="5.53"/>
 </svg>

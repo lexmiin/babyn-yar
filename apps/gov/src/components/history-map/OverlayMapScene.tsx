@@ -51,6 +51,9 @@ export default function OverlayMapScene({
             getOverlayControlProps={getFeatureControlProps}
           />
           <ActiveMapLabel feature={labelFeature} />
+          {labelFeature?.extraLabels?.map(label => (
+            <ActiveMapLabel key={label.label} feature={label} />
+          ))}
         </motion.div>
       }
       mapAspectRatio={mapBase.aspectRatio}

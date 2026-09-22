@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import ActiveMapLabel from './ActiveMapLabel'
 import MapImage from './MapImage'
 import { Popover } from '@base-ui/react/popover'
 import { motion, type Transition } from 'framer-motion'
@@ -59,12 +61,14 @@ function PoiPopover({
   poi,
   index,
   poiCount,
-  image
+  image,
+  onLabelChange
 }: {
   poi: HistoryMapPoi
   index: number
   poiCount: number
   image: MapImageSource
+  onLabelChange: (poi: HistoryMapPoi | null) => void
 }) {
   return (
     <Popover.Root>
@@ -81,6 +85,10 @@ function PoiPopover({
         transition={getPoiEnterTransition(index)}
       >
         <Popover.Trigger
+          onMouseEnter={() => onLabelChange(poi)}
+          onMouseLeave={() => onLabelChange(null)}
+          onFocus={() => onLabelChange(poi)}
+          onBlur={() => onLabelChange(null)}
           aria-label={`Інформація про об’єкт: ${poi.title}`}
           className="group grid size-7 cursor-pointer place-items-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
         >
@@ -144,6 +152,7 @@ export default function PoiMapScene({
   scene: HistoryMapPoiSceneData
   images: Record<string, MapImageSource>
 }) {
+  const [labelPoi, setLabelPoi] = useState<HistoryMapPoi | null>(null)
   const { mapBase, mapSource, BorderComponent, pois, overview } = scene
 
   return (
@@ -206,11 +215,22 @@ export default function PoiMapScene({
             <PoiPopover
               key={poi.id}
               poi={poi}
+              onLabelChange={setLabelPoi}
               index={index}
               poiCount={pois.length}
               image={images[poi.image.src]}
             />
           ))}
+          <ActiveMapLabel
+            feature={
+              labelPoi
+                ? {
+                    label: labelPoi.title,
+                    mapLabel: { anchor: labelPoi.center }
+                  }
+                : null
+            }
+          />
         </motion.div>
       }
       mapAspectRatio={mapBase.aspectRatio}

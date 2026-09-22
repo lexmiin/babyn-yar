@@ -28,7 +28,7 @@ export const LAYER_FOUR_POI_POSITIONS = [
   { id: '10', center: [818.1, 207.61] },
   { id: '11', center: [394.77, 50.07] },
   { id: '12', center: [225.63, 589.63] },
-  { id: '13', center: [182.25, 701.47] },
+  { id: '13', center: [374, 256] },
   { id: '14', center: [150.01, 542.98] },
   { id: '15', center: [581.98, 576.51] },
   { id: '16', center: [568.23, 548.51] },

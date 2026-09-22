@@ -4,6 +4,7 @@
     <style>
       .cls-1 {
         fill: #fff;
+        mix-blend-mode: color;
       }
 
       .cls-1, .cls-2 {

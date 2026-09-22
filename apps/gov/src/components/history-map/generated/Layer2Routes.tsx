@@ -171,14 +171,14 @@ export function Layer2Way2({
         <RouteSegment
           points="1230.6 995.4 738.31 637.38 700.22 604.06 641.98 563.03 612.69 551.32 464.1 526.47 426.67 626 368.01 634.64 202.7 626.71 181.32 590.97"
           color="#f84048"
-          delay={2.57}
+          delay={0.15}
           duration={1.08}
           shouldReduceMotion={shouldReduceMotion}
         />
         <Arrowhead
           path="M172.79,576.72c6.5,5.22,15.73,11,23.31,13.47l-13.66,2.66-8.8,10.78c1.41-7.85.68-18.71-.85-26.91Z"
           color="#f84048"
-          delay={3.65}
+          delay={1.23}
           shouldReduceMotion={shouldReduceMotion}
         />
       </g>

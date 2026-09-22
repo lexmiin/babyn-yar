@@ -16,7 +16,7 @@ const guide = getAudioGuide(lang)
 const stop = guide.stops.find(stop => stop.id === id)
 const path = createLocalizedPath(lang)
 const recording = stop && recordings[lang]?.[stop.id]
-const testAudio = !!stop && !recording && import.meta.env.DEV
+const testAudio = !!stop && !recording
 ---
 
 <BaseLayout

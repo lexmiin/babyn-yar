@@ -59,9 +59,9 @@
       "component": "Layer2Way2",
       "color": "#f84048",
       "segments": [
-        { "type": "polyline", "index": 1, "delay": 2.57, "duration": 1.08 }
+        { "type": "polyline", "index": 1, "delay": 0.15, "duration": 1.08 }
       ],
-      "arrowheads": [{ "path": 0, "delay": 3.65 }]
+      "arrowheads": [{ "path": 0, "delay": 1.23 }]
     }
   ]
 }

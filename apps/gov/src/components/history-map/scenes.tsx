@@ -21,7 +21,35 @@ export const HISTORY_MAP_SCENES: readonly HistoryMapScene[] = [
     id: 'occupation-features',
     layer: HISTORY_MAP_LAYERS.occupation,
     kind: 'features',
-    data: LAYER_TWO_FEATURE_SCENE
+    data: {
+      ...LAYER_TWO_FEATURE_SCENE,
+      features: LAYER_TWO_FEATURE_SCENE.features.filter(feature =>
+        ['layer2-zone-1', 'layer2-zone-3'].includes(feature.id)
+      ),
+      routes: LAYER_TWO_FEATURE_SCENE.routes.filter(
+        route => route.id === 'layer2-way-2'
+      ),
+      symbols: LAYER_TWO_FEATURE_SCENE.symbols.filter(
+        symbol => symbol.id !== 'layer2-tank-2'
+      )
+    }
+  },
+  {
+    id: 'occupation-features-part-2',
+    layer: HISTORY_MAP_LAYERS.occupation,
+    kind: 'features',
+    data: {
+      ...LAYER_TWO_FEATURE_SCENE,
+      features: LAYER_TWO_FEATURE_SCENE.features.filter(feature =>
+        ['layer2-zone-2', 'layer2-zone-4'].includes(feature.id)
+      ),
+      routes: LAYER_TWO_FEATURE_SCENE.routes.filter(
+        route => route.id === 'layer2-way-1'
+      ),
+      symbols: LAYER_TWO_FEATURE_SCENE.symbols.filter(
+        symbol => symbol.id === 'layer2-tank-2'
+      )
+    }
   },
   {
     id: 'postwar-map',
