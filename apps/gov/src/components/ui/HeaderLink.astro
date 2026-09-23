@@ -1,12 +1,19 @@
 ---
 interface Props {
   href?: string
+  target?: string
+  rel?: string
 }
 
-const { href } = Astro.props
+const { href, target, rel } = Astro.props
 const Element = href ? 'a' : 'button'
 ---
 
-<Element href={href} class="block w-full hover:bg-black hover:text-white">
+<Element
+  href={href}
+  {target}
+  {rel}
+  class="block w-full hover:bg-black hover:text-white"
+>
   <slot />
 </Element>
