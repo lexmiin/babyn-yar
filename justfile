@@ -75,7 +75,7 @@ remote-sync user host:
 
 remote-deploy user host:
     just remote-sync {{ user }} {{ host }}
-    ssh {{ user }}@{{ host }} 'set -e; cd ~/babyn-yar; docker compose pull api admin gov; docker compose up -d --wait'
+    ssh {{ user }}@{{ host }} 'set -e; cd ~/babyn-yar; docker compose pull api admin gov; docker compose up -d --wait; docker compose exec -T caddy caddy reload --config /etc/caddy/Caddyfile --adapter caddyfile'
 
 [confirm("Are you sure you want to apply migrations on remote?")]
 remote-migrations-up user host:
