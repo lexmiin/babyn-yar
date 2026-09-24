@@ -24,7 +24,11 @@ const logo = lang === 'en' ? logoEn : logoUk
   <div
     class="mx-auto flex items-start justify-between px-4 pt-8 pb-3 lg:justify-normal lg:px-12"
   >
-    <a href={translatePath('/')} aria-label="Go to home page" class="lg:mr-12">
+    <a
+      href={translatePath('/')}
+      aria-label="Go to home page"
+      class="lg:mr-12"
+    >
       <Image
         src={logo}
         alt=""
@@ -61,15 +65,6 @@ const logo = lang === 'en' ? logoEn : logoUk
           </HeaderDropdownItem>
         </Fragment>
       </HeaderDropdown>
-      <HeaderSection>
-        <HeaderLink
-          href="https://archive.babynyar.gov.ua/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {t('header.archive')}
-        </HeaderLink>
-      </HeaderSection>
       <HeaderDropdown>
         <HeaderLink slot="trigger">{t('header.education')}</HeaderLink>
         <Fragment slot="list">
