@@ -80,5 +80,19 @@ export const getAudioGuide = (lang: Language) => ({
   language: translations[lang] ? lang : 'uk'
 })
 
-// Add each recording URL under its own locale when the final files arrive.
-export const recordings: Partial<Record<Language, Record<string, string>>> = {}
+export const recordings: Record<Language, Record<string, string>> = {
+  uk: {
+    '01': 'https://static.babynyar.work/audio/uk/01.mp3',
+    '02': 'https://static.babynyar.work/audio/uk/02.mp3',
+    '03': 'https://static.babynyar.work/audio/uk/03.mp3',
+    '04': 'https://static.babynyar.work/audio/uk/04.mp3',
+    '05': 'https://static.babynyar.work/audio/uk/05.mp3'
+  },
+  en: {
+    '01': 'https://static.babynyar.work/audio/en/01.mp3',
+    '02': 'https://static.babynyar.work/audio/en/02.mp3',
+    '03': 'https://static.babynyar.work/audio/en/03.mp3',
+    '04': 'https://static.babynyar.work/audio/en/04.mp3',
+    '05': 'https://static.babynyar.work/audio/en/05.mp3'
+  }
+}

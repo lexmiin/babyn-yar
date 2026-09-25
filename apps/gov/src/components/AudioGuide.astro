@@ -16,7 +16,6 @@ const guide = getAudioGuide(lang)
 const stop = guide.stops.find(stop => stop.id === id)
 const path = createLocalizedPath(lang)
 const recording = stop && recordings[lang]?.[stop.id]
-const testAudio = !!stop && !recording
 ---
 
 <BaseLayout
@@ -135,15 +134,7 @@ const testAudio = !!stop && !recording
         </section>
       )
     }
-    {
-      stop && (
-        <AudioGuidePlayer
-          title={stop.title}
-          src={recording || (testAudio ? '/audio/test-speech.mp3' : undefined)}
-          testAudio={testAudio}
-        />
-      )
-    }
+    {stop && <AudioGuidePlayer title={stop.title} src={recording} />}
   </article>
 </BaseLayout>
 

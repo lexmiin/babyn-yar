@@ -3,9 +3,8 @@ import { Play, Pause, Rewind, FastForward } from 'lucide-react'
 interface Props {
   title: string
   src?: string
-  testAudio?: boolean
 }
-const { title, src, testAudio = false } = Astro.props
+const { title, src } = Astro.props
 ---
 
 <section
@@ -13,21 +12,6 @@ const { title, src, testAudio = false } = Astro.props
   aria-label={`Аудіоплеєр: ${title}`}
 >
   <div class="mx-auto max-w-3xl">
-    {
-      testAudio && (
-        <p class="sample text-center text-sm text-[#626262]">
-          Тестове аудіо ·{' '}
-          <a
-            class="underline"
-            href="https://samplelib.com/sample-mp3.html"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Samplelib
-          </a>
-        </p>
-      )
-    }
     <p
       class="status mb-[0.4rem] text-center text-base text-[#626262]"
       role="status"
