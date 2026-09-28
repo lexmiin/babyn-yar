@@ -3,6 +3,7 @@ import type { LayerFourPoiId } from './layerFour'
 type PublishedGuideAssignment = {
   id: `poi-${string}`
   contentKey: LayerFourPoiId
+  guideImage?: string
 }
 
 type PendingGuideAssignment = {
@@ -30,8 +31,16 @@ export const PLACES_GUIDE_ASSIGNMENTS: readonly PlacesGuideAssignment[] = [
   { id: 'poi-03', contentKey: '06' },
   { id: 'poi-04', contentKey: '09' },
   { id: 'poi-05', contentKey: '13' },
-  { id: 'poi-06', contentKey: '05' },
-  { id: 'poi-07', contentKey: '14' },
+  {
+    id: 'poi-06',
+    contentKey: '05',
+    guideImage: '/assets/places-guide/06-children.webp'
+  },
+  {
+    id: 'poi-07',
+    contentKey: '14',
+    guideImage: '/assets/places-guide/07-olena-teliha.webp'
+  },
   { id: 'poi-08', contentKey: '02' },
   { id: 'poi-09', contentKey: '01' },
   { id: 'poi-10', contentKey: '04' },
@@ -43,10 +52,15 @@ export const PLACES_GUIDE_ASSIGNMENTS: readonly PlacesGuideAssignment[] = [
       'Автентичний Яр. Частина Бабиного Яру, що збереглася з 1941 року',
     description:
       'Ця місцевість не зазнала глобальних змін з часів початку масових розстрілів 1941 року в Бабиному Яру.',
+    image: {
+      src: '/assets/places-guide/12-authentic-ravine.webp',
+      alt: 'Збережені схили Бабиного Яру серед дерев'
+    },
     en: {
       title: 'Authentic Ravine. A Part of Babyn Yar Preserved Since 1941',
       description:
-        'This area has not undergone major changes since the beginning of the mass shootings at Babyn Yar in 1941.'
+        'This area has not undergone major changes since the beginning of the mass shootings at Babyn Yar in 1941.',
+      alt: 'Preserved slopes of Babyn Yar among trees'
     }
   },
   {
@@ -55,10 +69,15 @@ export const PLACES_GUIDE_ASSIGNMENTS: readonly PlacesGuideAssignment[] = [
     assignedTitle: 'Танко-ремонтний цех',
     description:
       'В цьому приміщенні примусово ночували євреї у ніч з 29 на 30 вересня 1941 року. Зараз це приміщення супермаркету “Сільпо”.',
+    image: {
+      src: '/assets/places-guide/13-tank-workshop.webp',
+      alt: 'Будівля супермаркету «Сільпо» на місці танко-ремонтного цеху'
+    },
     en: {
       title: 'Tank Repair Workshop',
       description:
-        'Jews were forced to spend the night in this building on the night of 29–30 September 1941. The building now houses a Silpo supermarket.'
+        'Jews were forced to spend the night in this building on the night of 29–30 September 1941. The building now houses a Silpo supermarket.',
+      alt: 'The Silpo supermarket building at the tank repair workshop site'
     }
   },
   {

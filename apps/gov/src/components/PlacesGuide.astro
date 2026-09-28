@@ -29,7 +29,7 @@ const labels =
       }
 
 const imageModules = import.meta.glob<{ default: ImageMetadata }>(
-  '../assets/history-map/pois/*.webp',
+  ['../assets/history-map/pois/*.webp', '../assets/places-guide/*.webp'],
   { eager: true }
 )
 const imagesByFilename = Object.fromEntries(
@@ -54,7 +54,9 @@ const places = PLACES_GUIDE_ASSIGNMENTS.map(assignment => {
 
   const content = LAYER_FOUR_POI_CONTENT[assignment.contentKey]
   const localized = lang === 'en' && 'en' in content ? content.en : undefined
-  const filename = content.image.src.split('/').pop()!
+  const filename = (assignment.guideImage ?? content.image.src)
+    .split('/')
+    .pop()!
   return {
     ...assignment,
     semanticId: content.semanticId,
