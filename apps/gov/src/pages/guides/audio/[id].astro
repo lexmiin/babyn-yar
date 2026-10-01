@@ -1,0 +1,9 @@
+---
+import AudioGuide from '@/components/AudioGuide.astro'
+import { getAudioGuide } from '@/components/audio-guide'
+export function getStaticPaths() {
+  return getAudioGuide('uk').stops.map(({ id }) => ({ params: { id } }))
+}
+---
+
+<AudioGuide lang="uk" id={Astro.params.id} />
