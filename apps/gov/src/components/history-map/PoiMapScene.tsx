@@ -10,10 +10,10 @@ import {
   type HistoryMapPoiPosition
 } from './generated/Layer4PoiPositions'
 import type {
-  HistoryMapLayer,
+  HistoryMapPeriod,
   HistoryMapPoi,
   HistoryMapPoiSceneData
-} from './layers'
+} from './mapTypes'
 import type { MapImageSource } from './MapImage'
 
 const OVERLAY_ENTER_EASE = [0.22, 1, 0.36, 1] as const
@@ -144,11 +144,11 @@ function PoiPopover({
 }
 
 export default function PoiMapScene({
-  layer,
+  period,
   scene,
   images
 }: {
-  layer: HistoryMapLayer
+  period: HistoryMapPeriod
   scene: HistoryMapPoiSceneData
   images: Record<string, MapImageSource>
 }) {
@@ -165,7 +165,7 @@ export default function PoiMapScene({
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.44, ease: [0.22, 1, 0.36, 1] }}
         >
-          {layer.title}
+          {period.title}
         </motion.span>
       }
       map={

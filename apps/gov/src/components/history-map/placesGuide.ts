@@ -1,8 +1,8 @@
-import type { LayerFourPoiId } from './layerFour'
+import type { PresentDayPoiId } from './presentDay'
 
 type PublishedGuideAssignment = {
   id: `poi-${string}`
-  contentKey: LayerFourPoiId
+  contentKey: PresentDayPoiId
   guideImage?: string
 }
 

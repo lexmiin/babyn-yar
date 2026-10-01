@@ -12,8 +12,8 @@ const HELP = `Usage:
     --output <components.tsx>
 
 The topology config selects, splits, and reverses geometry from Illustrator
-route SVGs. The generated components use Framer Motion for visible strokes and
-arrowheads, while pointer hit targets remain ordinary SVG polylines.
+route SVGs. Period authoring supplies segment and arrowhead timing in that
+topology order. Pointer hit targets remain ordinary SVG polylines.
 `
 
 function parseArguments(argv) {
@@ -119,27 +119,31 @@ function routeComponent(route, geometry) {
 
   return `
     /** Generated from ${route.source} using the explicit route topology config. */
-    export function ${route.component}({ shouldReduceMotion, ...props }: HistoryMapRouteProps) {
+    export function ${route.component}({ shouldReduceMotion, timing, ...props }: HistoryMapRouteProps) {
+      if (timing.segments.length !== ${segments.length} || timing.arrowheads.length !== ${arrowheads.length}) {
+        throw new Error('${route.component} timing must match route topology (${segments.length} segments, ${arrowheads.length} arrowheads).')
+      }
+
       return (
         <svg viewBox={VIEW_BOX} {...props}>
           <g aria-hidden="true" pointerEvents="none">
             ${segments
               .map(
-                segment => `<RouteSegment
+                (segment, index) => `<RouteSegment
                   points=${JSON.stringify(segment.points)}
                   color=${JSON.stringify(route.color)}
-                  delay={${segment.delay}}
-                  duration={${segment.duration}}
+                  delay={timing.segments[${index}].delay}
+                  duration={timing.segments[${index}].duration}
                   shouldReduceMotion={shouldReduceMotion}
                 />`
               )
               .join('\n')}
             ${arrowheads
               .map(
-                arrowhead => `<Arrowhead
+                (arrowhead, index) => `<Arrowhead
                   path=${JSON.stringify(arrowhead.path)}
                   color=${JSON.stringify(route.color)}
-                  delay={${arrowhead.delay}}
+                  delay={timing.arrowheads[${index}]}
                   shouldReduceMotion={shouldReduceMotion}
                 />`
               )
@@ -181,8 +185,15 @@ async function main() {
     const VIEW_BOX = '0 0 894.14 783.2'
     const ROUTE_EASE = [0.4, 0, 0.2, 1] as const
 
+    // ponytail: timing uses topology order; use named segments if route reordering becomes common.
+    export type HistoryMapRouteTiming = {
+      segments: readonly { delay: number; duration: number }[]
+      arrowheads: readonly number[]
+    }
+
     export type HistoryMapRouteProps = SVGProps<SVGSVGElement> & {
       shouldReduceMotion: boolean
+      timing: HistoryMapRouteTiming
     }
 
     function drawTransition(shouldReduceMotion: boolean, delay: number, duration: number) {

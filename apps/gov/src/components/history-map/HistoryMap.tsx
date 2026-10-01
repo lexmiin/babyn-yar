@@ -130,7 +130,7 @@ export default function HistoryMap({
               aria-atomic="true"
               className="sr-only"
             >
-              {`Етап ${activeStep + 1} з ${HISTORY_MAP_SCENES.length}: ${scene.layer.title}`}
+              {`Етап ${activeStep + 1} з ${HISTORY_MAP_SCENES.length}: ${scene.period.title}`}
             </div>
             <div>
               <AnimatePresence mode="wait">

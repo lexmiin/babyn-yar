@@ -14,15 +14,15 @@ export default function SceneRenderer({
 }) {
   switch (scene.kind) {
     case 'features':
-      return <FeatureMapScene layer={scene.layer} scene={scene.data} />
+      return <FeatureMapScene period={scene.period} scene={scene.data} />
     case 'overlays':
-      return <OverlayMapScene layer={scene.layer} scene={scene.data} />
+      return <OverlayMapScene period={scene.period} scene={scene.data} />
     case 'video':
-      return <VideoMapScene layer={scene.layer} scene={scene.data} />
+      return <VideoMapScene period={scene.period} scene={scene.data} />
     case 'pois':
       return (
         <PoiMapScene
-          layer={scene.layer}
+          period={scene.period}
           scene={scene.data}
           images={poiImages}
         />

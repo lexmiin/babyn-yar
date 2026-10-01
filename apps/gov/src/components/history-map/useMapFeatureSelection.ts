@@ -1,5 +1,5 @@
 import { useState, type FocusEvent, type KeyboardEvent } from 'react'
-import type { HistoryMapFeature } from './layers'
+import type { HistoryMapFeature } from './mapTypes'
 
 type SelectableMapFeature = Pick<HistoryMapFeature, 'id' | 'label'>
 

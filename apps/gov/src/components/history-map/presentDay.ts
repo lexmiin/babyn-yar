@@ -1,19 +1,20 @@
 import { LAYER_FOUR_POI_POSITIONS } from './generated/Layer4PoiPositions'
 import { Layer4Borders } from './generated/Layer4Svgs'
-import type { HistoryMapPoi, HistoryMapPoiSceneData } from './layers'
+import type { HistoryMapPoi, HistoryMapPoiSceneData } from './mapTypes'
+import type { HistoryMapScene } from './sceneTypes'
 
-export type LayerFourPoiId = (typeof LAYER_FOUR_POI_POSITIONS)[number]['id']
+export type PresentDayPoiId = (typeof LAYER_FOUR_POI_POSITIONS)[number]['id']
 type LocalizedPoiContent = Pick<HistoryMapPoi, 'title' | 'description'> & {
   alt: string
 }
-type LayerFourPoiContent = Omit<HistoryMapPoi, 'id' | 'center'> & {
+type PresentDayPoiContent = Omit<HistoryMapPoi, 'id' | 'center'> & {
   semanticId: string
   en?: LocalizedPoiContent
 }
 
 const POI_IMAGE_ROOT = '/assets/history-map/pois'
 
-export const LAYER_FOUR_POI_CONTENT = {
+export const PRESENT_DAY_POI_CONTENT = {
   '01': {
     semanticId: 'soviet-monument',
     title:
@@ -276,9 +277,9 @@ export const LAYER_FOUR_POI_CONTENT = {
       alt: 'Символічна синагога «Місце для роздумів»'
     }
   }
-} as const satisfies Record<LayerFourPoiId, LayerFourPoiContent>
+} as const satisfies Record<PresentDayPoiId, PresentDayPoiContent>
 
-export const LAYER_FOUR_POI_SCENE = {
+export const PRESENT_DAY_POI_SCENE = {
   mapBase: {
     id: 'presentDay',
     alt: 'Сучасна карта території Бабиного Яру',
@@ -287,7 +288,7 @@ export const LAYER_FOUR_POI_SCENE = {
   mapSource: 'Картографічна основа четвертого шару',
   BorderComponent: Layer4Borders,
   pois: LAYER_FOUR_POI_POSITIONS.map(({ id, center }) => {
-    const { title, description, image } = LAYER_FOUR_POI_CONTENT[id]
+    const { title, description, image } = PRESENT_DAY_POI_CONTENT[id]
     return { id: `layer4-poi-${id}`, center, title, description, image }
   }),
   overview: [
@@ -307,3 +308,15 @@ export const LAYER_FOUR_POI_SCENE = {
     'У Виставковому центрі також працюють Кіноклуб і Книжковий клуб. У межах Кіноклубу спільно з Гете-Інститутом, Французьким інститутом та Польським інститутом в Україні відбуваються покази тематичного документального кіно. Книжковий клуб проводить публічні обговорення важливих сучасних видань про Голокост, Бабин Яр та культуру пам’яті.'
   ]
 } as const satisfies HistoryMapPoiSceneData
+
+export const PRESENT_DAY_SCENES = [
+  {
+    id: 'present-day-pois',
+    period: {
+      id: 'present-day',
+      title: 'Незалежна Україна: повернення пам’яті'
+    },
+    kind: 'pois',
+    data: PRESENT_DAY_POI_SCENE
+  }
+] as const satisfies readonly HistoryMapScene[]

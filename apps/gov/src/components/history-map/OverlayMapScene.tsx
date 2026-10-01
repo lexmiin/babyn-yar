@@ -3,14 +3,14 @@ import { motion } from 'framer-motion'
 import ActiveMapLabel from './ActiveMapLabel'
 import HistoryMapLayout from './HistoryMapLayout'
 import MapOverlays from './MapOverlays'
-import type { HistoryMapLayer, HistoryMapOverlaySceneData } from './layers'
+import type { HistoryMapPeriod, HistoryMapOverlaySceneData } from './mapTypes'
 import { useMapFeatureSelection } from './useMapFeatureSelection'
 
 export default function OverlayMapScene({
-  layer,
+  period,
   scene
 }: {
-  layer: HistoryMapLayer
+  period: HistoryMapPeriod
   scene: HistoryMapOverlaySceneData
 }) {
   const { mapBase, mapSource, overlays, overview } = scene
@@ -30,7 +30,7 @@ export default function OverlayMapScene({
             ease: [0.22, 1, 0.36, 1]
           }}
         >
-          {layer.title}
+          {period.title}
         </motion.span>
       }
       map={

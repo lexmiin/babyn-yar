@@ -1,14 +1,14 @@
 import type {
   HistoryMapFeatureSceneData,
-  HistoryMapLayer,
+  HistoryMapPeriod,
   HistoryMapOverlaySceneData,
   HistoryMapPoiSceneData,
   HistoryMapVideoSceneData
-} from './layers'
+} from './mapTypes'
 
 export type HistoryMapScene = {
   id: string
-  layer: HistoryMapLayer
+  period: HistoryMapPeriod
 } & (
   | { kind: 'features'; data: HistoryMapFeatureSceneData }
   | { kind: 'overlays'; data: HistoryMapOverlaySceneData }

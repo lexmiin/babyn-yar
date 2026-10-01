@@ -8,8 +8,15 @@ import type { SVGProps } from 'react'
 const VIEW_BOX = '0 0 894.14 783.2'
 const ROUTE_EASE = [0.4, 0, 0.2, 1] as const
 
+// ponytail: timing uses topology order; use named segments if route reordering becomes common.
+export type HistoryMapRouteTiming = {
+  segments: readonly { delay: number; duration: number }[]
+  arrowheads: readonly number[]
+}
+
 export type HistoryMapRouteProps = SVGProps<SVGSVGElement> & {
   shouldReduceMotion: boolean
+  timing: HistoryMapRouteTiming
 }
 
 function drawTransition(
@@ -77,69 +84,76 @@ function Arrowhead({
 /** Generated from BY_way1.svg using the explicit route topology config. */
 export function Layer2Way1({
   shouldReduceMotion,
+  timing,
   ...props
 }: HistoryMapRouteProps) {
+  if (timing.segments.length !== 6 || timing.arrowheads.length !== 3) {
+    throw new Error(
+      'Layer2Way1 timing must match route topology (6 segments, 3 arrowheads).'
+    )
+  }
+
   return (
     <svg viewBox={VIEW_BOX} {...props}>
       <g aria-hidden="true" pointerEvents="none">
         <RouteSegment
           points="-156.05 932.53 -9.63 616.93 82.61 614.06"
           color="#c2ecee"
-          delay={2.45}
-          duration={0.38}
+          delay={timing.segments[0].delay}
+          duration={timing.segments[0].duration}
           shouldReduceMotion={shouldReduceMotion}
         />
         <RouteSegment
           points="1237.18 990.33 744.07 631.99 645.14 556.98 614.86 544.64 459.62 518.45 422.25 620.02 368.26 627.28 82.61 614.06"
           color="#c2ecee"
-          delay={2.45}
-          duration={0.92}
+          delay={timing.segments[1].delay}
+          duration={timing.segments[1].duration}
           shouldReduceMotion={shouldReduceMotion}
         />
         <RouteSegment
           points="82.61 614.06 134.79 413.73 188.69 376.65"
           color="#c2ecee"
-          delay={3.19}
-          duration={0.3}
+          delay={timing.segments[2].delay}
+          duration={timing.segments[2].duration}
           shouldReduceMotion={shouldReduceMotion}
         />
         <RouteSegment
           points="459.62 518.45 297.3 491.87"
           color="#c2ecee"
-          delay={2.93}
-          duration={0.24}
+          delay={timing.segments[3].delay}
+          duration={timing.segments[3].duration}
           shouldReduceMotion={shouldReduceMotion}
         />
         <RouteSegment
           points="297.3 491.87 202.9 523.9"
           color="#c2ecee"
-          delay={3.13}
-          duration={0.22}
+          delay={timing.segments[4].delay}
+          duration={timing.segments[4].duration}
           shouldReduceMotion={shouldReduceMotion}
         />
         <RouteSegment
           points="297.3 491.87 241.21 405.53"
           color="#c2ecee"
-          delay={3.13}
-          duration={0.22}
+          delay={timing.segments[5].delay}
+          duration={timing.segments[5].duration}
           shouldReduceMotion={shouldReduceMotion}
         />
         <Arrowhead
           path="M202.38,367.24c-8.08,2.04-18.88,3.46-26.8,2.55l11.32,8.1,3.52,13.47c1.98-7.73,7.17-17.3,11.96-24.12Z"
           color="#c2ecee"
-          delay={3.49}
+          delay={timing.arrowheads[0]}
           shouldReduceMotion={shouldReduceMotion}
         />
         <Arrowhead
           path="M187.17,529.24c8.33.23,19.11,1.8,26.49,4.84l-8.69-10.87.28-13.92c-4.01,6.9-11.6,14.7-18.07,19.95Z"
           color="#c2ecee"
-          delay={3.35}
+          delay={timing.arrowheads[1]}
           shouldReduceMotion={shouldReduceMotion}
         />
         <Arrowhead
           path="M232.16,391.6c6.69,4.97,16.12,10.41,23.79,12.6l-13.56,3.16-8.4,11.1c1.12-7.9-.01-18.73-1.84-26.86Z"
           color="#c2ecee"
-          delay={3.35}
+          delay={timing.arrowheads[2]}
           shouldReduceMotion={shouldReduceMotion}
         />
       </g>
@@ -163,22 +177,29 @@ export function Layer2Way1({
 /** Generated from BY_way2.svg using the explicit route topology config. */
 export function Layer2Way2({
   shouldReduceMotion,
+  timing,
   ...props
 }: HistoryMapRouteProps) {
+  if (timing.segments.length !== 1 || timing.arrowheads.length !== 1) {
+    throw new Error(
+      'Layer2Way2 timing must match route topology (1 segments, 1 arrowheads).'
+    )
+  }
+
   return (
     <svg viewBox={VIEW_BOX} {...props}>
       <g aria-hidden="true" pointerEvents="none">
         <RouteSegment
           points="1230.6 995.4 738.31 637.38 700.22 604.06 641.98 563.03 612.69 551.32 464.1 526.47 426.67 626 368.01 634.64 202.7 626.71 181.32 590.97"
           color="#f84048"
-          delay={0.15}
-          duration={1.08}
+          delay={timing.segments[0].delay}
+          duration={timing.segments[0].duration}
           shouldReduceMotion={shouldReduceMotion}
         />
         <Arrowhead
           path="M172.79,576.72c6.5,5.22,15.73,11,23.31,13.47l-13.66,2.66-8.8,10.78c1.41-7.85.68-18.71-.85-26.91Z"
           color="#f84048"
-          delay={1.23}
+          delay={timing.arrowheads[0]}
           shouldReduceMotion={shouldReduceMotion}
         />
       </g>

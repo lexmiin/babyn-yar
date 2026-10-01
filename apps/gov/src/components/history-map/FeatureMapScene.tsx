@@ -13,10 +13,10 @@ import MapOverlays from './MapOverlays'
 import {
   type HistoryMapFeature,
   type HistoryMapFeatureSceneData,
-  type HistoryMapLayer,
+  type HistoryMapPeriod,
   type HistoryMapRoute,
   type HistoryMapSymbol
-} from './layers'
+} from './mapTypes'
 import { useMapFeatureSelection } from './useMapFeatureSelection'
 
 const FEATURE_INITIAL_DELAY_MS = 250
@@ -202,6 +202,7 @@ function RouteOverlay({
         <Component
           {...getFeatureControlProps(route)}
           shouldReduceMotion={Boolean(shouldReduceMotion)}
+          timing={route.timing}
           className={`pointer-events-none absolute inset-0 h-full w-full cursor-pointer focus-visible:outline-none ${
             isActive
               ? 'drop-shadow-[0_0_5px_rgba(255,255,255,.95)]'
@@ -266,20 +267,20 @@ function SymbolOverlay({
 }
 
 export default function FeatureMapScene({
-  layer,
+  period,
   scene: {
     mapBase,
     mapSource,
     featureLabel,
     features,
-    featureInitialDelayMs,
+    featureInitialDelay,
     routes,
     backgroundOverlays,
     symbols,
     overview
   }
 }: {
-  layer: HistoryMapLayer
+  period: HistoryMapPeriod
   scene: HistoryMapFeatureSceneData
 }) {
   const featureListHeadingId = useId()
@@ -318,7 +319,7 @@ export default function FeatureMapScene({
         features={features}
         activeFeatureId={activeFeatureId}
         getFeatureControlProps={getFeatureControlProps}
-        initialDelayMs={featureInitialDelayMs}
+        initialDelayMs={featureInitialDelay * 1000}
       />
       <div className="pointer-events-none absolute inset-0">
         <RouteOverlay
@@ -343,7 +344,7 @@ export default function FeatureMapScene({
       title={
         <AnimatePresence mode="wait">
           <motion.span
-            key={layer.id}
+            key={period.id}
             className="block"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -357,7 +358,7 @@ export default function FeatureMapScene({
               }
             }}
           >
-            {layer.title}
+            {period.title}
           </motion.span>
         </AnimatePresence>
       }
@@ -382,7 +383,7 @@ export default function FeatureMapScene({
                 transition={getFeatureTransition(
                   feature,
                   index,
-                  featureInitialDelayMs
+                  featureInitialDelay * 1000
                 )}
               >
                 <span aria-hidden="true">—</span>

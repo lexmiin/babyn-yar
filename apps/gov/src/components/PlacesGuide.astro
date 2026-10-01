@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets'
 import type { ImageMetadata } from 'astro'
-import { LAYER_FOUR_POI_CONTENT } from './history-map/layerFour'
+import { PRESENT_DAY_POI_CONTENT } from './history-map/presentDay'
 import { PLACES_GUIDE_ASSIGNMENTS } from './history-map/placesGuide'
 
 interface Props {
@@ -52,7 +52,7 @@ const places = PLACES_GUIDE_ASSIGNMENTS.map(assignment => {
     }
   }
 
-  const content = LAYER_FOUR_POI_CONTENT[assignment.contentKey]
+  const content = PRESENT_DAY_POI_CONTENT[assignment.contentKey]
   const localized = lang === 'en' && 'en' in content ? content.en : undefined
   const filename = (assignment.guideImage ?? content.image.src)
     .split('/')

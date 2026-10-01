@@ -8,50 +8,44 @@
         {
           "type": "polyline",
           "index": 0,
-          "points": [4, 3, 2],
-          "delay": 2.45,
-          "duration": 0.38
+          "points": [4, 3, 2]
         },
         {
           "type": "polyline",
           "index": 2,
-          "reverse": true,
-          "delay": 2.45,
-          "duration": 0.92
+          "reverse": true
         },
         {
           "type": "polyline",
           "index": 0,
-          "points": [2, 1, 0],
-          "delay": 3.19,
-          "duration": 0.3
+          "points": [2, 1, 0]
         },
         {
           "type": "line",
           "index": 0,
-          "reverse": true,
-          "delay": 2.93,
-          "duration": 0.24
+          "reverse": true
         },
         {
           "type": "polyline",
           "index": 1,
-          "points": [1, 0],
-          "delay": 3.13,
-          "duration": 0.22
+          "points": [1, 0]
         },
         {
           "type": "polyline",
           "index": 1,
-          "points": [1, 2],
-          "delay": 3.13,
-          "duration": 0.22
+          "points": [1, 2]
         }
       ],
       "arrowheads": [
-        { "path": 0, "delay": 3.49 },
-        { "path": 1, "delay": 3.35 },
-        { "path": 2, "delay": 3.35 }
+        {
+          "path": 0
+        },
+        {
+          "path": 1
+        },
+        {
+          "path": 2
+        }
       ]
     },
     {
@@ -59,9 +53,16 @@
       "component": "Layer2Way2",
       "color": "#f84048",
       "segments": [
-        { "type": "polyline", "index": 1, "delay": 0.15, "duration": 1.08 }
+        {
+          "type": "polyline",
+          "index": 1
+        }
       ],
-      "arrowheads": [{ "path": 0, "delay": 1.23 }]
+      "arrowheads": [
+        {
+          "path": 0
+        }
+      ]
     }
   ]
 }

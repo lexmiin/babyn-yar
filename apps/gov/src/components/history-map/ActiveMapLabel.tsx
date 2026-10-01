@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import type { HistoryMapFeature } from './layers'
+import type { HistoryMapFeature } from './mapTypes'
 
 type LabelledMapFeature = Pick<HistoryMapFeature, 'label' | 'mapLabel'>
 

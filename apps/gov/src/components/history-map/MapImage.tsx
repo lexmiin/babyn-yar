@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react'
-import type { HistoryMapBase } from './layers'
+import type { HistoryMapBase } from './mapTypes'
 
 export type MapImageSource = {
   src: string

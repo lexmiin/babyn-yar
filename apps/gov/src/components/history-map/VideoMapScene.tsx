@@ -1,12 +1,12 @@
 import { motion } from 'framer-motion'
 import HistoryMapLayout from './HistoryMapLayout'
-import type { HistoryMapLayer, HistoryMapVideoSceneData } from './layers'
+import type { HistoryMapPeriod, HistoryMapVideoSceneData } from './mapTypes'
 
 export default function VideoMapScene({
-  layer,
+  period,
   scene
 }: {
-  layer: HistoryMapLayer
+  period: HistoryMapPeriod
   scene: HistoryMapVideoSceneData
 }) {
   const { aspectRatio, src, caption, overview } = scene
@@ -24,7 +24,7 @@ export default function VideoMapScene({
             ease: [0.22, 1, 0.36, 1]
           }}
         >
-          {layer.title}
+          {period.title}
         </motion.span>
       }
       map={

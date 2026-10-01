@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import type { SVGProps } from 'react'
-import type { HistoryMapOverlay } from './layers'
+import type { HistoryMapOverlay } from './mapTypes'
 
 export default function MapOverlays<T extends HistoryMapOverlay>({
   overlays,
