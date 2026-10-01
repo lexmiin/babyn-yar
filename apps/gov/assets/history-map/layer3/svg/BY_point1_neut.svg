@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="borders" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 894.14 783.2">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #fff;
+        stroke-miterlimit: 10;
+        stroke-width: .78px;
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+    </style>
+    <filter id="luminosity-noclip" x="-7421.68" y="-9818.71" width="5750.77" height="32766" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feFlood flood-color="#fff" result="bg"/>
+      <feBlend in="SourceGraphic" in2="bg"/>
+    </filter>
+    <mask id="mask" x="-7421.68" y="-9818.71" width="5750.77" height="32766" maskUnits="userSpaceOnUse"/>
+  </defs>
+  <circle class="cls-2" cx="365.09" cy="409.41" r="3.36"/>
+  <circle class="cls-1" cx="365.09" cy="409.41" r="5.53"/>
+</svg>
