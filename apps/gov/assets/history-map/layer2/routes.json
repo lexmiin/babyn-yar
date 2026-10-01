@@ -1,0 +1,68 @@
+{
+  "routes": [
+    {
+      "source": "BY_way1.svg",
+      "component": "Layer2Way1",
+      "color": "#c2ecee",
+      "segments": [
+        {
+          "type": "polyline",
+          "index": 0,
+          "points": [4, 3, 2]
+        },
+        {
+          "type": "polyline",
+          "index": 2,
+          "reverse": true
+        },
+        {
+          "type": "polyline",
+          "index": 0,
+          "points": [2, 1, 0]
+        },
+        {
+          "type": "line",
+          "index": 0,
+          "reverse": true
+        },
+        {
+          "type": "polyline",
+          "index": 1,
+          "points": [1, 0]
+        },
+        {
+          "type": "polyline",
+          "index": 1,
+          "points": [1, 2]
+        }
+      ],
+      "arrowheads": [
+        {
+          "path": 0
+        },
+        {
+          "path": 1
+        },
+        {
+          "path": 2
+        }
+      ]
+    },
+    {
+      "source": "BY_way2.svg",
+      "component": "Layer2Way2",
+      "color": "#f84048",
+      "segments": [
+        {
+          "type": "polyline",
+          "index": 1
+        }
+      ],
+      "arrowheads": [
+        {
+          "path": 0
+        }
+      ]
+    }
+  ]
+}

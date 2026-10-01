@@ -34,13 +34,13 @@ const html = generateHTML(content)
 <style is:global>
   @reference "../styles/global.css";
 
-  div > img,
-  div > video,
-  div > iframe {
+  .cms-content img,
+  .cms-content video,
+  .cms-content iframe {
     @apply -mx-4! h-auto! w-[calc(100%+2rem)]! max-w-[calc(100%+2rem)]! md:-mx-[calc(39px+2rem)]! md:w-[calc(100%+((2rem+39px)*2))]! md:max-w-[calc(100%+((2rem+39px)*2))]! lg:-mx-[calc(39px+3rem)]! lg:w-[calc(100%+((3rem+39px)*2))]! lg:!max-w-[calc(100%+((3rem+39px)*2))];
   }
 
-  div > iframe {
+  .cms-content iframe {
     @apply aspect-video;
   }
 </style>
