@@ -9,7 +9,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/credentials v1.20.3
 	github.com/aws/aws-sdk-go-v2/feature/s3/transfermanager v0.4.3
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.111.0
-	github.com/boj/redistore/v2 v2.0.1
+	github.com/boj/redistore/v2 v2.0.2
 	github.com/caarlos0/env/v11 v11.4.1
 	github.com/go-chi/chi/v5 v5.3.2
 	github.com/go-chi/cors v1.2.2
