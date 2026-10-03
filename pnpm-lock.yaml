@@ -77,10 +77,10 @@ importers:
         version: 1.33.5(svelte@5.57.1(@typescript-eslint/types@8.71.0))
       '@tanstack/svelte-query':
         specifier: ^6.1.36
-        version: 6.3.0(svelte@5.57.1(@typescript-eslint/types@8.71.0))
+        version: 6.3.1(svelte@5.57.1(@typescript-eslint/types@8.71.0))
       '@tanstack/svelte-query-devtools':
         specifier: ^6.1.36
-        version: 6.3.0(@tanstack/svelte-query@6.3.0(svelte@5.57.1(@typescript-eslint/types@8.71.0)))(csstype@3.2.3)(svelte@5.57.1(@typescript-eslint/types@8.71.0))
+        version: 6.3.1(@tanstack/svelte-query@6.3.1(svelte@5.57.1(@typescript-eslint/types@8.71.0)))(csstype@3.2.3)(svelte@5.57.1(@typescript-eslint/types@8.71.0))
       '@tiptap/core':
         specifier: catalog:tiptap
         version: 3.31.4(@tiptap/pm@3.31.4)
@@ -1722,11 +1722,11 @@ packages:
     resolution: {integrity: sha512-y/xtNPNt/YeyoVxE/JCx+T7yjEzpezmbb+toK8DDD1P4m7Kzs5YR956+7OKexG3f8aXgC3rLZl7b1V+yNUSy5w==}
     engines: {node: '>=18'}
 
-  '@tanstack/query-core@5.104.0':
-    resolution: {integrity: sha512-JrC2r/JQlXt7khBSdUpsgxNvybzOg+aITa+ARRMlP2AFo93Y8vIqz077rp+e61mJetSZ0T6AJbwW1JHer1vrPQ==}
+  '@tanstack/query-core@5.104.1':
+    resolution: {integrity: sha512-TiRghcrGkUTE+M4JBxvpPSpBhxvIzQairw+cksrHYGr+2uwC77yW1SY9nYxnYRYOppvucf8rEg6b5byoz4rTpw==}
 
-  '@tanstack/query-devtools@5.104.0':
-    resolution: {integrity: sha512-snKyFLVFC5LuNoyUTpyqCD2Z8cRlCWrAeO3xub0nGi81IMz8YAUWq2Z+XdpGSGT7bCxqVdOHUjyiA3CtDuBjfQ==}
+  '@tanstack/query-devtools@5.104.1':
+    resolution: {integrity: sha512-wmXnQbnwEz+SctYMTrwsOWWNHKhCsVgtaliL9E+VI2vx2Xr773d/MpcrbIU1hEOUqC3p7x59swXFUPDLbplT3g==}
 
   '@tanstack/store@0.11.1':
     resolution: {integrity: sha512-mzTOBhypOuDJAy/D8n2MfUZ1HFkXnmSETviRyhqEC8LUE7/IZQExOTxMANj3KjTofYTkFNpBY67qaVrT41YccA==}
@@ -1736,14 +1736,14 @@ packages:
     peerDependencies:
       svelte: ^5.0.0
 
-  '@tanstack/svelte-query-devtools@6.3.0':
-    resolution: {integrity: sha512-NWT9ti3S8yCyaZ5URNTmoPwsc1f5SW247tmOwVsEJV8QoICzPRGjAcBkPJJO+0U6BRqF7Zacb8m+Fsaingwr1g==}
+  '@tanstack/svelte-query-devtools@6.3.1':
+    resolution: {integrity: sha512-EzCb7dVYXpJgsAar+ow+x54CNvQccLqB++DkizUtyr1DNtAXhh213u31LDmRB0DkDmlfCge+3XvOOAIn+nzZ6w==}
     peerDependencies:
-      '@tanstack/svelte-query': ^6.3.0
+      '@tanstack/svelte-query': ^6.3.1
       svelte: ^5.25.0
 
-  '@tanstack/svelte-query@6.3.0':
-    resolution: {integrity: sha512-Lzib+G+fGL6tFi8jJ3jfNKuSE94iEgjpSCz6Pdf33na+Bljfnv+r5aArSDwLecYEnZCBb8mS6uJrcfJj3dR6qg==}
+  '@tanstack/svelte-query@6.3.1':
+    resolution: {integrity: sha512-gyBkXdE1ZNOX6KWTumq7msd0kHHF1wLLUREb8zPxfadUUyVOy1qrgBfo8bNSf9918x0LSu2YuBDxEm7dBi9T4w==}
     peerDependencies:
       svelte: ^5.25.0
 
@@ -5836,16 +5836,16 @@ snapshots:
 
   '@tanstack/pacer-lite@0.1.1': {}
 
-  '@tanstack/query-core@5.104.0': {}
+  '@tanstack/query-core@5.104.1': {}
 
-  '@tanstack/query-devtools@5.104.0(csstype@3.2.3)':
+  '@tanstack/query-devtools@5.104.1(csstype@3.2.3)':
     dependencies:
       '@kobalte/core': 0.13.14(solid-js@1.9.15)
       '@solid-primitives/keyed': 1.5.3(solid-js@1.9.15)
       '@solid-primitives/resize-observer': 2.2.0(solid-js@1.9.15)
       '@solid-primitives/storage': 1.3.11(solid-js@1.9.15)
       '@tanstack/match-sorter-utils': 9.1.2
-      '@tanstack/query-core': 5.104.0
+      '@tanstack/query-core': 5.104.1
       clsx: 2.1.1
       goober: 2.1.19(csstype@3.2.3)
       solid-js: 1.9.15
@@ -5862,18 +5862,18 @@ snapshots:
       '@tanstack/svelte-store': 0.12.1(svelte@5.57.1(@typescript-eslint/types@8.71.0))
       svelte: 5.57.1(@typescript-eslint/types@8.71.0)
 
-  '@tanstack/svelte-query-devtools@6.3.0(@tanstack/svelte-query@6.3.0(svelte@5.57.1(@typescript-eslint/types@8.71.0)))(csstype@3.2.3)(svelte@5.57.1(@typescript-eslint/types@8.71.0))':
+  '@tanstack/svelte-query-devtools@6.3.1(@tanstack/svelte-query@6.3.1(svelte@5.57.1(@typescript-eslint/types@8.71.0)))(csstype@3.2.3)(svelte@5.57.1(@typescript-eslint/types@8.71.0))':
     dependencies:
-      '@tanstack/query-devtools': 5.104.0(csstype@3.2.3)
-      '@tanstack/svelte-query': 6.3.0(svelte@5.57.1(@typescript-eslint/types@8.71.0))
+      '@tanstack/query-devtools': 5.104.1(csstype@3.2.3)
+      '@tanstack/svelte-query': 6.3.1(svelte@5.57.1(@typescript-eslint/types@8.71.0))
       esm-env: 1.2.2
       svelte: 5.57.1(@typescript-eslint/types@8.71.0)
     transitivePeerDependencies:
       - csstype
 
-  '@tanstack/svelte-query@6.3.0(svelte@5.57.1(@typescript-eslint/types@8.71.0))':
+  '@tanstack/svelte-query@6.3.1(svelte@5.57.1(@typescript-eslint/types@8.71.0))':
     dependencies:
-      '@tanstack/query-core': 5.104.0
+      '@tanstack/query-core': 5.104.1
       svelte: 5.57.1(@typescript-eslint/types@8.71.0)
 
   '@tanstack/svelte-store@0.12.1(svelte@5.57.1(@typescript-eslint/types@8.71.0))':
