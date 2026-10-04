@@ -44,7 +44,7 @@ jobs:
       - name: resolve pnpm store
         id: pnpm-store
         run: |
-          if ! store_path="$(nix develop --command pnpm store path --silent)"; then
+          if ! store_path="$(nix develop .#ci --command pnpm store path --silent)"; then
             echo "failed to resolve pnpm store path" >&2
             exit 1
           fi
@@ -77,11 +77,11 @@ jobs:
           key: ${{ runner.os }}-${{ runner.arch }}-go-build-${{ hashFiles('flake.nix', 'flake.lock', 'apps/api/go.sum') }}
 
       - name: install dependencies
-        run: nix develop --command pnpm install --frozen-lockfile
+        run: nix develop .#ci --command pnpm install --frozen-lockfile
 
       - name: build
-        run: nix develop --command pnpm run build
+        run: nix develop .#ci --command pnpm run build
 
       - name: api integration test
         if: github.event_name == 'workflow_dispatch' || steps.changes.outputs.api == 'true'
-        run: nix develop --command just test
+        run: nix develop .#ci --command just test
