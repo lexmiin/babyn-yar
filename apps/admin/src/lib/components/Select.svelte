@@ -87,7 +87,7 @@
   <Select.Portal>
     <Select.Content
       sideOffset={offset}
-      class="isolate w-max scroll-py-1 overflow-y-scroll overscroll-contain rounded-xl bg-white/75 p-1 shadow-lg ring-1 ring-zinc-950/10 outline outline-transparent backdrop-blur-xl select-none"
+      class="isolate w-max scroll-py-1 overflow-y-auto overscroll-contain rounded-xl bg-white/75 p-1 shadow-lg ring-1 ring-zinc-950/10 outline outline-transparent backdrop-blur-xl select-none"
     >
       {@render children()}
     </Select.Content>
