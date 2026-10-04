@@ -1,5 +1,5 @@
+import type { HandleClientError } from '@sveltejs/kit/hooks'
 import * as Sentry from '@sentry/sveltekit'
-import type { HandleClientError } from '@sveltejs/kit'
 
 Sentry.init({
   enabled: import.meta.env.PROD,

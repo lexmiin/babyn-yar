@@ -12,7 +12,7 @@
   import Label from './Label.svelte'
   import FieldError from './FieldError.svelte'
   import Description from './Description.svelte'
-  import { useResetPassword } from '$lib/users/query'
+  import { useResetPassword } from '#lib/users/query.js'
   import { ResponseError } from '@babyn-yar/api-utils'
 
   type Props = {

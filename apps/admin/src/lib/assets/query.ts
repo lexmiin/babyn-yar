@@ -5,9 +5,9 @@ import {
   useQueryClient
 } from '@tanstack/svelte-query'
 import { assetToasts } from './toast'
-import type { Getter } from '$lib/runes'
+import type { Getter } from '#lib/runes.js'
 import { AssetSchema } from '@babyn-yar/schema'
-import { useAssetFilters } from '$lib/use-asset-filters'
+import { useAssetFilters } from '#lib/use-asset-filters.js'
 import { AssetAPI } from '@babyn-yar/api-utils'
 
 type QueryOptions = {

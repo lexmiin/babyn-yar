@@ -2,7 +2,7 @@
   import { Combobox } from 'bits-ui'
   import CaretUpDownIcon from 'phosphor-svelte/lib/CaretUpDownIcon'
   import type { Snippet } from 'svelte'
-  import { setComboboxContext } from '$lib/context'
+  import { setComboboxContext } from '#lib/context.js'
 
   type Props = {
     id?: string

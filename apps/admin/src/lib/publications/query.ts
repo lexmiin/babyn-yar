@@ -1,5 +1,5 @@
-import type { Getter } from '$lib/runes'
-import { usePublicationFilters } from '$lib/use-publication-filters'
+import type { Getter } from '#lib/runes.js'
+import { usePublicationFilters } from '#lib/use-publication-filters.js'
 import { PublicationAPI } from '@babyn-yar/api-utils'
 import { PublicationSchema, type Metadata } from '@babyn-yar/schema'
 import {

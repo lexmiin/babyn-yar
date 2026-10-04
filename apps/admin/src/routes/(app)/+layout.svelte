@@ -1,8 +1,8 @@
 <script lang="ts">
-  import Sidebar from '$components/Sidebar.svelte'
-  import MobileDrawer from '$components/MobileDrawer.svelte'
+  import Sidebar from '#components/Sidebar.svelte'
+  import MobileDrawer from '#components/MobileDrawer.svelte'
   import type { Snippet } from 'svelte'
-  import LoggedUserContext from '$components/LoggedUserContext.svelte'
+  import LoggedUserContext from '#components/LoggedUserContext.svelte'
 
   type Props = {
     children: Snippet

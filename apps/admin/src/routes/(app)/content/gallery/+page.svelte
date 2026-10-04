@@ -5,10 +5,10 @@
     useGalleryImages,
     useDeleteGalleryImage,
     useCreateGalleryImage
-  } from '$lib/gallery/query'
-  import AssetDialog from '$components/AssetDialog.svelte'
-  import PageHeader from '$components/PageHeader.svelte'
-  import Container from '$components/Container.svelte'
+  } from '#lib/gallery/query.js'
+  import AssetDialog from '#components/AssetDialog.svelte'
+  import PageHeader from '#components/PageHeader.svelte'
+  import Container from '#components/Container.svelte'
   import { AssetSchema, GallerySchema } from '@babyn-yar/schema'
 
   const images = useGalleryImages()

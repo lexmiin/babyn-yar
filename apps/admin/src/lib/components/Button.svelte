@@ -23,7 +23,7 @@
 <script lang="ts">
   import type { Snippet } from 'svelte'
   import type { HTMLButtonAttributes } from 'svelte/elements'
-  import { cn } from '$lib/cn'
+  import { cn } from '#lib/cn.js'
 
   interface Props extends HTMLButtonAttributes, ButtonVariants {
     href?: string

@@ -16,8 +16,9 @@
     "@eslint/compat": "^2.1.0",
     "@eslint/js": "^10.0.1",
     "@internationalized/date": "^3.12.2",
-    "@sveltejs/adapter-static": "^3.0.10",
-    "@sveltejs/kit": "^2.69.1",
+    "@sveltejs/adapter-static": "^4.0.0",
+    "@sveltejs/kit": "^3.0.0",
+    "@sveltejs/load-config": "^0.2.2",
     "@sveltejs/vite-plugin-svelte": "^7.1.2",
     "@tailwindcss/vite": "^4.3.2",
     "eslint": "^10.6.0",
@@ -28,8 +29,8 @@
     "prettier": "^3.9.4",
     "prettier-plugin-svelte": "^4.1.1",
     "prettier-plugin-tailwindcss": "^0.8.0",
-    "svelte": "^5.56.4",
-    "svelte-check": "^4.7.1",
+    "svelte": "^5.57.1",
+    "svelte-check": "^4.7.5",
     "tailwindcss": "^4.3.2",
     "typescript": "catalog:",
     "typescript-eslint": "^8.62.1",
@@ -55,9 +56,15 @@
     "bits-ui": "^2.18.1",
     "clsx": "^2.1.1",
     "cva": "1.0.0-beta.12",
-    "nuqs-svelte": "^1.2.2",
+    "nuqs-svelte": "1.2.2",
     "svelte-sonner": "^1.1.1",
     "tailwind-merge": "^3.6.0",
     "valibot": "catalog:"
+  },
+  "imports": {
+    "#lib": "./src/lib/index.js",
+    "#lib/*": "./src/lib/*",
+    "#components/*": "./src/lib/components/*",
+    "#query/*": "./src/lib/query/*"
   }
 }

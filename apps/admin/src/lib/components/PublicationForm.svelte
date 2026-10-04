@@ -1,23 +1,23 @@
 <script lang="ts">
-  import CoverSelect from '$components/CoverSelect.svelte'
-  import Input from '$components/Input.svelte'
-  import RichTextEditor from '$components/RichTextEditor.svelte'
-  import Field from '$components/Field.svelte'
-  import Label from '$components/Label.svelte'
-  import Select from '$components/Select.svelte'
-  import SelectOption from '$components/SelectOption.svelte'
-  import FieldError from '$components/FieldError.svelte'
-  import DocumentsSelect from '$components/DocumentsSelect.svelte'
+  import CoverSelect from '#components/CoverSelect.svelte'
+  import Input from '#components/Input.svelte'
+  import RichTextEditor from '#components/RichTextEditor.svelte'
+  import Field from '#components/Field.svelte'
+  import Label from '#components/Label.svelte'
+  import Select from '#components/Select.svelte'
+  import SelectOption from '#components/SelectOption.svelte'
+  import FieldError from '#components/FieldError.svelte'
+  import DocumentsSelect from '#components/DocumentsSelect.svelte'
   import DatePickerCalendar from './DatePickerCalendar.svelte'
   import { createForm } from '@tanstack/svelte-form'
-  import Combobox from '$components/Combobox.svelte'
-  import ComboboxOption from '$components/ComboboxOption.svelte'
-  import ComboboxLabel from '$components/ComboboxLabel.svelte'
+  import Combobox from '#components/Combobox.svelte'
+  import ComboboxOption from '#components/ComboboxOption.svelte'
+  import ComboboxLabel from '#components/ComboboxLabel.svelte'
   import {
     PublicationForm as PublicationFormSchema,
     type EligiblePublication,
     type PublicationForm
-  } from '$lib/publications/schema'
+  } from '#lib/publications/schema.js'
 
   type PublicationFormContent = Omit<PublicationForm, 'selectedPublication'>
 

@@ -1,5 +1,5 @@
 <script lang="ts" generics="T">
-  import { getComboboxContext } from '$lib/context'
+  import { getComboboxContext } from '#lib/context.js'
   import { Combobox as ComboboxPrimitive } from 'bits-ui'
   import CheckIcon from 'phosphor-svelte/lib/CheckIcon'
   import type { Snippet } from 'svelte'

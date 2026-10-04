@@ -1,4 +1,4 @@
-import { browser } from '$app/environment'
+import { browser } from '$app/env'
 import { ResponseError } from '@babyn-yar/api-utils'
 import { captureException, withScope } from '@sentry/sveltekit'
 import { MutationCache, QueryCache, QueryClient } from '@tanstack/svelte-query'
@@ -9,10 +9,10 @@ export const queryClient = new QueryClient({
       if (error instanceof ResponseError && error.isUnauthorized()) {
         return
       }
+
       withScope(scope => {
-        scope.setContext('mutation', {
-          mutationId: mutation.mutationId
-        })
+        scope.setContext('mutation', { mutationId: mutation.mutationId })
+
         if (error instanceof ResponseError) {
           scope.setFingerprint([
             error.method,

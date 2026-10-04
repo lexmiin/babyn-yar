@@ -1,14 +1,14 @@
 <script lang="ts">
   import { goto } from '$app/navigation'
-  import Button from '$components/Button.svelte'
-  import Container from '$components/Container.svelte'
-  import PageHeader from '$components/PageHeader.svelte'
-  import PublicationForm from '$components/PublicationForm.svelte'
+  import Button from '#components/Button.svelte'
+  import Container from '#components/Container.svelte'
+  import PageHeader from '#components/PageHeader.svelte'
+  import PublicationForm from '#components/PublicationForm.svelte'
   import {
     useCreatePublication,
     useEligiblePublications
-  } from '$lib/publications/query'
-  import type { PublicationRoute } from '$lib/publications/routes'
+  } from '#lib/publications/query.js'
+  import type { PublicationRoute } from '#lib/publications/routes.js'
   import { PublicationSchema } from '@babyn-yar/schema'
   import PlusIcon from 'phosphor-svelte/lib/PlusIcon'
 

@@ -1,10 +1,10 @@
 <script lang="ts">
-  import Button from '$components/Button.svelte'
-  import Field from '$components/Field.svelte'
-  import Label from '$components/Label.svelte'
-  import Input from '$components/Input.svelte'
-  import FieldError from '$components/FieldError.svelte'
-  import { useLoggedUser, useLogin } from '$lib/auth/query'
+  import Button from '#components/Button.svelte'
+  import Field from '#components/Field.svelte'
+  import Label from '#components/Label.svelte'
+  import Input from '#components/Input.svelte'
+  import FieldError from '#components/FieldError.svelte'
+  import { useLoggedUser, useLogin } from '#lib/auth/query.js'
   import { UserSchema } from '@babyn-yar/schema'
   import { createForm } from '@tanstack/svelte-form'
   import { ResponseError } from '@babyn-yar/api-utils'
@@ -25,7 +25,7 @@
         try {
           await login.mutateAsync(value)
           await loggedUser.refetch()
-          goto(resolve('/content'))
+          goto(resolve('content'))
         } catch (error) {
           if (error instanceof ResponseError && error.isFormError()) {
             return { fields: error.formErrors }

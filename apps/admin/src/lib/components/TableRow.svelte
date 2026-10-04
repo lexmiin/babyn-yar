@@ -1,6 +1,6 @@
 <script lang="ts">
   import { type Snippet } from 'svelte'
-  import { setTableRowContext } from '$lib/context'
+  import { setTableRowContext } from '#lib/context.js'
 
   type Props = {
     href?: string
