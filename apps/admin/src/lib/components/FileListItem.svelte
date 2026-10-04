@@ -14,12 +14,23 @@
 
   let { file, fileName, extension, index, onRemove, onChange }: Props = $props()
 
-  const fileType = file.type.startsWith('image')
-    ? 'image'
-    : file.type.startsWith('video')
-      ? 'video'
-      : 'other'
-  const imageUrl = fileType === 'image' ? URL.createObjectURL(file) : undefined
+  const fileType = $derived(
+    file.type.startsWith('image')
+      ? 'image'
+      : file.type.startsWith('video')
+        ? 'video'
+        : 'other'
+  )
+  let imageUrl = $state<string | undefined>(undefined)
+
+  $effect(() => {
+    const url = fileType === 'image' ? URL.createObjectURL(file) : undefined
+    imageUrl = url
+
+    return () => {
+      if (url) URL.revokeObjectURL(url)
+    }
+  })
 
   function handleRemove() {
     onRemove()
