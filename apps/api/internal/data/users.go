@@ -16,9 +16,10 @@ import (
 )
 
 var (
-	ErrDuplicateEmail = errors.New("duplicate email")
-	ErrLastAdmin      = errors.New("at least one admin must remain")
-	AnonymousUser     = &User{}
+	ErrDuplicateEmail   = errors.New("duplicate email")
+	ErrDeactivatedEmail = errors.New("email belongs to a deactivated account")
+	ErrLastAdmin        = errors.New("at least one admin must remain")
+	AnonymousUser       = &User{}
 )
 
 type User struct {
@@ -157,6 +158,7 @@ func ValidateUser(v *validator.Validator, user *User) {
 	}
 }
 
+// Insert creates an active account; emails reserved by deactivated accounts remain unavailable.
 func (m UserModel) Insert(user *User) error {
 	query := `
 		INSERT INTO users (full_name, email, password_hash)
@@ -174,7 +176,7 @@ func (m UserModel) Insert(user *User) error {
 		if errors.As(err, &pgErr) {
 			switch pgErr.Code {
 			case "23505":
-				return ErrDuplicateEmail
+				return m.duplicateEmailError(ctx, user.Email)
 			default:
 				return err
 			}
@@ -185,13 +187,28 @@ func (m UserModel) Insert(user *User) error {
 	return nil
 }
 
+// The unique email constraint includes deleted users so their addresses stay reserved.
+func (m UserModel) duplicateEmailError(ctx context.Context, email string) error {
+	var deactivated bool
+	err := m.DB.QueryRow(ctx, `
+		SELECT EXISTS (SELECT 1 FROM users WHERE email = $1 AND deleted_at IS NOT NULL)`, email).Scan(&deactivated)
+	if err != nil {
+		return err
+	}
+	if deactivated {
+		return ErrDeactivatedEmail
+	}
+	return ErrDuplicateEmail
+}
+
+// GetByEmail returns an active account for login, excluding deactivated users.
 func (m UserModel) GetByEmail(email string) (*User, error) {
 	query := `
 		SELECT u.id, u.created_at, u.updated_at, u.full_name, u.email, u.password_hash, u.version, array_agg(p.name) as permissions
 		FROM users u
 		INNER JOIN users_permissions up ON u.id = up.user_id
 		INNER JOIN permissions p ON up.permission_id = p.id
-		WHERE u.email = $1
+		WHERE u.email = $1 AND u.deleted_at IS NULL
 		GROUP BY u.id`
 
 	var user User
@@ -222,6 +239,7 @@ func (m UserModel) GetByEmail(email string) (*User, error) {
 	return &user, nil
 }
 
+// GetByID returns an active account, so stale sessions cannot authenticate deactivated users.
 func (m UserModel) GetByID(id int64) (*User, error) {
 	if id < 1 {
 		return nil, ErrRecordNotFound
@@ -232,7 +250,7 @@ func (m UserModel) GetByID(id int64) (*User, error) {
 		FROM users u
 		INNER JOIN users_permissions up ON u.id = up.user_id
 		INNER JOIN permissions p ON up.permission_id = p.id
-		WHERE u.id = $1
+		WHERE u.id = $1 AND u.deleted_at IS NULL
 		GROUP BY u.id`
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
@@ -262,12 +280,14 @@ func (m UserModel) GetByID(id int64) (*User, error) {
 	return &user, nil
 }
 
+// GetAll lists and counts active accounts only.
 func (m UserModel) GetAll(filters Filters) ([]*User, Metadata, error) {
 	query := fmt.Sprintf(`
 		SELECT count(*) OVER(), u.id, u.created_at, u.updated_at, u.full_name, u.email, array_agg(p.name) as permissions
 		FROM users u
 		INNER JOIN users_permissions up ON u.id = up.user_id
 		INNER JOIN permissions p ON up.permission_id = p.id
+		WHERE u.deleted_at IS NULL
 		GROUP BY u.id
 		ORDER BY %s %s, id ASC
 		LIMIT $1 OFFSET $2`, filters.sortColumn(), filters.sortDirection())
@@ -306,11 +326,12 @@ func (m UserModel) GetAll(filters Filters) ([]*User, Metadata, error) {
 	return users, metadata, nil
 }
 
+// Update changes an active account using optimistic locking and preserves reserved emails.
 func (m UserModel) Update(user *User) error {
 	query := `
 		UPDATE users
 		SET full_name = $1, email = $2, password_hash = $3, updated_at = now(), version = version + 1
-		WHERE id = $4 AND version = $5
+		WHERE id = $4 AND version = $5 AND deleted_at IS NULL
 		RETURNING version`
 
 	args := []any{
@@ -328,7 +349,7 @@ func (m UserModel) Update(user *User) error {
 	if err != nil {
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) && pgErr.Code == "23505" {
-			return ErrDuplicateEmail
+			return m.duplicateEmailError(ctx, user.Email)
 		}
 
 		switch {
@@ -341,6 +362,7 @@ func (m UserModel) Update(user *User) error {
 	return nil
 }
 
+// UpdatePassword replaces the password of an active account without reactivating deleted users.
 func (m UserModel) UpdatePassword(userID int64, plaintextPassword string) error {
 	var password password
 	err := password.Set(plaintextPassword)
@@ -351,7 +373,7 @@ func (m UserModel) UpdatePassword(userID int64, plaintextPassword string) error 
 	query := `
 		UPDATE users
 		SET password_hash = $1, updated_at = now(), version = version + 1
-		WHERE id = $2`
+		WHERE id = $2 AND deleted_at IS NULL`
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -367,6 +389,7 @@ func (m UserModel) UpdatePassword(userID int64, plaintextPassword string) error 
 	return nil
 }
 
+// UpdateByAdmin edits an active account and its role while preserving the last active admin.
 func (m UserModel) UpdateByAdmin(user *User, permission *string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -390,12 +413,16 @@ func (m UserModel) UpdateByAdmin(user *User, permission *string) error {
 	err = tx.QueryRow(ctx, `
 		UPDATE users
 		SET full_name = $1, email = $2, updated_at = now(), version = version + 1
-		WHERE id = $3 AND version = $4
+		WHERE id = $3 AND version = $4 AND deleted_at IS NULL
 		RETURNING updated_at, version`, user.FullName, user.Email, user.ID, user.Version).Scan(&user.UpdatedAt, &user.Version)
 	if err != nil {
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) && pgErr.Code == "23505" {
-			return ErrDuplicateEmail
+			// A failed statement aborts the transaction; release it before querying.
+			if rollbackErr := tx.Rollback(ctx); rollbackErr != nil {
+				return rollbackErr
+			}
+			return m.duplicateEmailError(ctx, user.Email)
 		}
 		if errors.Is(err, pgx.ErrNoRows) {
 			return ErrEditConflict
@@ -408,8 +435,9 @@ func (m UserModel) UpdateByAdmin(user *User, permission *string) error {
 			var remainingAdmins int
 			err = tx.QueryRow(ctx, `
 				SELECT count(*)
-				FROM users_permissions
-				WHERE permission_id = $1 AND user_id <> $2`, adminPermissionID, user.ID).Scan(&remainingAdmins)
+				FROM users_permissions up
+				JOIN users u ON u.id = up.user_id
+				WHERE up.permission_id = $1 AND up.user_id <> $2 AND u.deleted_at IS NULL`, adminPermissionID, user.ID).Scan(&remainingAdmins)
 			if err != nil {
 				return err
 			}
@@ -438,6 +466,7 @@ func (m UserModel) UpdateByAdmin(user *User, permission *string) error {
 	return nil
 }
 
+// Delete deactivates an account while retaining publisher references and at least one active admin.
 func (m UserModel) Delete(id int64) error {
 	if id < 1 {
 		return ErrRecordNotFound
@@ -453,32 +482,35 @@ func (m UserModel) Delete(id int64) error {
 	defer tx.Rollback(ctx)
 
 	var adminPermissionID int64
+	// Deletions and role changes share this lock to preserve an active admin.
 	err = tx.QueryRow(ctx, `SELECT id FROM permissions WHERE name = 'admin' FOR UPDATE`).Scan(&adminPermissionID)
 	if err != nil {
 		return err
 	}
 
+	result, err := tx.Exec(ctx, `
+		UPDATE users
+		SET deleted_at = now(), updated_at = now(), version = version + 1
+		WHERE id = $1 AND deleted_at IS NULL`, id)
+	if err != nil {
+		return err
+	}
+
+	if result.RowsAffected() == 0 {
+		return ErrRecordNotFound
+	}
+
 	var remainingAdmins int
 	err = tx.QueryRow(ctx, `
 		SELECT count(*)
-		FROM users_permissions
-		WHERE permission_id = $1 AND user_id <> $2`, adminPermissionID, id).Scan(&remainingAdmins)
+		FROM users_permissions up
+		JOIN users u ON u.id = up.user_id
+		WHERE up.permission_id = $1 AND u.deleted_at IS NULL`, adminPermissionID).Scan(&remainingAdmins)
 	if err != nil {
 		return err
 	}
 	if remainingAdmins < 1 {
 		return ErrLastAdmin
-	}
-
-	result, err := tx.Exec(ctx, `DELETE FROM users WHERE id = $1`, id)
-	if err != nil {
-		return err
-	}
-
-	rowsAffected := result.RowsAffected()
-
-	if rowsAffected == 0 {
-		return ErrRecordNotFound
 	}
 
 	return tx.Commit(ctx)

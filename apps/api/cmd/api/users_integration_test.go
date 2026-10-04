@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"testing"
+	"time"
 
 	"github.com/lex-unix/babyn-yar/internal/data"
 	"github.com/stretchr/testify/assert"
@@ -281,7 +282,7 @@ func TestDeleteUserPreservesAnAdmin(t *testing.T) {
 	_, err = models.Users.GetByID(publisherID)
 	assert.ErrorIs(t, err, data.ErrRecordNotFound)
 
-	_, secondAdminID := createAuthenticatedUser(
+	secondAdminClient, secondAdminID := createAuthenticatedUser(
 		t,
 		testAPI,
 		"Remaining Administrator",
@@ -296,6 +297,217 @@ func TestDeleteUserPreservesAnAdmin(t *testing.T) {
 	assert.ErrorIs(t, err, data.ErrRecordNotFound)
 	_, err = models.Users.GetByID(secondAdminID)
 	require.NoError(t, err)
+
+	// The deleted admin still has a historical role but cannot keep the last
+	// active admin's deletion or demotion from being rejected.
+	secondAdminURL := fmt.Sprintf("%s/v1/users/%d", testAPI.server.URL, secondAdminID)
+	response = publicationJSONRequest(t, secondAdminClient, http.MethodDelete, secondAdminURL, nil)
+	response.Body.Close()
+	require.Equal(t, http.StatusUnprocessableEntity, response.StatusCode)
+	response = publicationJSONRequest(t, secondAdminClient, http.MethodPatch, secondAdminURL, map[string]string{
+		"permission": "publisher",
+	})
+	response.Body.Close()
+	require.Equal(t, http.StatusUnprocessableEntity, response.StatusCode)
+	_, err = models.Users.GetByID(secondAdminID)
+	require.NoError(t, err)
+}
+
+func TestSoftDeleteUserThroughHTTP(t *testing.T) {
+	testAPI := newAPITest(t)
+	adminClient, adminID := authenticatedPublicationClient(t, testAPI, "Active Administrator", "active-admin@example.com")
+	deletedClient, deletedID := createAuthenticatedUser(t, testAPI, "Historical Publisher", "deleted-admin@example.com", "admin")
+	models := data.NewModels(testAPI.db)
+	staleUser, err := models.Users.GetByID(deletedID)
+	require.NoError(t, err)
+	publicationID := seedPublication(t, testAPI, deletedID, publicationSeed{
+		kind: "event", occurredOn: "2024-07-01",
+		translations: []publicationTranslationSeed{
+			{locale: "uk", title: "Подія", createdAt: "2024-01-01T00:00:00Z", content: `{"type":"doc"}`, documents: []string{"https://example.com/uk.pdf"}},
+			{locale: "en", title: "Event", createdAt: "2024-01-01T00:00:00Z", content: `{"type":"doc"}`, documents: []string{"https://example.com/en.pdf"}},
+		},
+	})
+	userURL := fmt.Sprintf("%s/v1/users/%d", testAPI.server.URL, deletedID)
+	response := publicationJSONRequest(t, adminClient, http.MethodDelete, userURL, nil)
+	response.Body.Close()
+	require.Equal(t, http.StatusOK, response.StatusCode)
+
+	t.Run("the user row and email remain reserved", func(t *testing.T) {
+		var deletedAt time.Time
+		var email string
+		var version int
+		err := testAPI.db.QueryRow(t.Context(), `SELECT deleted_at, email, version FROM users WHERE id = $1`, deletedID).Scan(&deletedAt, &email, &version)
+		require.NoError(t, err)
+		assert.False(t, deletedAt.IsZero())
+		assert.Equal(t, staleUser.Email, email)
+		assert.Equal(t, staleUser.Version+1, version)
+	})
+
+	t.Run("publications retain both translations and publisher attribution", func(t *testing.T) {
+		response := publicationJSONRequest(t, http.DefaultClient, http.MethodGet, testAPI.server.URL+"/v1/publications?kind=event", nil)
+		defer response.Body.Close()
+		require.Equal(t, http.StatusOK, response.StatusCode)
+		var list struct {
+			Publications []data.PublicationSummary `json:"publications"`
+			Metadata     data.Metadata             `json:"metadata"`
+		}
+		require.NoError(t, json.NewDecoder(response.Body).Decode(&list))
+		require.Len(t, list.Publications, 2)
+		assert.Equal(t, 2, list.Metadata.TotalRecords)
+		for _, publication := range list.Publications {
+			assert.Equal(t, publicationID, publication.ID)
+			assert.Equal(t, data.Publisher{ID: deletedID, FullName: staleUser.FullName}, publication.Publisher)
+			url := fmt.Sprintf("%s/v1/publications/%d?kind=event&locale=%s", testAPI.server.URL, publicationID, publication.Locale)
+			response := publicationJSONRequest(t, http.DefaultClient, http.MethodGet, url, nil)
+			require.Equal(t, http.StatusOK, response.StatusCode)
+			var detail struct {
+				Publication data.PublicationDetail `json:"publication"`
+			}
+			require.NoError(t, json.NewDecoder(response.Body).Decode(&detail))
+			response.Body.Close()
+			assert.Equal(t, publication.Publisher, detail.Publication.Publisher)
+			assert.JSONEq(t, `{"type":"doc"}`, string(detail.Publication.Content))
+			assert.Equal(t, []string{"https://example.com/" + publication.Locale + ".pdf"}, detail.Publication.Documents)
+		}
+	})
+
+	t.Run("lists and authentication exclude the deleted user", func(t *testing.T) {
+		// Keep copies of the stale cookie to exercise recovery on public routes.
+		sessionURL := *response.Request.URL
+		sessionURL.Path = "/"
+		staleCookies := deletedClient.Jar.Cookies(&sessionURL)
+		require.NotEmpty(t, staleCookies)
+		for _, request := range []publicationRequestSpec{
+			{method: http.MethodGet, url: testAPI.server.URL + "/v1/publications?kind=event"},
+			{method: http.MethodPost, url: testAPI.server.URL + "/v1/users/login", body: map[string]string{
+				"email": "active-admin@example.com", "password": "password123",
+			}},
+		} {
+			jar, err := cookiejar.New(nil)
+			require.NoError(t, err)
+			jar.SetCookies(&sessionURL, staleCookies)
+			client := &http.Client{Jar: jar}
+			response := publicationJSONRequest(t, client, request.method, request.url, request.body)
+			assert.Equal(t, http.StatusOK, response.StatusCode)
+			response.Body.Close()
+			response = publicationJSONRequest(t, client, http.MethodGet, testAPI.server.URL+"/v1/users/me", nil)
+			if request.method == http.MethodPost {
+				assert.Equal(t, http.StatusOK, response.StatusCode)
+			} else {
+				assert.Equal(t, http.StatusUnauthorized, response.StatusCode)
+			}
+			response.Body.Close()
+		}
+
+		response := publicationJSONRequest(t, adminClient, http.MethodGet, testAPI.server.URL+"/v1/users", nil)
+		defer response.Body.Close()
+		require.Equal(t, http.StatusOK, response.StatusCode)
+		var list struct {
+			Users    []data.User   `json:"users"`
+			Metadata data.Metadata `json:"metadata"`
+		}
+		require.NoError(t, json.NewDecoder(response.Body).Decode(&list))
+		require.Len(t, list.Users, 1)
+		assert.Equal(t, adminID, list.Users[0].ID)
+		assert.Equal(t, 1, list.Metadata.TotalRecords)
+		_, err := models.Users.GetByID(deletedID)
+		assert.ErrorIs(t, err, data.ErrRecordNotFound)
+		_, err = models.Users.GetByEmail(staleUser.Email)
+		assert.ErrorIs(t, err, data.ErrRecordNotFound)
+		permissions, err := models.Permissions.GetAllForUser(deletedID)
+		require.NoError(t, err)
+		assert.Empty(t, permissions)
+		assert.Equal(t, http.StatusUnauthorized, loginStatus(t, testAPI, staleUser.Email, "password123"))
+		response = publicationJSONRequest(t, deletedClient, http.MethodGet, testAPI.server.URL+"/v1/users/me", nil)
+		defer response.Body.Close()
+		assert.Equal(t, http.StatusUnauthorized, response.StatusCode)
+	})
+
+	t.Run("deleted users cannot be modified or deleted again", func(t *testing.T) {
+		for _, request := range []publicationRequestSpec{
+			{method: http.MethodDelete, url: userURL},
+			{method: http.MethodPatch, url: userURL, body: map[string]string{"fullName": "Changed Name"}},
+			{method: http.MethodPatch, url: userURL + "/password", body: map[string]string{"password": "new-password"}},
+			{method: http.MethodDelete, url: testAPI.server.URL + "/v1/users/999999"},
+		} {
+			response := publicationJSONRequest(t, adminClient, request.method, request.url, request.body)
+			assert.Equal(t, http.StatusNotFound, response.StatusCode)
+			response.Body.Close()
+		}
+		assert.ErrorIs(t, models.Users.Update(staleUser), data.ErrEditConflict)
+		permission := "admin"
+		assert.ErrorIs(t, models.Users.UpdateByAdmin(staleUser, &permission), data.ErrEditConflict)
+		assert.ErrorIs(t, models.Users.UpdatePassword(deletedID, "new-password"), data.ErrRecordNotFound)
+	})
+
+	t.Run("reserved emails give a clear error on creation and updates", func(t *testing.T) {
+		for _, request := range []publicationRequestSpec{
+			{method: http.MethodPost, url: testAPI.server.URL + "/v1/users/register", body: map[string]string{
+				"fullName": "Replacement User", "email": staleUser.Email, "password": "password123", "permission": "admin",
+			}},
+			{method: http.MethodPatch, url: testAPI.server.URL + "/v1/users", body: map[string]string{"email": staleUser.Email}},
+			{method: http.MethodPatch, url: fmt.Sprintf("%s/v1/users/%d", testAPI.server.URL, adminID), body: map[string]string{
+				"email": staleUser.Email, "permission": "publisher",
+			}},
+		} {
+			response := publicationJSONRequest(t, adminClient, request.method, request.url, request.body)
+			require.Equal(t, http.StatusUnprocessableEntity, response.StatusCode)
+			var body struct {
+				Error map[string]string `json:"error"`
+			}
+			require.NoError(t, json.NewDecoder(response.Body).Decode(&body))
+			response.Body.Close()
+			assert.Equal(t, "This email belongs to a deactivated account.", body.Error["email"])
+		}
+		admin, err := models.Users.GetByID(adminID)
+		require.NoError(t, err)
+		assert.Equal(t, "active-admin@example.com", admin.Email)
+		assert.Equal(t, data.Permissions{"admin"}, admin.Permissions)
+	})
+}
+
+func TestConcurrentAdminRemovalPreservesAnActiveAdmin(t *testing.T) {
+	for _, demote := range []bool{false, true} {
+		t.Run(fmt.Sprintf("demote=%t", demote), func(t *testing.T) {
+			testAPI := newAPITest(t)
+			_, firstID := authenticatedPublicationClient(t, testAPI, "First Admin", "first-admin@example.com")
+			_, secondID := authenticatedPublicationClient(t, testAPI, "Second Admin", "second-admin@example.com")
+			models := data.NewModels(testAPI.db)
+			secondUser, err := models.Users.GetByID(secondID)
+			require.NoError(t, err)
+			start := make(chan struct{})
+			results := make(chan error, 2)
+			go func() {
+				<-start
+				results <- models.Users.Delete(firstID)
+			}()
+			go func() {
+				<-start
+				if demote {
+					permission := "publisher"
+					results <- models.Users.UpdateByAdmin(secondUser, &permission)
+				} else {
+					results <- models.Users.Delete(secondID)
+				}
+			}()
+			close(start)
+			firstErr, secondErr := <-results, <-results
+			if firstErr == nil {
+				assert.ErrorIs(t, secondErr, data.ErrLastAdmin)
+			} else {
+				assert.ErrorIs(t, firstErr, data.ErrLastAdmin)
+				assert.NoError(t, secondErr)
+			}
+			var activeAdmins int
+			err = testAPI.db.QueryRow(t.Context(), `
+				SELECT count(*) FROM users u
+				JOIN users_permissions up ON up.user_id = u.id
+				JOIN permissions p ON p.id = up.permission_id
+				WHERE u.deleted_at IS NULL AND p.name = 'admin'`).Scan(&activeAdmins)
+			require.NoError(t, err)
+			assert.Equal(t, 1, activeAdmins)
+		})
+	}
 }
 
 func createAuthenticatedUser(

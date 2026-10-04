@@ -120,7 +120,7 @@
                       {#snippet icon()}
                         <TrashIcon weight="fill" />
                       {/snippet}
-                      Видалити
+                      Деактивувати
                     </DropdownItem>
                     <DropdownItem
                       onSelect={() => handleShowResetPasswordDialog(user)}
@@ -157,9 +157,11 @@
   {/if}
 
   <Alert bind:open={isAlertOpen}>
-    <AlertTitle>Видалення користувача</AlertTitle>
+    <AlertTitle>Деактивація користувача</AlertTitle>
     <AlertDescription>
-      Ви дійсно хочете видалити цього користувача? Цю дію неможливо скасувати.
+      Ви дійсно хочете деактивувати цього користувача? Він втратить доступ, а
+      його публікації буде збережено. Email залишиться зарезервованим за цим
+      обліковим записом.
     </AlertDescription>
     <AlertActions>
       <Button variant="ghost" onclick={cancelDeletion}>Скасувати</Button>
@@ -168,7 +170,7 @@
         onclick={confirmDeletion}
         disabled={deleteUser.isPending}
       >
-        Видалити
+        Деактивувати
       </Button>
     </AlertActions>
   </Alert>
