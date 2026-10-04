@@ -33,7 +33,7 @@ RUN --mount=type=secret,id=sentry-org,env=SENTRY_ORG  \
   --mount=type=secret,id=sentry-auth-token,env=SENTRY_AUTH_TOKEN \
   pnpm exec turbo run build --filter=@babyn-yar/admin...
 
-FROM nginx:1.31.4-alpine@sha256:db35bfc6b2951e7f8a72db5db120288c127ffaeeb4a6d4b95a26fead017d5913 AS runtime
+FROM nginx:1.31.6-alpine@sha256:df221db836e1754089190208cee7eeda94f233197056426eda74a43ab1abeac2 AS runtime
 
 WORKDIR /usr/share/nginx/html
 
