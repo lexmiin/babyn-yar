@@ -42,25 +42,38 @@
         gotools = pkgs.go-tools.override {
           buildGoModule = pkgs.buildGoModule.override {go = pkgs.go;};
         };
+
+        # Keep CI's closure small; development tools extend the same toolchain.
+        ciTools = [
+          pkgs.go
+          pkgs.nodejs
+          pkgs.pnpm_11
+          pkgs.just
+          pkgs.git
+        ];
+
+        devTools = [
+          pkgs.air
+          go-migrate-pg
+          gotools
+          pkgs.govulncheck
+          pkgs.rclone
+          pkgs.jq
+          pkgs.actionlint
+          pkgs.fnox
+          pkgs.curl
+        ];
       in {
         formatter = pkgs.alejandra;
 
-        devShells.default = pkgs.mkShell {
-          packages = [
-            pkgs.go
-            pkgs.nodejs
-            pkgs.air
-            go-migrate-pg
-            gotools
-            pkgs.govulncheck
-            pkgs.just
-            pkgs.rclone
-            pkgs.jq
-            pkgs.pnpm_11
-            pkgs.actionlint
-            pkgs.fnox
-            pkgs.curl
-          ];
+        devShells = {
+          ci = pkgs.mkShell {
+            packages = ciTools;
+          };
+
+          default = pkgs.mkShell {
+            packages = ciTools ++ devTools;
+          };
         };
       }
     ));
