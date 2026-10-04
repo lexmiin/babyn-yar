@@ -1,6 +1,6 @@
 <script lang="ts">
-  import NotFound from '$components/NotFound.svelte'
-  import type { PublicationRoute } from '$lib/publications/routes'
+  import NotFound from '#components/NotFound.svelte'
+  import type { PublicationRoute } from '#lib/publications/routes.js'
   import type { Snippet } from 'svelte'
 
   type Props = {

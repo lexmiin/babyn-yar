@@ -1,6 +1,6 @@
 <script lang="ts" generics="T extends string">
-  import { cn } from '$lib/cn'
-  import { getFieldContext } from '$lib/context'
+  import { cn } from '#lib/cn.js'
+  import { getFieldContext } from '#lib/context.js'
   import { Select } from 'bits-ui'
   import CaretDownIcon from 'phosphor-svelte/lib/CaretDownIcon'
   import type { Snippet } from 'svelte'

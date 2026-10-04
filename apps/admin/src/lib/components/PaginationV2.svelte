@@ -4,7 +4,7 @@
   import PaginationNext from './PaginationNext.svelte'
   import PaginationList from './PaginationList.svelte'
   import PaginationPage from './PaginationPage.svelte'
-  import { cn } from '$lib/cn'
+  import { cn } from '#lib/cn.js'
   import PaginationGap from './PaginationGap.svelte'
 
   type Props = {

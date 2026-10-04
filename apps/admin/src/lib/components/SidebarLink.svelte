@@ -10,8 +10,8 @@
 
 <script lang="ts">
   import { page } from '$app/state'
-  import { cn } from '$lib/cn'
-  import { mobileDrawer } from '$lib/state.svelte'
+  import { cn } from '#lib/cn.js'
+  import { mobileDrawer } from '#lib/state.svelte.js'
   import type { Snippet } from 'svelte'
 
   type Props = {

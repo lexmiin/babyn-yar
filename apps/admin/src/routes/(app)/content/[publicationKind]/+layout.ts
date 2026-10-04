@@ -1,4 +1,4 @@
-import { findPublicationRoute } from '$lib/publications/routes'
+import { findPublicationRoute } from '#lib/publications/routes.js'
 import type { LayoutLoad } from './$types'
 
 export const load: LayoutLoad = ({ params }) => {

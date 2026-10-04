@@ -15,11 +15,13 @@
     >
       Сторінку не знайдено
     </h1>
+
     <p class="mt-6 text-base leading-7 text-gray-600">
       На жаль, нам не вдалося знайти сторінку, яку ви шукаєте.
     </p>
+
     <div class="mt-10 flex items-center justify-center gap-x-6">
-      <Button href={resolve('/content')}>Повернутися додому</Button>
+      <Button href={resolve('content')}>Повернутися додому</Button>
     </div>
   </div>
 </div>

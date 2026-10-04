@@ -2,7 +2,7 @@
   import '../app.css'
   import { QueryClientProvider } from '@tanstack/svelte-query'
   import { NuqsAdapter } from 'nuqs-svelte/adapters/svelte-kit'
-  import { queryClient } from '$query/client'
+  import { queryClient } from '#query/client.js'
   import IconContext from 'phosphor-svelte/lib/IconContext'
   import { Toaster } from 'svelte-sonner'
   import { SvelteQueryDevtools } from '@tanstack/svelte-query-devtools'

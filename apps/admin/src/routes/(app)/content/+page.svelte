@@ -1,7 +1,7 @@
 <script>
-  import Container from '$components/Container.svelte'
-  import ContentCard from '$components/ContentCard.svelte'
-  import PageHeader from '$components/PageHeader.svelte'
+  import Container from '#components/Container.svelte'
+  import ContentCard from '#components/ContentCard.svelte'
+  import PageHeader from '#components/PageHeader.svelte'
 
   const links = [
     {

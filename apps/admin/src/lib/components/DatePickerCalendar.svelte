@@ -5,7 +5,7 @@
   import CalendarBlankIcon from 'phosphor-svelte/lib/CalendarBlankIcon'
   import Button from './Button.svelte'
   import type { DateValue } from '@internationalized/date'
-  import { jsDateToCalendarDate } from '$lib/format-date'
+  import { jsDateToCalendarDate } from '#lib/format-date.js'
 
   type Props = {
     id?: string

@@ -1,7 +1,7 @@
 <script lang="ts">
   import TableData from './TableData.svelte'
   import { type Snippet } from 'svelte'
-  import { getTableRowContext } from '$lib/context'
+  import { getTableRowContext } from '#lib/context.js'
 
   type Props = {
     children: Snippet

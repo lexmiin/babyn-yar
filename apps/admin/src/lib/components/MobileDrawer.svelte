@@ -5,7 +5,7 @@
   import Button from './Button.svelte'
   import ListIcon from 'phosphor-svelte/lib/ListIcon'
   import XIcon from 'phosphor-svelte/lib/XIcon'
-  import { mobileDrawer } from '$lib/state.svelte'
+  import { mobileDrawer } from '#lib/state.svelte.js'
 </script>
 
 <Dialog.Root

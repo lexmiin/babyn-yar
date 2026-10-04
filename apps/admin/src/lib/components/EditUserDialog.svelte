@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { permissionOptions } from '$lib/select-options'
+  import { permissionOptions } from '#lib/select-options.js'
   import { UserSchema } from '@babyn-yar/schema'
   import { ResponseError } from '@babyn-yar/api-utils'
-  import { useEditUser } from '$lib/users/query'
+  import { useEditUser } from '#lib/users/query.js'
   import { createForm } from '@tanstack/svelte-form'
   import { untrack } from 'svelte'
   import Button from './Button.svelte'

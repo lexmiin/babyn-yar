@@ -1,16 +1,16 @@
 <script lang="ts">
-  import Divider from '$components/Divider.svelte'
-  import Field from '$components/Field.svelte'
-  import Input from '$components/Input.svelte'
-  import FieldError from '$components/FieldError.svelte'
-  import Button from '$components/Button.svelte'
+  import Divider from '#components/Divider.svelte'
+  import Field from '#components/Field.svelte'
+  import Input from '#components/Input.svelte'
+  import FieldError from '#components/FieldError.svelte'
+  import Button from '#components/Button.svelte'
   import { ResponseError } from '@babyn-yar/api-utils'
-  import { useUpdateSettings } from '$lib/users/query'
+  import { useUpdateSettings } from '#lib/users/query.js'
   import { UserSchema } from '@babyn-yar/schema'
-  import Description from '$components/Description.svelte'
+  import Description from '#components/Description.svelte'
   import { createForm } from '@tanstack/svelte-form'
-  import { getLoggedUserContext } from '$lib/context'
-  import PageHeader from '$components/PageHeader.svelte'
+  import { getLoggedUserContext } from '#lib/context.js'
+  import PageHeader from '#components/PageHeader.svelte'
 
   const updateSettigs = useUpdateSettings()
   const loggedUser = getLoggedUserContext()

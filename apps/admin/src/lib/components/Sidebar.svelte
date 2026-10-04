@@ -4,7 +4,7 @@
   import FilesIcon from 'phosphor-svelte/lib/FilesIcon'
   import UsersIcon from 'phosphor-svelte/lib/UsersIcon'
   import GearSixIcon from 'phosphor-svelte/lib/GearSixIcon'
-  import { getLoggedUserContext } from '$lib/context'
+  import { getLoggedUserContext } from '#lib/context.js'
 
   const loggedUser = getLoggedUserContext()
 </script>

@@ -3,7 +3,7 @@ import {
   createQuery,
   useQueryClient
 } from '@tanstack/svelte-query'
-import { userKeys } from '$lib/users/query'
+import { userKeys } from '#lib/users/query.js'
 import type { UserSchema } from '@babyn-yar/schema'
 import { authToasts } from './toast'
 import { ResponseError, UserAPI } from '@babyn-yar/api-utils'

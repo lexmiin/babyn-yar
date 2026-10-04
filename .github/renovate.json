@@ -19,6 +19,12 @@
   },
   "packageRules": [
     {
+      "description": "Keep nuqs-svelte pinned until upstream supports SvelteKit 3 and the PNPM patch is removed",
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["nuqs-svelte"],
+      "enabled": false
+    },
+    {
       "description": "Do not update lucide-react in apps/gov until v1 icon removals are handled",
       "matchManagers": ["npm"],
       "matchPackageNames": ["lucide-react"],

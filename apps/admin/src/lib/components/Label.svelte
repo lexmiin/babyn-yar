@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Snippet } from 'svelte'
-  import { getFieldContext } from '$lib/context'
+  import { getFieldContext } from '#lib/context.js'
 
   type Props = {
     for: string

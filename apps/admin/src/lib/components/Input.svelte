@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { cn } from '$lib/cn'
-  import { getFieldContext } from '$lib/context'
+  import { cn } from '#lib/cn.js'
+  import { getFieldContext } from '#lib/context.js'
   import type { HTMLInputAttributes } from 'svelte/elements'
 
   type Props = HTMLInputAttributes & {

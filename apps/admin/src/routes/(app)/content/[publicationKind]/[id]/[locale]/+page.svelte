@@ -1,14 +1,17 @@
 <script lang="ts">
   import { page } from '$app/state'
-  import Button from '$components/Button.svelte'
-  import Container from '$components/Container.svelte'
-  import PageHeader from '$components/PageHeader.svelte'
-  import PublicationForm from '$components/PublicationForm.svelte'
-  import EditorSkeleton from '$components/Skeletons/EditorSkeleton.svelte'
-  import { usePublication, useUpdatePublication } from '$lib/publications/query'
-  import type { PublicationRoute } from '$lib/publications/routes'
-  import type { PublicationForm as PublicationFormValue } from '$lib/publications/schema'
-  import { trimText } from '$lib/trim-text'
+  import Button from '#components/Button.svelte'
+  import Container from '#components/Container.svelte'
+  import PageHeader from '#components/PageHeader.svelte'
+  import PublicationForm from '#components/PublicationForm.svelte'
+  import EditorSkeleton from '#components/Skeletons/EditorSkeleton.svelte'
+  import {
+    usePublication,
+    useUpdatePublication
+  } from '#lib/publications/query.js'
+  import type { PublicationRoute } from '#lib/publications/routes.js'
+  import type { PublicationForm as PublicationFormValue } from '#lib/publications/schema.js'
+  import { trimText } from '#lib/trim-text.js'
   import { PublicationSchema } from '@babyn-yar/schema'
   import { toast } from 'svelte-sonner'
   import * as v from 'valibot'

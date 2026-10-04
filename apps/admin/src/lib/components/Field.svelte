@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Snippet } from 'svelte'
-  import { cn } from '$lib/cn'
-  import { setFieldContext } from '$lib/context'
+  import { cn } from '#lib/cn.js'
+  import { setFieldContext } from '#lib/context.js'
 
   type Props = {
     disabled?: boolean

@@ -10,7 +10,7 @@
   import Field from './Field.svelte'
   import Label from './Label.svelte'
   import Description from './Description.svelte'
-  import { useUploadAssets } from '$lib/assets/query'
+  import { useUploadAssets } from '#lib/assets/query.js'
   import Code from './Code.svelte'
   import { toast } from 'svelte-sonner'
   import { ResponseError } from '@babyn-yar/api-utils'

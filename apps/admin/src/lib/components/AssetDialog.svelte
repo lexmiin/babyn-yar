@@ -13,12 +13,12 @@
   import ArrowUpIcon from 'phosphor-svelte/lib/ArrowUpIcon'
   import ArrowDownIcon from 'phosphor-svelte/lib/ArrowDownIcon'
   import MagnifyingGlassIcon from 'phosphor-svelte/lib/MagnifyingGlassIcon'
-  import { useIntersect } from '$lib/use-intersect.svelte'
-  import { useAssets } from '$lib/assets/query'
-  import { DEFAULT_SORT_OPTION, sortOptions } from '$lib/select-options'
+  import { useIntersect } from '#lib/use-intersect.svelte.js'
+  import { useAssets } from '#lib/assets/query.js'
+  import { DEFAULT_SORT_OPTION, sortOptions } from '#lib/select-options.js'
   import { AssetSchema } from '@babyn-yar/schema'
   import { untrack } from 'svelte'
-  import { useAssetFilters } from '$lib/use-asset-filters'
+  import { useAssetFilters } from '#lib/use-asset-filters.js'
 
   type Props = {
     open?: boolean

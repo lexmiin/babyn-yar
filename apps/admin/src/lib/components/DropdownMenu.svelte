@@ -1,6 +1,6 @@
 <script lang="ts">
   import { DropdownMenu } from 'bits-ui'
-  import { cn } from '$lib/cn'
+  import { cn } from '#lib/cn.js'
 
   const { children, loop = false, offset = 5, class: className = '' } = $props()
 </script>

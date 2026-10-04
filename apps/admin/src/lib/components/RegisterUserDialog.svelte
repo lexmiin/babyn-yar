@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createForm } from '@tanstack/svelte-form'
-  import { permissionOptions } from '$lib/select-options'
-  import { useRegister } from '$lib/auth/query'
+  import { permissionOptions } from '#lib/select-options.js'
+  import { useRegister } from '#lib/auth/query.js'
   import { ResponseError } from '@babyn-yar/api-utils'
   import Dialog from './Dialog.svelte'
   import DialogTitle from './DialogTitle.svelte'

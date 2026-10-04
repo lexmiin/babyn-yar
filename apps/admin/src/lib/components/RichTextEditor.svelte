@@ -23,7 +23,7 @@
   import VideoCameraIcon from 'phosphor-svelte/lib/VideoCameraIcon'
   import YoutubeLogoIcon from 'phosphor-svelte/lib/YoutubeLogoIcon'
   import { Editor } from '@tiptap/core'
-  import { extensions } from '$lib/editor-extensions'
+  import { extensions } from '#lib/editor-extensions.js'
   import { onDestroy, onMount } from 'svelte'
   import { type JSONContent } from '@tiptap/core'
   import LinkDialog from './LinkDialog.svelte'

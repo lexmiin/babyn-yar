@@ -1,4 +1,4 @@
-import { queryClient } from '$query/client'
+import { queryClient } from '#query/client.js'
 import {
   createMutation,
   keepPreviousData,
@@ -6,8 +6,8 @@ import {
   useQueryClient
 } from '@tanstack/svelte-query'
 import { userToasts } from './toast'
-import { authKeys } from '$lib/auth/query'
-import { useUserFilters } from '$lib/use-user-filters'
+import { authKeys } from '#lib/auth/query.js'
+import { useUserFilters } from '#lib/use-user-filters.js'
 import type { UserSchema } from '@babyn-yar/schema'
 import { ResponseError, UserAPI } from '@babyn-yar/api-utils'
 
