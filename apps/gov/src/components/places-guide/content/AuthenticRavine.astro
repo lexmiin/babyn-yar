@@ -1,0 +1,23 @@
+---
+import type { Language } from '@babyn-yar/i18n'
+
+interface Props {
+  lang: Language
+}
+
+const { lang } = Astro.props
+---
+
+{
+  lang === 'en' ? (
+    <p>
+      This area has not undergone major changes since the beginning of the mass
+      shootings at Babyn Yar in 1941.
+    </p>
+  ) : (
+    <p>
+      Ця місцевість не зазнала глобальних змін з часів початку масових
+      розстрілів 1941 року в Бабиному Яру.
+    </p>
+  )
+}

@@ -1,0 +1,25 @@
+---
+import type { Language } from '@babyn-yar/i18n'
+
+interface Props {
+  lang: Language
+}
+
+const { lang } = Astro.props
+---
+
+{
+  lang === 'en' ? (
+    <p>
+      Near the Lukianivske Military Cemetery, Jews were forced to leave their
+      personal documents, valuables, and some of their clothing before being
+      shot on 29 and 30 September 1941.
+    </p>
+  ) : (
+    <p>
+      Поблизу Лукʼянівського військового кладовища євреїв змушували залишити
+      особисті документи, цінні речі та частину одягу перед розстрілом 29 та 30
+      вересня 1941 року.
+    </p>
+  )
+}

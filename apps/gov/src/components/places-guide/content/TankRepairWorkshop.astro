@@ -1,0 +1,23 @@
+---
+import type { Language } from '@babyn-yar/i18n'
+
+interface Props {
+  lang: Language
+}
+
+const { lang } = Astro.props
+---
+
+{
+  lang === 'en' ? (
+    <p>
+      Jews were forced to spend the night in this building on the night of 29–30
+      September 1941. The building now houses a Silpo supermarket.
+    </p>
+  ) : (
+    <p>
+      В цьому приміщенні примусово ночували євреї у ніч з 29 на 30 вересня 1941
+      року. Зараз це приміщення супермаркету “Сільпо”.
+    </p>
+  )
+}

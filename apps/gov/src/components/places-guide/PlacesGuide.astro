@@ -1,79 +1,22 @@
 ---
 import { Image } from 'astro:assets'
-import type { ImageMetadata } from 'astro'
-import { PRESENT_DAY_POI_CONTENT } from '@/data/places'
-import { PLACES_GUIDE_ASSIGNMENTS } from '@/data/placesGuide'
+import { useTranslations, type Language } from '@babyn-yar/i18n'
+import PlaceGuideItem from './PlaceGuideItem.astro'
+import { getPlacesGuideEntries } from './manifest'
 
 interface Props {
-  lang: 'uk' | 'en'
+  lang: Language
 }
 
 const { lang } = Astro.props
-const labels =
-  lang === 'en'
-    ? {
-        all: 'View all',
-        navigation: 'Places guide',
-        previous: 'Previous place',
-        next: 'Next place',
-        descriptionUnavailable: 'The description has not yet been provided.',
-        unavailable: 'The description and image have not yet been provided.'
-      }
-    : {
-        all: 'Переглянути всі',
-        navigation: 'Путівник місцями',
-        previous: 'Попереднє місце',
-        next: 'Наступне місце',
-        descriptionUnavailable: 'Опис цього місця ще не надано.',
-        unavailable: 'Опис і зображення для цього місця ще не надані.'
-      }
-
-const imageModules = import.meta.glob<{ default: ImageMetadata }>(
-  ['../assets/history-map/pois/*.webp', '../assets/places-guide/*.webp'],
-  { eager: true }
-)
-const imagesByFilename = Object.fromEntries(
-  Object.entries(imageModules).map(([path, module]) => [
-    path.split('/').pop(),
-    module.default
-  ])
-)
-
-const places = PLACES_GUIDE_ASSIGNMENTS.map(assignment => {
-  if (!('contentKey' in assignment)) {
-    const localized = lang === 'en' ? assignment.en : undefined
-    const filename = assignment.image?.src.split('/').pop()
-    return {
-      ...assignment,
-      title: localized?.title ?? assignment.assignedTitle,
-      description: localized?.description ?? assignment.description,
-      sections: localized?.sections ?? assignment.sections ?? [],
-      alt: localized?.alt ?? assignment.image?.alt,
-      image: filename ? imagesByFilename[filename] : undefined
-    }
-  }
-
-  const content = PRESENT_DAY_POI_CONTENT[assignment.contentKey]
-  const localized = lang === 'en' && 'en' in content ? content.en : undefined
-  const filename = (assignment.guideImage ?? content.image.src)
-    .split('/')
-    .pop()!
-  return {
-    ...assignment,
-    semanticId: content.semanticId,
-    title: localized?.title ?? content.title,
-    description: localized?.description ?? content.description,
-    sections: [],
-    alt: localized?.alt ?? content.image.alt,
-    image: imagesByFilename[filename]
-  }
-})
+const t = useTranslations(lang)
+const places = getPlacesGuideEntries(lang)
 ---
 
 <section class="-mx-4 text-black md:mx-auto md:max-w-[60rem]" data-places-guide>
   <nav
     class="guide-nav relative z-[1] rounded-b-lg border border-[#dedede] bg-white shadow-[0_4px_12px_rgba(0,0,0,0.04)] md:rounded-lg"
-    aria-label={labels.navigation}
+    aria-label={t('placesGuide.navigation')}
   >
     <div
       class="grid grid-cols-[3rem_minmax(0,1fr)_3rem] items-center gap-1 px-1 pt-4 pb-3 md:grid-cols-[3.5rem_minmax(0,1fr)_3.5rem] md:px-3 md:pt-5 md:pb-4"
@@ -82,7 +25,7 @@ const places = PLACES_GUIDE_ASSIGNMENTS.map(assignment => {
         class="grid size-11 cursor-pointer place-items-center border-0 bg-transparent focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#ec2125] disabled:cursor-default disabled:opacity-[0.22]"
         type="button"
         data-previous
-        aria-label={labels.previous}
+        aria-label={t('placesGuide.previous')}
       >
         <svg
           class="w-7 fill-none stroke-current stroke-[1.75] [stroke-linecap:round] [stroke-linejoin:round]"
@@ -126,7 +69,7 @@ const places = PLACES_GUIDE_ASSIGNMENTS.map(assignment => {
         class="grid size-11 cursor-pointer place-items-center border-0 bg-transparent focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#ec2125] disabled:cursor-default disabled:opacity-[0.22]"
         type="button"
         data-next
-        aria-label={labels.next}
+        aria-label={t('placesGuide.next')}
       >
         <svg
           class="w-7 fill-none stroke-current stroke-[1.75] [stroke-linecap:round] [stroke-linejoin:round]"
@@ -140,7 +83,7 @@ const places = PLACES_GUIDE_ASSIGNMENTS.map(assignment => {
       <summary
         class="flex min-h-14 cursor-pointer list-none items-center justify-center gap-2 px-4 py-3 text-base font-bold focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#ec2125] [&::-webkit-details-marker]:hidden"
       >
-        <span>{labels.all}</span>
+        <span>{t('placesGuide.all')}</span>
         <svg
           class="w-5 fill-none stroke-current stroke-[1.75] transition-transform duration-150 [stroke-linecap:round] [stroke-linejoin:round] group-open:rotate-180 motion-reduce:transition-none"
           aria-hidden="true"
@@ -169,69 +112,10 @@ const places = PLACES_GUIDE_ASSIGNMENTS.map(assignment => {
 
   <div class="mt-0 md:mt-4">
     {
-      places.map(place => (
-        <article
-          id={place.id}
-          class="scroll-mt-32"
-          hidden
-          data-guide-item
-          data-guide-id={place.id}
-          data-semantic-id={place.semanticId}
-        >
-          {place.image && place.alt ? (
-            <Image
-              class:list={[
-                'w-full',
-                place.image.height > place.image.width
-                  ? 'h-auto max-h-[min(75svh,45rem)] bg-[#f1f1f1] object-contain'
-                  : 'aspect-3/2 object-cover'
-              ]}
-              src={place.image}
-              alt={place.alt}
-              widths={[480, 768, 1200]}
-              sizes="(min-width: 1024px) 960px, (min-width: 768px) calc(100vw - 142px), calc(100vw - 32px)"
-              loading="lazy"
-              decoding="async"
-            />
-          ) : null}
-          <div class="max-w-[76ch] px-4 pt-8 pb-16 md:px-0">
-            <h1 class="mt-0 mb-6 text-[clamp(2rem,7vw,3.4rem)] leading-[1.04] font-bold">
-              {place.title}
-            </h1>
-            {place.description ? (
-              place.description
-                .split('\n\n')
-                .map(paragraph => (
-                  <p class="mt-[1em] text-[clamp(1.125rem,2vw,1.25rem)] leading-[1.45] first-of-type:mt-0">
-                    {paragraph}
-                  </p>
-                ))
-            ) : (
-              <p class="text-[clamp(1.125rem,2vw,1.25rem)] leading-[1.45] text-[#555]">
-                {place.image
-                  ? labels.descriptionUnavailable
-                  : labels.unavailable}
-              </p>
-            )}
-            {place.sections.map(section => (
-              <section class="mt-10">
-                <h2 class="mb-4 text-2xl font-bold">{section.title}</h2>
-                {section.paragraphs.map(paragraph => (
-                  <p class="mt-[1em] text-[clamp(1.125rem,2vw,1.25rem)] leading-[1.45] first-of-type:mt-0">
-                    {paragraph}
-                  </p>
-                ))}
-                {section.link && (
-                  <p class="mt-[1em] text-[clamp(1.125rem,2vw,1.25rem)] leading-[1.45]">
-                    <a class="underline" href={section.link}>
-                      {section.link}
-                    </a>
-                  </p>
-                )}
-              </section>
-            ))}
-          </div>
-        </article>
+      places.map(({ id, semanticId, title, image, alt, Content }) => (
+        <PlaceGuideItem {id} {semanticId} {title} {image} {alt}>
+          <Content {lang} />
+        </PlaceGuideItem>
       ))
     }
   </div>
