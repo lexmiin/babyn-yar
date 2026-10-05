@@ -1,0 +1,27 @@
+---
+import type { Language } from '@babyn-yar/i18n'
+
+interface Props {
+  lang: Language
+}
+
+const { lang } = Astro.props
+---
+
+{
+  lang === 'en' ? (
+    <p>
+      The ditch was dug near Babyn Yar by the Soviet authorities to defend the
+      city in 1941 during the Second World War. From October that year, it
+      became a site of Nazi killings and burials of Soviet prisoners of war and
+      civilians, including Jews.
+    </p>
+  ) : (
+    <p>
+      Рів був викопаний недалеко від Бабиного Яру радянськими органами влади з
+      метою оборони міста в 1941 році під час Другої світової війни. З жовтня
+      того ж року він став місцем нацистських убивств та захоронень радянських
+      військовополонених та цивільних громадян, зокрема, євреїв.
+    </p>
+  )
+}

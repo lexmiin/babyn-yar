@@ -1,0 +1,262 @@
+---
+import type { Language } from '@babyn-yar/i18n'
+
+interface Props {
+  lang: Language
+}
+
+const { lang } = Astro.props
+---
+
+{
+  lang === 'en' ? (
+    <Fragment>
+      <p>Paulina Pukytė (Lithuania), 2026</p>
+
+      <section>
+        <h2>Context</h2>
+        <p>
+          On 1 March 2022, at around 17:10, russian forces fired two missiles at
+          the Kyiv TV Tower. One struck the broadcasting equipment building;
+          none of the staff were harmed. The other killed people who were
+          outside at that moment.
+        </p>
+        <p>
+          Five people were killed and five others were injured. Among those
+          killed were a television cameraman who had been working near the
+          tower, a woman, and a family — two adults and an 11-year-old child.
+        </p>
+        <p>
+          The strike took place on the territory of Babyn Yar, a few hundred
+          metres from the site where, in 1941–1943, the Nazis murdered tens of
+          thousands of people, most of them Kyiv Jews.
+        </p>
+      </section>
+
+      <section>
+        <h2>About the work</h2>
+        <p>
+          A long black shadow seems to fall from the TV Tower and crosses the
+          pavement. It is neither fenced off nor raised above the ground: to
+          walk ahead, you have to step over it. The work does not ask you to
+          stop, yet it is impossible to pass without noticing.
+        </p>
+        <p>
+          The artwork is integrated into an ordinary city route, one that people
+          take to and from the metro every day. That everydayness is the point:
+          the trace of war is not raised onto a pedestal, but remains where the
+          strike took place.
+        </p>
+      </section>
+
+      <section>
+        <h2>In the Artist’s Words</h2>
+        <p>
+          We all remember when, right at the start of the full-scale invasion,
+          on 1 March 2022, a missile fired by russia at the Kyiv TV tower struck
+          the Babyn Yar memorial site, killing five people, including an
+          11-year-old child. Even then it became clear that nothing is sacred to
+          this aggressor.
+        </p>
+        <p>
+          As a Lithuanian artist, it is a great honour for me to have been
+          invited by a Ukrainian governmental organisation Babyn Yar National
+          Historical Memorial Reserve, to create a public space artwork to
+          commemorate these victims of the new war at the site of the mass
+          killings.
+        </p>
+        <p>
+          The artwork employs a contemporary approach to monument building and
+          creates a horizontal shape instead of a vertical one. It is an
+          intervention into everyday street surroundings as a poignant marker of
+          tragic events. The Missile Shadow stretches across the pavement, from
+          where the rocket came in, and cuts into the ground where people were
+          killed. It opens an unhealing wound in the earth that bears witness to
+          tens of thousands of lost lives. Wherever you touch this ground,
+          there, beneath it, lie precious human lives, shattered.
+        </p>
+        <p>The following text was written by Paulina Pukytė.</p>
+        <p>
+          By resisting brutality with beauty, this artwork commemorates five
+          innocent people whose lives were taken away by a russian missile
+          strike in 2022, here, on the territory of Babyn Yar — the site of mass
+          murder of the Kyiv Jews in 1941–1943. The black ‘missile shadow’ cuts
+          into the ground, as if opening a wound, to remind us how precious
+          every human life is, no matter how long ago it was brutally ended.
+          Precious and sacred is the ground of this territory of memory.
+        </p>
+      </section>
+
+      <section>
+        <h2>About the artist</h2>
+        <p>
+          Paulina Pukytė (b. 1966, Vilnius) is an artist, writer, curator and
+          critic. She studied at the Vilnius Academy of Arts and the Royal
+          College of Art in London, and teaches at the Vilnius Academy of Arts.
+          She lives and works between Vilnius and London.
+        </p>
+        <p>
+          Her practice includes interventions in public space, site-specific
+          installations, moving images, and texts. Her strategies are
+          deliberately restrained, almost invisible: she shifts the habitual
+          gaze rather than building a traditional monument.
+        </p>
+        <p>
+          Memory runs through all of her work. In 2017 she curated the 11th
+          Kaunas Biennial, There and Not There, devoted to the question of the
+          (im)possibility of a monument. The biennial challenged the populist
+          practice of removing and erecting monuments, questioned traditional
+          approaches of commemoration, and explored new, contemporary strategies
+          of remembrance.
+        </p>
+        <p>
+          The shadow is a recurring motif in Paulina Pukytė’s work. In 2022, for
+          the exhibition Difficult Pasts. Connected Worlds at the National
+          Gallery of Art in Vilnius — the former Museum of the Revolution — she
+          created Shadows, a series of sculptural interventions: material,
+          tangible shadows without a visible source of light, disturbed by
+          people stepping on them. The exhibition addressed the silenced traumas
+          of Eastern Europe.
+        </p>
+        <p>
+          Missile Shadow continues this line of inquiry, but here, for the first
+          time, the shadow has an exact source, date and place.
+        </p>
+        <p>
+          <a href="http://www.pukyte.com/">http://www.pukyte.com/</a>
+        </p>
+      </section>
+
+      <section>
+        <h2>About the project</h2>
+        <p>
+          Missile Shadow was created on the 85th anniversary of the Babyn Yar
+          tragedy.
+        </p>
+      </section>
+    </Fragment>
+  ) : (
+    <Fragment>
+      <p>Пауліна Пукіте (Литва), 2026</p>
+
+      <section>
+        <h2>Контекст</h2>
+        <p>
+          1 березня 2022 року, близько 17:10, російські війська випустили дві
+          ракети по Київській телевежі. Одна влучила в апаратну мовника — ніхто
+          зі співробітників не постраждав. Друга вбила людей, які були в той
+          момент на вулиці.
+        </p>
+        <p>
+          Загинуло пʼятеро людей, ще пʼятеро дістали поранення. Серед загиблих —
+          телеоператор, який працював неподалік вежі, жінка і родина: двоє
+          дорослих та 11-річна дитина.
+        </p>
+        <p>
+          Удар стався на території Бабиного Яру — за кількасот метрів від місця,
+          де в 1941–1943 роках нацисти вбили десятки тисяч людей, переважно
+          київських євреїв.
+        </p>
+      </section>
+
+      <section>
+        <h2>Про роботу</h2>
+        <p>
+          Довга чорна тінь ніби падає від телевежі й перетинає тротуар. Вона не
+          огороджена й не піднята над землею: щоб пройти далі, потрібно
+          переступити через неї. Робота не вимагає зупинки, проте й не дає
+          пройти повз без уваги.
+        </p>
+        <p>
+          Тінь вписана у щоденний міський маршрут, яким люди йдуть до метро й
+          повертаються додому. Саме в цьому співіснуванні з буденністю й полягає
+          задум художниці: слід війни не винесений на пʼєдестал, а залишений
+          там, де все сталося.
+        </p>
+      </section>
+
+      <section>
+        <h2>Коментар художниці</h2>
+        <p>
+          Усі ми пам’ятаємо, як на самому початку повномасштабного вторгнення, 1
+          березня 2022 року, російська ракета, випущена по Київській телевежі,
+          влучила в територію меморіалу «Бабин Яр», убивши п’ятьох людей, серед
+          яких 11-річна дитина. Уже тоді стало зрозуміло, що для агресора немає
+          нічого святого.
+        </p>
+        <p>
+          Для мене як литовської художниці велика честь отримати запрошення від
+          української державної установи — Національного історико-меморіального
+          заповідника «Бабин Яр» — створити мистецький обʼєкт у публічному
+          просторі, щоб вшанувати памʼять жертв сучасної війни на місці масових
+          розстрілів.
+        </p>
+        <p>
+          У роботі застосовано сучасний підхід до створення монументів: вона
+          пропонує горизонтальну форму замість вертикальної. Це інтервенція в
+          повсякденне вуличне середовище — пронизливий маркер трагічних подій.
+          «Тінь ракети» простягається через тротуар — з того боку, звідки
+          прилетіла ракета, — і врізається в землю, де загинули люди. Вона
+          відкриває незагоєну рану в землі, яка свідчить про десятки тисяч
+          втрачених життів. Де б ви не торкнулися цієї землі, там, під нею,
+          лежать понівечені дорогоцінні людські життя.
+        </p>
+        <p>
+          Протиставляючи жорстокості красу, робота вшановує памʼять пʼяти
+          невинних людей, чиї життя забрав російський ракетний удар 2022 року —
+          тут, на території трагедії Бабиного Яру. Вона повʼязує це безглузде
+          вбивство з масовим убивством київських євреїв, яке відбувалося на
+          цьому місці у 1941–1943 роках. Чорна «тінь ракети» врізається в землю,
+          наче відкриваючи рану, щоб нагадати нам, що життя кожної людини є
+          безцінним — незалежно від того, як давно воно було жорстоко обірване.
+          Дорогоцінною і священною є земля цього місця пам'яті.
+        </p>
+        <p>Пауліна Пукіте</p>
+      </section>
+
+      <section>
+        <h2>Про художницю</h2>
+        <p>
+          Пауліна Пукіте (нар. 1966, Вільнюс) — художниця, письменниця,
+          кураторка й критикиня. Навчалася у Вільнюській академії мистецтв і
+          Королівському коледжі мистецтв у Лондоні, викладає у Вільнюській
+          академії мистецтв. Живе й працює у Вільнюсі та Лондоні.
+        </p>
+        <p>
+          Її практика охоплює інтервенції в публічному просторі, сайт-специфічні
+          інсталяції, рухомі зображення й роботу зі знайденими обʼєктами та
+          текстами. Художні стратегії Пукіте свідомо стримані, майже непомітні:
+          вона радше зміщує звичний погляд, ніж будує монумент.
+        </p>
+        <p>
+          Тема памʼяті проходить крізь усі її роботи. У 2017 році Пукіте
+          курувала 11-ту Каунаську бієнале «There and Not There» («Там і не
+          там»), присвячену питанню (не)можливості памʼятника: бієнале ставила
+          під сумнів популістську практику зносити й ставити монументи слідом за
+          зміною політичних режимів і шукала нові, сучасні стратегії вшанування
+          памʼяті.
+        </p>
+        <p>
+          Тінь — повторюваний мотив у роботах художниці. У 2022 році для
+          виставки «Difficult Pasts. Connected Worlds» у Національній галереї
+          мистецтв у Вільнюсі (колишньому Музеї революції) вона створила серію
+          скульптурних інтервенцій «Тіні»: тіні без видимого джерела, розміщені
+          в непомітних місцях будівлі. Виставка була присвячена замовчуваним
+          травмам Східної Європи.
+        </p>
+        <p>
+          «Тінь ракети» продовжує цю лінію, але вперше тінь має точне джерело,
+          дату й місце.
+        </p>
+        <p>
+          <a href="http://www.pukyte.com/">http://www.pukyte.com/</a>
+        </p>
+      </section>
+
+      <section>
+        <h2>Про проєкт</h2>
+        <p>«Тінь ракети» реалізовано до 85-х роковин трагедії Бабиного Яру.</p>
+      </section>
+    </Fragment>
+  )
+}

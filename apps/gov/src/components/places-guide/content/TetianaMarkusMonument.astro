@@ -1,0 +1,13 @@
+---
+import type { Language } from '@babyn-yar/i18n'
+import { getLocalizedPlace } from '../sharedPlaces'
+
+interface Props {
+  lang: Language
+}
+
+const { lang } = Astro.props
+const place = getLocalizedPlace('04', lang)
+---
+
+{place.description.split('\n\n').map(paragraph => <p>{paragraph}</p>)}

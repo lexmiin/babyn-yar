@@ -1,0 +1,184 @@
+---
+import type { Language } from '@babyn-yar/i18n'
+
+interface Props {
+  lang: Language
+}
+
+const { lang } = Astro.props
+---
+
+{
+  lang === 'en' ? (
+    <Fragment>
+      <p>Paulina Pukytė (Lithuania), 2026</p>
+
+      <p>
+        The red marks surrounding you form an artwork tracing a symbolic
+        boundary of the Babyn Yar memorial site. The trees are marked not for
+        felling, but for preservation — the preservation of memory. The artwork
+        was created to commemorate the 85th anniversary of the Babyn Yar
+        tragedy.
+      </p>
+
+      <section>
+        <h2>Context</h2>
+        <p>
+          On 29 September 1941, mass shootings began at Babyn Yar: over two
+          days, the Nazis murdered almost 34,000 Kyiv Jews here. The killings
+          continued until 1943, with victims also included Roma, patients of the
+          Ivan Pavlov Psychiatric Hospital, Soviet prisoners of war, underground
+          resistance members, and hostages.
+        </p>
+      </section>
+
+      <section>
+        <h2>About the work</h2>
+        <p>
+          Visitors are invited to extend the red line by placing a short row of
+          small red-painted pebbles on the ground anywhere within Babyn Yar, or
+          by filling gaps in the line with a red crayon or chalk. A lot of trees
+          are marked with red knitting yarn. If you notice any broken or damaged
+          yarn, please repair it or replace it with your own red yarn on the
+          same spot.
+        </p>
+      </section>
+
+      <section>
+        <h2>In the Artist’s Words</h2>
+        <p>
+          The fragmented red line on trees, buildings, fences, lampposts, steps,
+          and stones marks a symbolic boundary of the Babyn Yar memorial site of
+          mass murders in 1941–1943. Red markings on objects in public space,
+          especially on living trees, make them look vulnerable, singled out,
+          not wanted. If this worries us, it means we are not indifferent, it
+          means we care. The marks here are metaphoric: the trees are not marked
+          for destruction, but for preservation. The preservation of memory.
+        </p>
+        <p>
+          The red line connects the universal with the personal and extends from
+          the past into the present. It is like a thread unravelled from that
+          small red knitted hat found among the clothes of the murdered Jews of
+          Kyiv. It is an invitation for everybody who comes here to keep the
+          memory of the tragedy alive by a collective and unceasing effort to
+          connect the broken line.
+        </p>
+      </section>
+
+      <section>
+        <h2>About the artist</h2>
+        <p>
+          Paulina Pukytė (b. 1966, Vilnius) is an artist, writer, curator and
+          critic. She studied at the Vilnius Academy of Arts and the Royal
+          College of Art in London, and teaches at the Vilnius Academy of Arts.
+          She lives and works between Vilnius and London.
+        </p>
+        <p>
+          Her practice includes interventions in public space, site-specific
+          installations, moving images, and texts. Her strategies are
+          deliberately restrained, almost invisible: she shifts the habitual
+          gaze rather than building a traditional monument.
+        </p>
+        <p>
+          Memory runs through all of her work. In 2017 she curated the 11th
+          Kaunas Biennial, There and Not There, devoted to the question of the
+          (im)possibility of a monument. The biennial challenged the populist
+          practice of removing and erecting monuments, questioned traditional
+          approaches of commemoration, and explored new, contemporary strategies
+          of remembrance.
+        </p>
+      </section>
+
+      <section>
+        <h2>About the project</h2>
+        <p>
+          The Thin Red Line was created for the 85th anniversary of the Babyn
+          Yar tragedy.
+        </p>
+      </section>
+    </Fragment>
+  ) : (
+    <Fragment>
+      <p>Пауліна Пукіте (Литва), 2026</p>
+
+      <section>
+        <h2>Контекст</h2>
+        <p>
+          29 вересня 1941 року в Бабиному Яру почалися масові розстріли: за два
+          дні нацисти вбили тут майже 34 тисячі київських євреїв. Вбивства
+          тривали до 1943 року, жертвами були також роми, пацієнти психіатричної
+          лікарні імені Івана Павлова, радянські військовополонені, підпільники,
+          заручники.
+        </p>
+      </section>
+
+      <section>
+        <h2>Про роботу</h2>
+        <p>
+          Відвідувачі та відвідувачки можуть продовжити червону лінію: викласти
+          на землі коротку смужку з дрібних камінців, пофарбованих у червоне,
+          заповнити прогалини в лінії червоним восковим олівцем чи крейдою —
+          будь-де на території Бабиного Яру. Багато дерев позначено червоною
+          ниткою. Якщо ви побачите, що вона порвана або пошкоджена, звʼяжіть її,
+          будь ласка.
+        </p>
+      </section>
+
+      <section>
+        <h2>Коментар художниці</h2>
+        <p>
+          Переривчаста червона лінія на деревах, будівлях, парканах, ліхтарних
+          стовпах, сходах і каменях на цій території позначає символічний контур
+          меморіальної території Бабиного Яру, місця масових убивств у 1941–1943
+          роках. Червоні позначки на обʼєктах у публічному просторі, особливо на
+          живих деревах, роблять їх вразливими, виокремленими, небажаними. Якщо
+          це нас тривожить — значить, ми небайдужі, значить, нам не все одно.
+          Позначки тут метафоричні: дерева позначені не під вирубку, а на
+          збереження. На збереження памʼяті.
+        </p>
+        <p>
+          Червона лінія поєднує універсальне з особистим і простягається з
+          минулого в теперішнє. Вона — наче нитка, розпущена з тієї маленької
+          червоної вʼязаної шапочки, знайденої серед одягу вбитих євреїв Києва.
+          Це запрошення до кожного та кожної, хто сюди приходить: зберігати
+          памʼять про трагедію живою — спільними і невпинними зусиллями
+          зʼєднувати розірвану лінію.
+        </p>
+      </section>
+
+      <section>
+        <h2>Про художницю</h2>
+        <p>
+          Пауліна Пукіте (нар. 1966, Вільнюс) — художниця, письменниця,
+          кураторка й критикиня. Навчалася у Вільнюській академії мистецтв і
+          Королівському коледжі мистецтв у Лондоні, викладає у Вільнюській
+          академії мистецтв. Живе й працює між Вільнюсом і Лондоном.
+        </p>
+        <p>
+          Її практика охоплює інтервенції в публічному просторі, сайт-специфічні
+          інсталяції, рухоме зображення й тексти. Її стратегії свідомо стримані,
+          майже непомітні: вона радше зміщує звичний погляд, ніж зводить
+          традиційний монумент.
+        </p>
+        <p>
+          Наскрізна тема її робіт — памʼять. У 2017 році вона курувала 11-те
+          Каунаське бієнале «Там і не там», присвячене питанню (не)можливості
+          монумента. Бієнале ставило під сумнів популістську практику знесення і
+          встановлення памʼятників, а також традиційні способи вшанування, і
+          шукало нові, сучасні стратегії комеморації.
+        </p>
+        <p>
+          <a href="http://www.pukyte.com/">http://www.pukyte.com/</a>
+        </p>
+      </section>
+
+      <section>
+        <h2>Про проєкт</h2>
+        <p>
+          Роботу «Тонка червона лінія» реалізовано до 85-х роковин трагедії
+          Бабиного Яру.
+        </p>
+      </section>
+    </Fragment>
+  )
+}
