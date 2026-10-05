@@ -47,6 +47,7 @@ const places = PLACES_GUIDE_ASSIGNMENTS.map(assignment => {
       ...assignment,
       title: localized?.title ?? assignment.assignedTitle,
       description: localized?.description ?? assignment.description,
+      sections: localized?.sections ?? assignment.sections ?? [],
       alt: localized?.alt ?? assignment.image?.alt,
       image: filename ? imagesByFilename[filename] : undefined
     }
@@ -62,6 +63,7 @@ const places = PLACES_GUIDE_ASSIGNMENTS.map(assignment => {
     semanticId: content.semanticId,
     title: localized?.title ?? content.title,
     description: localized?.description ?? content.description,
+    sections: [],
     alt: localized?.alt ?? content.image.alt,
     image: imagesByFilename[filename]
   }
@@ -178,7 +180,12 @@ const places = PLACES_GUIDE_ASSIGNMENTS.map(assignment => {
         >
           {place.image && place.alt ? (
             <Image
-              class="aspect-3/2 w-full object-cover"
+              class:list={[
+                'w-full',
+                place.image.height > place.image.width
+                  ? 'h-auto max-h-[min(75svh,45rem)] bg-[#f1f1f1] object-contain'
+                  : 'aspect-3/2 object-cover'
+              ]}
               src={place.image}
               alt={place.alt}
               widths={[480, 768, 1200]}
@@ -206,6 +213,23 @@ const places = PLACES_GUIDE_ASSIGNMENTS.map(assignment => {
                   : labels.unavailable}
               </p>
             )}
+            {place.sections.map(section => (
+              <section class="mt-10">
+                <h2 class="mb-4 text-2xl font-bold">{section.title}</h2>
+                {section.paragraphs.map(paragraph => (
+                  <p class="mt-[1em] text-[clamp(1.125rem,2vw,1.25rem)] leading-[1.45] first-of-type:mt-0">
+                    {paragraph}
+                  </p>
+                ))}
+                {section.link && (
+                  <p class="mt-[1em] text-[clamp(1.125rem,2vw,1.25rem)] leading-[1.45]">
+                    <a class="underline" href={section.link}>
+                      {section.link}
+                    </a>
+                  </p>
+                )}
+              </section>
+            ))}
           </div>
         </article>
       ))
