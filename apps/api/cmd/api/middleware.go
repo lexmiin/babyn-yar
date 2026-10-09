@@ -43,6 +43,7 @@ func (app *application) enableCORS() func(next http.Handler) http.Handler {
 	return cors.Handler(options)
 }
 
+// authenticate loads active users and clears stale session identities before dispatching requests.
 func (app *application) authenticate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		session, _ := app.sessionStore.Get(r, sessionName)
@@ -57,7 +58,15 @@ func (app *application) authenticate(next http.Handler) http.Handler {
 		if err != nil {
 			switch {
 			case errors.Is(err, data.ErrRecordNotFound):
-				app.invalidCredentialResponse(w, r)
+				// Drop stale identities so deactivated users can still visit public
+				// pages or sign in with another active account.
+				delete(session.Values, "userID")
+				if err := session.Save(r, w); err != nil {
+					app.serverErrorResponse(w, r, err)
+					return
+				}
+				r = app.contextSetUser(r, data.AnonymousUser)
+				next.ServeHTTP(w, r)
 			default:
 				app.serverErrorResponse(w, r, err)
 			}
