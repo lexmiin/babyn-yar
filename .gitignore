@@ -24,6 +24,7 @@ pnpm-debug.log*
 *.mp4
 *.webm
 *.pdf
+!apps/gov/src/assets/landscape-partners/german-embassy.pdf
 bin/
 /.direnv/
 /backup
