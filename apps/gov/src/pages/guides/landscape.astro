@@ -1,4 +1,9 @@
 ---
+import { Image } from 'astro:assets'
+import babynYarLogo from '@/assets/logo.webp'
+import rememberUsLogo from '@/assets/landscape-partners/remember-us.jpg'
+import germanEmbassyLogo from '@/assets/landscape-partners/german-embassy.svg'
+import frankoTheatreLogo from '@/assets/landscape-partners/franko-theatre.svg'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 
 const periods = [
@@ -122,6 +127,37 @@ const periods = [
         }
       </ol>
     </nav>
+
+    <section
+      aria-label="Партнери проєкту"
+      class="mt-16 grid grid-cols-2 items-center justify-items-center gap-x-6 gap-y-8 lg:mt-24 lg:flex lg:justify-between lg:gap-x-12"
+    >
+      <Image
+        src={rememberUsLogo}
+        alt="Remember Us"
+        width={128}
+        class="h-auto w-32 max-w-full min-w-0"
+      />
+      <Image
+        src={germanEmbassyLogo}
+        alt="Посольство Федеративної Республіки Німеччина в Києві"
+        width={288}
+        class="h-auto w-72 max-w-full min-w-0"
+      />
+      <Image
+        src={frankoTheatreLogo}
+        alt="Національний академічний драматичний театр імені Івана Франка"
+        width={192}
+        class="h-auto w-48 max-w-full min-w-0"
+      />
+      <Image
+        src={babynYarLogo}
+        alt="Національний історико-меморіальний заповідник «Бабин Яр»"
+        width={160}
+        densities={[1, 2]}
+        class="h-auto w-40 max-w-full min-w-0"
+      />
+    </section>
   </article>
 </BaseLayout>
 
