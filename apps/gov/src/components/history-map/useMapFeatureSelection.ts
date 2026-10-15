@@ -1,3 +1,4 @@
+import { useHistoryMapTranslations } from './language'
 import { useState, type FocusEvent, type KeyboardEvent } from 'react'
 import type { HistoryMapFeature } from './mapTypes'
 
@@ -7,6 +8,7 @@ export function useMapFeatureSelection<T extends SelectableMapFeature>(
   features: readonly T[],
   detailsId?: string
 ) {
+  const t = useHistoryMapTranslations()
   const [activeFeatureId, setActiveFeatureId] = useState<string | null>(null)
   const [hoveredFeatureId, setHoveredFeatureId] = useState<string | null>(null)
   const [focusedFeatureId, setFocusedFeatureId] = useState<string | null>(null)
@@ -22,7 +24,10 @@ export function useMapFeatureSelection<T extends SelectableMapFeature>(
     return {
       role: 'button' as const,
       tabIndex: 0,
-      'aria-label': `Інформація про об’єкт: ${feature.label}`,
+      'aria-label': t('historyMap.objectInfo').replace(
+        '{title}',
+        feature.label
+      ),
       'aria-pressed': isActive,
       ...(detailsId ? { 'aria-controls': detailsId } : {}),
       onMouseEnter() {

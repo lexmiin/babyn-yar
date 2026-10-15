@@ -1,3 +1,4 @@
+import { useHistoryMapTranslations } from './language'
 import MapImage from './MapImage'
 import FloodReveal from './FloodReveal'
 import {
@@ -283,6 +284,7 @@ export default function FeatureMapScene({
   period: HistoryMapPeriod
   scene: HistoryMapFeatureSceneData
 }) {
+  const t = useHistoryMapTranslations()
   const featureListHeadingId = useId()
   const featureDetailsId = useId()
   const selectableFeatures = [...features, ...routes, ...symbols]
@@ -401,8 +403,8 @@ export default function FeatureMapScene({
         className="sr-only"
       >
         {activeFeature
-          ? `Вибрано: ${activeFeature.label}`
-          : 'Огляд історичного періоду'}
+          ? t('historyMap.selected').replace('{title}', activeFeature.label)
+          : t('historyMap.overview')}
       </div>
       <AnimatePresence mode="wait" initial={false}>
         <motion.div

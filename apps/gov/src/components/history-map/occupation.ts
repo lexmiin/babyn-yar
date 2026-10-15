@@ -11,187 +11,159 @@ import {
   Layer2Tank2
 } from './generated/Layer2StaticSvgs'
 import type { HistoryMapScene } from './sceneTypes'
+import type { HistoryMapCopy } from './content/uk'
 
-const period = { id: 'occupation', title: 'Бабин Яр у 1941–1943 роках' }
-const mapBase = {
-  id: 'occupation',
-  alt: 'Карта території Бабиного Яру під час нацистської окупації',
-  aspectRatio: '894.14 / 783.2'
-} as const
+export function getOccupationScenes(text: HistoryMapCopy['occupation']) {
+  const period = { id: 'occupation', title: text['occupation.title'] }
+  const mapBase = {
+    id: 'occupation',
+    alt: text['occupation.alt'],
+    aspectRatio: '894.14 / 783.2'
+  } as const
 
-export const OCCUPATION_SCENES = [
-  {
-    id: 'occupation-features',
-    period,
-    kind: 'features',
-    data: {
-      mapBase,
-      mapSource: 'Джерело картографічної основи другого шару уточнюється',
-      featureLabel: 'Об’єкти другого шару:',
-      features: [
-        {
-          id: 'layer2-zone-1',
-          label: 'Зона масових розстрілів в Бабиному Яру',
-          delay: 2.7,
-          description: [
-            'Територія включає в себе всі відомі місця розстрілів та скидання трупів в Бабиному Яру, починаючи з вересня 1941 по жовтень 1943 року.'
-          ],
-          mapLabel: {
-            anchor: [185, 454],
-            lines: ['Зона масових розстрілів', 'в Бабиному Яру'],
-            width: 230
+  return [
+    {
+      id: 'occupation-features',
+      period,
+      kind: 'features',
+      data: {
+        mapBase,
+        mapSource: text['occupation-features.mapSource'],
+        featureLabel: text['occupation-features.featureLabel'],
+        features: [
+          {
+            id: 'layer2-zone-1',
+            label: text['layer2-zone-1.label'],
+            delay: 2.7,
+            description: text['layer2-zone-1.description'],
+            mapLabel: {
+              anchor: [185, 454],
+              lines: text['layer2-zone-1.lines'],
+              width: 230
+            },
+            Component: Layer2Zone1
           },
-          Component: Layer2Zone1
-        },
-        {
-          id: 'layer2-zone-3',
-          label: 'Гаражі ремонтної бази номер 8',
-          delay: 2.1,
-          description: [
-            'В цьому місці (та біля нього) переночували декілька тисяч євреїв, яких не встигли розстріляти 29 вересня 1941 року та які були вбиті наступного дня.'
-          ],
-          mapLabel: {
-            anchor: [565, 595],
-            lines: ['Гаражі ремонтної бази', 'номер 8'],
-            width: 220
-          },
-          Component: Layer2Zone3
-        }
-      ],
-      routes: [
-        {
-          id: 'layer2-way-2',
-          label: 'Червона стрілка',
-          showLabel: false,
-          description: [
-            'Позначено шлях євреїв в перший день масових розстрілів 29 вересня 1941 року.'
-          ],
-          mapLabel: { anchor: [427, 626] },
-          Component: Layer2Way2,
-          timing: {
-            segments: [{ delay: 0.15, duration: 1.08 }],
-            arrowheads: [1.23]
+          {
+            id: 'layer2-zone-3',
+            label: text['layer2-zone-3.label'],
+            delay: 2.1,
+            description: text['layer2-zone-3.description'],
+            mapLabel: {
+              anchor: [565, 595],
+              lines: text['layer2-zone-3.lines'],
+              width: 220
+            },
+            Component: Layer2Zone3
           }
-        }
-      ],
-      backgroundOverlays: [],
-      symbols: [
-        {
-          id: 'layer2-blockpost',
-          label: 'Перша німецька застава',
-          description: [
-            'Німецька застава на перехресті вулиці Мельникова (Іллєнка) та академіка Ромоданова. Пройшовши цей рубіж євреям було практично неможливо вернутися назад, бо територія після цієї застави вже охоронялася.'
-          ],
-          mapLabel: { anchor: [722, 619] },
-          delay: 1.6,
-          Component: Layer2Blockpost
-        },
-        {
-          id: 'layer2-tank-1',
-          label: 'Перший протитанковий рів на вулиці Мельникова (Іллєнка)',
-          description: [
-            'Був виритий радянською владую з метою оборони міста. Не використався за призначенням. Його проходили євреї на шляху до Бабиного Яру. Ймовірніше всього, його швидко засипала німецька окупаційна влада.'
-          ],
-          mapLabel: {
-            anchor: [785, 667],
-            lines: [
-              'Перший протитанковий рів',
-              'на вулиці Мельникова (Іллєнка)'
-            ],
-            width: 280
-          },
-          delay: 1.75,
-          Component: Layer2Tank1
-        }
-      ],
-      overview: [
-        '18 вересня 1941 року останні частини Червоної Армії залишили Київ. Наступного дня місто окупувала 6-та армія Вермахту, збройні сили нацистської Німеччини. 27–28 вересня на будинках і дошках оголошень зʼявився наказ: «Усі жиди міста Києва і його околиць повинні зʼявитися в понеділок 29 вересня 1941 року до 8 години ранку на ріг Мельникової і Докторівської вулиць». Протягом 29–30 вересня тисячі людей рухалися до території кладовищ, вважаючи, що йдеться про переселення. Зондеркоманда 4а айнзатцгрупи Ц під командуванням штандартенфюрера СС Пауля Блобеля, за допомогою двох батальйонів німецького поліцейського полку «Південь» (45-го і 303-го), а також місцевої колабораційної поліції та органів самоврядування, пограбувала і розстріляла в Бабиному Яру близько 34 000 євреїв міста. Врятуватися безпосередньо з урочища вдалося лише 11 людям. Ще близько 15 осіб, увʼязнених Сирецького табору, яких також мали розстріляти в Бабиному Яру, зуміли втекти. Усього за час окупації Києва вижити вдалося лише 29 людям, чиї історії відомі.'
-      ],
-      featureInitialDelay: 0.52
-    }
-  },
-  {
-    id: 'occupation-features-part-2',
-    period,
-    kind: 'features',
-    data: {
-      mapBase,
-      mapSource: 'Джерело картографічної основи другого шару уточнюється',
-      featureLabel: 'Об’єкти другого шару:',
-      features: [
-        {
-          id: 'layer2-zone-2',
-          label: 'Сирецький концтабір',
-          description: [
-            'Сирецький концентраційний табір (німецька офіційна назва — «Kiev-West» або Arbeitserziehungslager Syrez) — це нацистський табір примусової праці, створений окупаційною владою у червні 1942 року на північно-західній околиці Києва в історичному районі Сирець. Табір діяв до жовтня 1943 року і слугував місцем масового вбивства людей, розташовуючись у безпосередній близькості від Бабиного Яр.'
-          ],
-          mapLabel: { anchor: [42, 424] },
-          Component: Layer2Zone2
-        },
-        {
-          id: 'layer2-zone-4',
-          label: 'Місце вбивства пацієнтів лікарні імені Павлов',
-          description: [
-            'Місце, де було всередині жовтня 1941 року вбито 308 пацієнтів-євреїв. Серед загиблих був відомий українсько-єврейський політичний діяч періоду національно-визвольних змагань Пінхос Красний.'
-          ],
-          mapLabel: {
-            anchor: [630, 82],
-            lines: ['Місце вбивства пацієнтів', 'лікарні імені Павлов'],
-            width: 250
-          },
-          Component: Layer2Zone4
-        }
-      ],
-      routes: [
-        {
-          id: 'layer2-way-1',
-          label: 'Синя стрілка',
-          showLabel: false,
-          description: [
-            'Позначено шляхи, якими привозили людей для розстрілів або якими шляхами прибували автомобілі з трупами для скидання та закопування у період з жовтня 1941 по жовтень 1943 років.'
-          ],
-          mapLabel: { anchor: [298, 492] },
-          Component: Layer2Way1,
-          timing: {
-            segments: [
-              { delay: 2.45, duration: 0.38 },
-              { delay: 2.45, duration: 0.92 },
-              { delay: 3.19, duration: 0.3 },
-              { delay: 2.93, duration: 0.24 },
-              { delay: 3.13, duration: 0.22 },
-              { delay: 3.13, duration: 0.22 }
-            ],
-            arrowheads: [3.49, 3.35, 3.35]
+        ],
+        routes: [
+          {
+            id: 'layer2-way-2',
+            label: text['layer2-way-2.label'],
+            showLabel: false,
+            description: text['layer2-way-2.description'],
+            mapLabel: { anchor: [427, 626] },
+            Component: Layer2Way2,
+            timing: {
+              segments: [{ delay: 0.15, duration: 1.08 }],
+              arrowheads: [1.23]
+            }
           }
-        }
-      ],
-      backgroundOverlays: [],
-      symbols: [
-        {
-          id: 'layer2-tank-2',
-          label:
-            'Другий протитанковий рів (біля радянського пам’ятника Лук’янівського кладовища)',
-          description: [
-            'Був виритий радянською владою з метою ведення оборонних боїв. З жовтня 1941 року це стало місцем вбивства євреїв (військовополонених та цивільних), а також скидання трупів вбитих в «газвагенах» та розстріляних в’язнів тюрми СД.'
-          ],
-          mapLabel: {
-            anchor: [90, 666],
-            lines: [
-              'Другий протитанковий рів',
-              'біля радянського пам’ятника',
-              'Лук’янівського кладовища'
-            ],
-            width: 295
+        ],
+        backgroundOverlays: [],
+        symbols: [
+          {
+            id: 'layer2-blockpost',
+            label: text['layer2-blockpost.label'],
+            description: text['layer2-blockpost.description'],
+            mapLabel: { anchor: [722, 619] },
+            delay: 1.6,
+            Component: Layer2Blockpost
           },
-          delay: 4.3,
-          Component: Layer2Tank2
-        }
-      ],
-      overview: [
-        'З жовтня 1941 року до кінця жовтня 1943-го Бабин Яр та прилеглий протитанковий рів (від Лукʼянівського кладовища вздовж вулиці Табірної до повороту на Дегтярівську) стали місцем масових розстрілів, які системно здійснювала окупаційна влада. Там були вбиті євреї, які приховували свою національність, але були викриті; роми — за етнічною ознакою; радянські військовополонені; партійні та радянські активісти; підпільники; заручники; «саботажники»; порушники комендантської години; пацієнти психіатричної лікарні; а також, можливо, окремі представники ОУН(м). У Бабин Яр звозили й тіла людей, убитих в інших місцях: у вʼязницях на Короленка, 33 і 15, на Польовій, на Пилипа Орлика, 5а. У вересні 1942 року Блобель влаштував «екскурсію» для штурмбаннфюрера СС Альберта Хартля, сказавши: «Тут лежать мої 30 000 євреїв».',
-        'За різними оцінками, загальна кількість убитих у Бабиному Яру становить 70–100 тисяч осіб; на Нюрнберзькому процесі 1946 року фігурувала цифра 100 тисяч. У червні 1942-го нацисти також створили Сирецький табір, жертвами якого стали понад 5000 людей. 29 вересня 1943 року близько 20 вʼязнів, піднявши повстання, змогли втекти й пізніше дали свідчення про знищення нацистами доказів масових поховань у рамках «Спеціальної операції 1005».'
-      ],
-      featureInitialDelay: 0.52
+          {
+            id: 'layer2-tank-1',
+            label: text['layer2-tank-1.label'],
+            description: text['layer2-tank-1.description'],
+            mapLabel: {
+              anchor: [785, 667],
+              lines: text['layer2-tank-1.lines'],
+              width: 280
+            },
+            delay: 1.75,
+            Component: Layer2Tank1
+          }
+        ],
+        overview: text['occupation-features.overview'],
+        featureInitialDelay: 0.52
+      }
+    },
+    {
+      id: 'occupation-features-part-2',
+      period,
+      kind: 'features',
+      data: {
+        mapBase,
+        mapSource: text['occupation-features-part-2.mapSource'],
+        featureLabel: text['occupation-features-part-2.featureLabel'],
+        features: [
+          {
+            id: 'layer2-zone-2',
+            label: text['layer2-zone-2.label'],
+            description: text['layer2-zone-2.description'],
+            mapLabel: { anchor: [42, 424] },
+            Component: Layer2Zone2
+          },
+          {
+            id: 'layer2-zone-4',
+            label: text['layer2-zone-4.label'],
+            description: text['layer2-zone-4.description'],
+            mapLabel: {
+              anchor: [630, 82],
+              lines: text['layer2-zone-4.lines'],
+              width: 250
+            },
+            Component: Layer2Zone4
+          }
+        ],
+        routes: [
+          {
+            id: 'layer2-way-1',
+            label: text['layer2-way-1.label'],
+            showLabel: false,
+            description: text['layer2-way-1.description'],
+            mapLabel: { anchor: [298, 492] },
+            Component: Layer2Way1,
+            timing: {
+              segments: [
+                { delay: 2.45, duration: 0.38 },
+                { delay: 2.45, duration: 0.92 },
+                { delay: 3.19, duration: 0.3 },
+                { delay: 2.93, duration: 0.24 },
+                { delay: 3.13, duration: 0.22 },
+                { delay: 3.13, duration: 0.22 }
+              ],
+              arrowheads: [3.49, 3.35, 3.35]
+            }
+          }
+        ],
+        backgroundOverlays: [],
+        symbols: [
+          {
+            id: 'layer2-tank-2',
+            label: text['layer2-tank-2.label'],
+            description: text['layer2-tank-2.description'],
+            mapLabel: {
+              anchor: [90, 666],
+              lines: text['layer2-tank-2.lines'],
+              width: 295
+            },
+            delay: 4.3,
+            Component: Layer2Tank2
+          }
+        ],
+        overview: text['occupation-features-part-2.overview'],
+        featureInitialDelay: 0.52
+      }
     }
-  }
-] as const satisfies readonly HistoryMapScene[]
+  ] as const satisfies readonly HistoryMapScene[]
+}

@@ -1,3 +1,4 @@
+import { useHistoryMapTranslations } from './language'
 import { useId, type ReactNode } from 'react'
 
 type HistoryMapLayoutProps = {
@@ -17,6 +18,7 @@ export default function HistoryMapLayout({
   belowMap,
   children
 }: HistoryMapLayoutProps) {
+  const t = useHistoryMapTranslations()
   const titleId = useId()
 
   return (
@@ -52,7 +54,7 @@ export default function HistoryMapLayout({
         </div>
 
         <aside
-          aria-label="Історична довідка"
+          aria-label={t('historyMap.background')}
           className="text-base leading-[1.38] md:mt-[4.25rem] lg:text-lg"
         >
           {children}
