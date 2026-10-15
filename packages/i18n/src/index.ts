@@ -9,6 +9,54 @@ export const defaultLang = 'uk'
 
 export const ui = {
   en: {
+    'projectPartners.label': 'Project partners',
+    'projectPartners.embassy':
+      'Embassy of the Federal Republic of Germany in Kyiv',
+    'projectPartners.theatre': 'Ivan Franko National Academic Drama Theatre',
+    'projectPartners.preserve':
+      'National Historical and Memorial Preserve “Babyn Yar”',
+    'audioGuide.stopProgress': 'Stop {number} of 5',
+    'audioGuide.about': 'About the Audio Guide',
+    'audioGuide.title': 'Audio Guide',
+    'audioGuide.aboutStop': 'About this stop',
+    'audioGuide.openMap': 'Open this stop in Google Maps',
+    'audioGuide.route': 'Audio Guide Route',
+    'audioGuide.project': 'About the Project',
+    'audioGuide.map.stop1.title': 'First Checkpoint',
+    'audioGuide.map.stop1.address':
+      'Intersection of Yuriia\nIllienka Street and Akademika\nRomodanova Street',
+    'audioGuide.map.stop2.title': '“Road of Death”\nMemorial Sign',
+    'audioGuide.map.stop2.address':
+      'Intersection of Yuriia Illienka\nStreet and Dorohzhytska Street',
+    'audioGuide.map.stop3.title': 'Military\nCemetery',
+    'audioGuide.map.stop3.address': 'Gareth Jones Street',
+    'audioGuide.map.stop4.title':
+      'Site Where Jews Were Forced\nto Undress Before Being Shot',
+    'audioGuide.map.stop4.address':
+      'Intersection of Dorohzhytska\nStreet and Pravednykiv Street',
+    'audioGuide.map.stop5.title': 'Babyn Yar',
+    'audioGuide.map.stop5.address':
+      'The grounds of the National Historical\nand Memorial Preserve “Babyn Yar”,\nnear the monument to the children\nmurdered at Babyn Yar.',
+    'audioGuide.map.title': 'Audio Guide Route “The Road of Memory”',
+    'audioGuide.map.description':
+      'Five stops from the first checkpoint to Babyn Yar. Select a stop to open its page.',
+    'audioGuide.stop': 'Stop',
+    'audioGuide.player.title': 'Audio player',
+    'audioGuide.player.listen': 'Press Play to listen',
+    'audioGuide.player.comingSoon': 'Audio coming soon',
+    'audioGuide.player.position': 'Playback position',
+    'audioGuide.player.rewind': 'Rewind 10 seconds',
+    'audioGuide.player.play': 'Play',
+    'audioGuide.player.forward': 'Forward 10 seconds',
+    'audioGuide.player.speed': 'Speed',
+    'audioGuide.player.playbackSpeed': 'Playback speed',
+    'audioGuide.player.pause': 'Pause',
+    'audioGuide.player.playError': 'Unable to play audio. Please try again.',
+    'audioGuide.player.playing': 'Playing',
+    'audioGuide.player.finished': 'Audio finished',
+    'audioGuide.player.paused': 'Paused',
+    'audioGuide.player.loadError':
+      'Unable to load audio. Check your connection and refresh the page.',
     'site.title': 'National Historical and Memorial Reserve "Babyn Yar"',
     'page.events.title': 'Events',
     'page.events.description': 'Browse all events',
@@ -91,6 +139,56 @@ export const ui = {
     'error.meta': 'NM Babyn Yar'
   },
   uk: {
+    'projectPartners.label': 'Партнери проєкту',
+    'projectPartners.embassy':
+      'Посольство Федеративної Республіки Німеччина в Києві',
+    'projectPartners.theatre':
+      'Національний академічний драматичний театр імені Івана Франка',
+    'projectPartners.preserve':
+      'Національний історико-меморіальний заповідник «Бабин Яр»',
+    'audioGuide.stopProgress': 'Точка {number} з 5',
+    'audioGuide.about': 'Про аудіогід',
+    'audioGuide.title': 'Аудіогід',
+    'audioGuide.aboutStop': 'Про цю точку маршруту',
+    'audioGuide.openMap': 'Відкрити точку в Google Maps',
+    'audioGuide.route': 'Маршрут аудіогіду',
+    'audioGuide.project': 'Про проєкт',
+    'audioGuide.map.stop1.title': 'Перший блокпост',
+    'audioGuide.map.stop1.address':
+      'перетин вул. Юрія Іллєнка\nта Академіка Ромоданова',
+    'audioGuide.map.stop2.title': 'Пам’ятний знак\n«Дорога смерті»',
+    'audioGuide.map.stop2.address':
+      'перетин вул. Юрія Іллєнка\nта Дорогожицької',
+    'audioGuide.map.stop3.title': 'Військове\nкладовище',
+    'audioGuide.map.stop3.address': 'вул. Ґарета Джонса',
+    'audioGuide.map.stop4.title':
+      'Майданчик для роздягання\nєвреїв перед розстрілом',
+    'audioGuide.map.stop4.address':
+      'перетин вул. Дорогожицької\nта Праведників',
+    'audioGuide.map.stop5.title': 'Бабин Яр',
+    'audioGuide.map.stop5.address':
+      'територія заповідника,\nпоблизу пам’ятника дітям,\nрозстріляним у Бабиному Яру',
+    'audioGuide.map.title': 'Маршрут аудіогіду «Дорога пам’яті»',
+    'audioGuide.map.description':
+      'П’ять точок від першого блокпоста до Бабиного Яру. Виберіть точку, щоб відкрити її сторінку.',
+    'audioGuide.stop': 'Точка',
+    'audioGuide.player.title': 'Аудіоплеєр',
+    'audioGuide.player.listen': 'Натисніть Play, щоб слухати',
+    'audioGuide.player.comingSoon': 'Аудіо незабаром',
+    'audioGuide.player.position': 'Позиція відтворення',
+    'audioGuide.player.rewind': 'Назад на 10 секунд',
+    'audioGuide.player.play': 'Відтворити',
+    'audioGuide.player.forward': 'Вперед на 10 секунд',
+    'audioGuide.player.speed': 'Швидкість',
+    'audioGuide.player.playbackSpeed': 'Швидкість відтворення',
+    'audioGuide.player.pause': 'Пауза',
+    'audioGuide.player.playError':
+      'Не вдалося відтворити аудіо. Спробуйте ще раз.',
+    'audioGuide.player.playing': 'Відтворення',
+    'audioGuide.player.finished': 'Аудіо завершено',
+    'audioGuide.player.paused': 'Пауза',
+    'audioGuide.player.loadError':
+      'Не вдалося завантажити аудіо. Перевірте з’єднання та оновіть сторінку.',
     'site.title': 'Національний історико-меморіальний заповідник "Бабин Яр"',
     'page.events.title': 'Події',
     'page.events.description': 'Переглянути усі події',

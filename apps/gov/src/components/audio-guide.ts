@@ -73,11 +73,83 @@ const uk = {
   ]
 }
 
-// Add the supplied translation here; English pages currently use Ukrainian copy.
-const translations: Partial<Record<Language, typeof uk>> = { uk }
+const en = {
+  title: 'The Road of Memory',
+  introduction:
+    'This audio-guided walking path follows the route along which the Jews of Kyiv were marched to Babyn Yar on 29 September 1941, from the first checkpoint to the site of the mass killings. Along the way, you will hear eyewitness testimonies and learn the stories of the people who were forced to walk this path.',
+  duration: 'Duration: approximately 40 minutes or more · 5 stops',
+  instructions:
+    'We recommend walking from Stop 1 to Stop 5 in the order indicated. Scan the QR code at each stop to access the corresponding audio guide section.',
+  credits: [
+    'The audio guide was created to mark the 85th anniversary of the Babyn Yar massacre by the National Historical and Memorial Preserve “Babyn Yar” in cooperation with RememberUs.org and with the support of the Embassy of the Federal Republic of Germany in Kyiv.',
+    'The project was developed with the participation of the Ivan Franko National Academic Drama Theatre. Actors Vitalii Azhnov, Oleh Stalchuk and Natalia Yaroshenko provided the narration for the Ukrainian-language version of the audio guide.'
+  ],
+  stops: [
+    {
+      id: '01',
+      title: 'First Checkpoint',
+      location:
+        'Starting point · Yuriia Illienka Street, at the intersection with Akademika Romodanova Street',
+      paragraphs: [
+        'You are at the starting point of the Road of Memory route, where the Nazis established the first checkpoint on 29 September 1941.',
+        'As you listen to the audio guide, continue walking down Yuriia Illienka Street towards the intersection with Dorohzhytska Street.',
+        'The next stop is the “Road of Death” memorial sign. The QR code is located next to the memorial sign.'
+      ],
+      map: 'https://maps.app.goo.gl/goNmjjukBjEwuUyE6'
+    },
+    {
+      id: '02',
+      title: '“Road of Death” Memorial Sign',
+      location:
+        'Intersection of Yuriia Illienka Street and Dorohzhytska Street',
+      paragraphs: [
+        'You are continuing along the route taken by the Jews of Kyiv as they were marched to Babyn Yar on 29 September 1941.',
+        'From the memorial sign, continue along Yuriia Illienka Street to the intersection with Gareth Jones Street.',
+        'Turn left and proceed towards the main gates of the military cemetery.',
+        'The next QR code is located there.'
+      ],
+      map: 'https://share.google/oUpXZ3gLHsZ8NBUYo'
+    },
+    {
+      id: '03',
+      title: 'Military Cemetery Gates',
+      location: 'Gareth Jones Street',
+      paragraphs: [
+        'Before you are the gates of the military cemetery, another significant location along the historic route to Babyn Yar.',
+        'From the cemetery gates, continue towards Dorohzhytska Street.',
+        'Then turn onto Pravednykiv Street and cross to the opposite side of Yuriia Illienka Street.',
+        'The next stop is the site where Jews were forced to undress before being shot, at the intersection of Dorohzhytska Street and Pravednykiv Street. You will find the next QR code there.'
+      ],
+      map: 'https://maps.app.goo.gl/BmWkNZNhHL94nafj8'
+    },
+    {
+      id: '04',
+      title: 'Site Where Jews Were Forced to Undress Before Being Shot',
+      location: 'Intersection of Dorohzhytska Street and Pravednykiv Street',
+      paragraphs: [
+        'From this point, continue on foot through the grounds of the National Historical and Memorial Preserve “Babyn Yar.”',
+        'The final stop is located near the monument to the children murdered at Babyn Yar. Scan the last QR code there.'
+      ],
+      map: 'https://maps.app.goo.gl/rSuW5NsoMHEsFQWw9'
+    },
+    {
+      id: '05',
+      title: 'Babyn Yar',
+      location: 'Final stop',
+      paragraphs: [
+        'You have reached the final stop on the Road of Memory route: Babyn Yar.',
+        'It was here, on 29–30 September 1941, that the Nazis carried out the mass murder of the Jews of Kyiv.',
+        'Thank you for walking this path of remembrance with us.'
+      ],
+      map: 'https://maps.app.goo.gl/J1cvVmE4oGBhJJiSA'
+    }
+  ]
+}
+
+const translations: Record<Language, typeof uk> = { uk, en }
 export const getAudioGuide = (lang: Language) => ({
-  ...(translations[lang] ?? uk),
-  language: translations[lang] ? lang : 'uk'
+  ...translations[lang],
+  language: lang
 })
 
 export const recordings: Record<Language, Record<string, string>> = {

@@ -1,8 +1,9 @@
 ---
-import type { Language } from '@babyn-yar/i18n'
+import { useTranslations, type Language } from '@babyn-yar/i18n'
 import { createLocalizedPath } from '@/i18n-routing'
 const { lang } = Astro.props as { lang: Language }
 const path = createLocalizedPath(lang)
+const t = useTranslations(lang)
 // Coordinates and line breaks follow the supplied route illustration.
 const stops = [
   {
@@ -10,9 +11,9 @@ const stops = [
     x: 727,
     y: 337,
     tx: 722,
-    ty: 272,
-    title: ['Перший блокпост'],
-    address: ['перетин вул. Юрія Іллєнка', 'та Академіка Ромоданова']
+    ty: lang === 'en' ? 255 : 272,
+    title: t('audioGuide.map.stop1.title').split('\n'),
+    address: t('audioGuide.map.stop1.address').split('\n')
   },
   {
     id: '02',
@@ -20,8 +21,8 @@ const stops = [
     y: 259,
     tx: 615,
     ty: 157,
-    title: ['Пам’ятний знак', '«Дорога смерті»'],
-    address: ['перетин вул. Юрія Іллєнка', 'та Дорогожицької']
+    title: t('audioGuide.map.stop2.title').split('\n'),
+    address: t('audioGuide.map.stop2.address').split('\n')
   },
   {
     id: '03',
@@ -29,8 +30,8 @@ const stops = [
     y: 244,
     tx: 364,
     ty: 261,
-    title: ['Військове', 'кладовище'],
-    address: ['вул. Ґарета Джонса']
+    title: t('audioGuide.map.stop3.title').split('\n'),
+    address: t('audioGuide.map.stop3.address').split('\n')
   },
   {
     id: '04',
@@ -38,8 +39,8 @@ const stops = [
     y: 309,
     tx: 39,
     ty: 229,
-    title: ['Майданчик для роздягання', 'євреїв перед розстрілом'],
-    address: ['перетин вул. Дорогожицької', 'та Праведників']
+    title: t('audioGuide.map.stop4.title').split('\n'),
+    address: t('audioGuide.map.stop4.address').split('\n')
   },
   {
     id: '05',
@@ -47,12 +48,8 @@ const stops = [
     y: 28,
     tx: 46,
     ty: 35,
-    title: ['Бабин Яр'],
-    address: [
-      'територія заповідника,',
-      'поблизу пам’ятника дітям,',
-      'розстріляним у Бабиному Яру'
-    ]
+    title: t('audioGuide.map.stop5.title').split('\n'),
+    address: t('audioGuide.map.stop5.address').split('\n')
   }
 ]
 ---
@@ -63,11 +60,10 @@ const stops = [
   xmlns="http://www.w3.org/2000/svg"
   aria-labelledby="map-title map-description"
 >
-  <title id="map-title">Маршрут аудіогіду «Дорога пам’яті»</title>
-  <desc id="map-description"
-    >П’ять точок від першого блокпоста до Бабиного Яру. Виберіть точку, щоб
-    відкрити її сторінку.</desc
-  >
+  <title id="map-title">
+    {t('audioGuide.map.title')}
+  </title>
+  <desc id="map-description">{t('audioGuide.map.description')}</desc>
   <path
     d="M727 337 L572 231 L366 190 L344 247 L323 308 L263 317 L26 309 L13 287 L20 267 L13 210 L1 194 L12 164 L12 98 L5 55 L21 28"
     fill="none"
@@ -80,7 +76,7 @@ const stops = [
     stops.map((stop, index) => (
       <a
         href={path(`/guides/audio/${stop.id}`)}
-        aria-label={`Точка ${index + 1}: ${stop.title.join(' ')}`}
+        aria-label={`${t('audioGuide.stop')} ${index + 1}: ${stop.title.join(' ')}`}
       >
         <circle
           class="hit-area"
