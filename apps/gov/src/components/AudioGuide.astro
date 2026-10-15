@@ -1,9 +1,10 @@
 ---
-import type { Language } from '@babyn-yar/i18n'
+import { useTranslations, type Language } from '@babyn-yar/i18n'
 import { ArrowLeft } from 'lucide-react'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import AudioGuidePlayer from './AudioGuidePlayer.astro'
 import AudioGuideRoute from './AudioGuideRoute.astro'
+import ProjectPartners from './ProjectPartners.astro'
 import { getAudioGuide, recordings } from '@/components/audio-guide'
 import { createLocalizedPath } from '@/i18n-routing'
 
@@ -13,9 +14,10 @@ interface Props {
 }
 const { lang, id } = Astro.props
 const guide = getAudioGuide(lang)
+const t = useTranslations(lang)
 const stop = guide.stops.find(stop => stop.id === id)
 const path = createLocalizedPath(lang)
-const recording = stop && recordings[lang]?.[stop.id]
+const recording = stop && recordings[lang][stop.id]
 ---
 
 <BaseLayout
@@ -37,12 +39,15 @@ const recording = stop && recordings[lang]?.[stop.id]
             href={path('/guides/audio')}
           >
             <ArrowLeft size={18} aria-hidden="true" />
-            <span>Про аудіогід</span>
+            <span>{t('audioGuide.about')}</span>
           </a>
         )
       }
       <p class="mb-[0.6rem] text-[#626262]">
-        Аудіогід{stop && ` · Точка ${Number(stop.id)} з 5`}
+        {t('audioGuide.title')}{
+          stop &&
+            ` · ${t('audioGuide.stopProgress').replace('{number}', String(Number(stop.id)))}`
+        }
       </p>
       <h1
         class:list={[
@@ -60,7 +65,7 @@ const recording = stop && recordings[lang]?.[stop.id]
       stop ? (
         <section
           class="mt-10 leading-[1.55] [&_p+p]:mt-5"
-          aria-label="Про цю точку маршруту"
+          aria-label={t('audioGuide.aboutStop')}
         >
           {stop.paragraphs.map(paragraph => (
             <p>{paragraph}</p>
@@ -69,7 +74,7 @@ const recording = stop && recordings[lang]?.[stop.id]
             class="mt-6 inline-block underline underline-offset-[0.2em]"
             href={stop.map}
           >
-            Відкрити точку в Google Maps ↗
+            {t('audioGuide.openMap')} ↗
           </a>
         </section>
       ) : (
@@ -85,7 +90,7 @@ const recording = stop && recordings[lang]?.[stop.id]
         id="route-title"
         class:list={stop ? 'mb-8 text-2xl font-bold' : 'sr-only'}
       >
-        Маршрут аудіогіду
+        {t('audioGuide.route')}
       </h2>
       {
         !stop ? (
@@ -126,7 +131,7 @@ const recording = stop && recordings[lang]?.[stop.id]
       !stop && (
         <section
           class="mt-12 border-t border-[#ddd] pt-8 text-lg leading-normal [&_p+p]:mt-5"
-          aria-label="Про проєкт"
+          aria-label={t('audioGuide.project')}
         >
           {guide.credits.map(credit => (
             <p>{credit}</p>
@@ -134,7 +139,12 @@ const recording = stop && recordings[lang]?.[stop.id]
         </section>
       )
     }
-    {stop && <AudioGuidePlayer title={stop.title} src={recording} />}
+    {!stop && <ProjectPartners lang={lang} />}
+    {
+      stop && (
+        <AudioGuidePlayer lang={lang} title={stop.title} src={recording} />
+      )
+    }
   </article>
 </BaseLayout>
 
