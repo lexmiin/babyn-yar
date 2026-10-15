@@ -9,6 +9,17 @@ export const defaultLang = 'uk'
 
 export const ui = {
   en: {
+    'historyMap.step': 'Step {current} of {total}: {title}',
+    'historyMap.background': 'Historical background',
+    'historyMap.selected': 'Selected: {title}',
+    'historyMap.overview': 'Historical period overview',
+    'historyMap.objectInfo': 'Information about the site: {title}',
+    'historyMap.chooseObject': 'Choose a site',
+    'historyMap.nearbyObjects': 'Other sites nearby',
+    'historyMap.multipleObjects':
+      'Several sites are located in this area of the map.',
+    'historyMap.closeObject': 'Close site information',
+
     'projectPartners.label': 'Project partners',
     'projectPartners.embassy':
       'Embassy of the Federal Republic of Germany in Kyiv',
@@ -139,6 +150,17 @@ export const ui = {
     'error.meta': 'NM Babyn Yar'
   },
   uk: {
+    'historyMap.step': 'Етап {current} з {total}: {title}',
+    'historyMap.background': 'Історична довідка',
+    'historyMap.selected': 'Вибрано: {title}',
+    'historyMap.overview': 'Огляд історичного періоду',
+    'historyMap.objectInfo': 'Інформація про об’єкт: {title}',
+    'historyMap.chooseObject': 'Оберіть об’єкт',
+    'historyMap.nearbyObjects': 'Інші об’єкти поруч',
+    'historyMap.multipleObjects':
+      'У цій ділянці карти розташовано кілька об’єктів.',
+    'historyMap.closeObject': 'Закрити інформацію про об’єкт',
+
     'projectPartners.label': 'Партнери проєкту',
     'projectPartners.embassy':
       'Посольство Федеративної Республіки Німеччина в Києві',

@@ -1,3 +1,5 @@
+import type { Language } from '@babyn-yar/i18n'
+
 type PlaceContent = {
   semanticId: string
   title: string
@@ -8,7 +10,7 @@ type PlaceContent = {
   }
   en?: {
     title: string
-    description: string
+    description?: string
     alt: string
   }
 }
@@ -58,6 +60,10 @@ export const PRESENT_DAY_POI_CONTENT = {
     image: {
       src: `${POI_IMAGE_ROOT}/03-ostarbeiters.webp`,
       alt: 'Пам’ятний знак остарбайтерам'
+    },
+    en: {
+      title: 'Monument to Ukrainian Ostarbeiters and victims of Nazism',
+      alt: 'Monument to Ukrainian Ostarbeiters and victims of Nazism'
     }
   },
   '04': {
@@ -117,6 +123,10 @@ export const PRESENT_DAY_POI_CONTENT = {
     image: {
       src: `${POI_IMAGE_ROOT}/07-road-of-sorrow.webp`,
       alt: 'Дорога Скорботи'
+    },
+    en: {
+      title: 'Road of Sorrow',
+      alt: 'Road of Sorrow'
     }
   },
   '08': {
@@ -128,6 +138,11 @@ export const PRESENT_DAY_POI_CONTENT = {
     image: {
       src: `${POI_IMAGE_ROOT}/08-orthodox-clergy.webp`,
       alt: "Пам'ятний хрест православним священикам"
+    },
+    en: {
+      title:
+        'Cross in memory of the clergy shot for calling to defend the homeland against the Nazi invaders',
+      alt: 'Cross in memory of the clergy shot for calling to defend the homeland against the Nazi invaders'
     }
   },
   '09': {
@@ -154,6 +169,10 @@ export const PRESENT_DAY_POI_CONTENT = {
     image: {
       src: `${POI_IMAGE_ROOT}/10-kachkovsky-crypt.webp`,
       alt: 'Склеп братів Качковських'
+    },
+    en: {
+      title: 'Kachkovsky brothers’ crypt',
+      alt: 'Kachkovsky brothers’ crypt'
     }
   },
   '11': {
@@ -180,6 +199,11 @@ export const PRESENT_DAY_POI_CONTENT = {
     image: {
       src: `${POI_IMAGE_ROOT}/12-heritage-centre.webp`,
       alt: "Пам'ятний знак на місці майбутнього Общинного центру «Спадщина»"
+    },
+    en: {
+      title:
+        'Memorial sign at the site of the future “Spadshchyna” (Heritage) Community Centre',
+      alt: 'Memorial sign at the site of the future “Spadshchyna” (Heritage) Community Centre'
     }
   },
   '13': {
@@ -210,10 +234,10 @@ export const PRESENT_DAY_POI_CONTENT = {
     },
     en: {
       title:
-        'Monument to Olena Teliha and Her Сomrades, Who Died for the Independence of Ukraine',
+        'Monument to Olena Teliha and Her Comrades, Who Died for the Independence of Ukraine',
       description:
         'Olena Teliha was a poet, literary critic and an active member of the Organisation of Ukrainian Nationalists (OUN), under the leadership of Andrii Melnyk. During the occupation of Kyiv, she became a victim of Nazi persecution.\n\nThe monument to Olena Teliha and her comrades was unveiled on 25 February 2017. The sculptural composition was created by Oleksandra Ruban and Viktor Lypovka.',
-      alt: 'Monument to Olena Teliha and Her Сomrades, Who Died for the Independence of Ukraine'
+      alt: 'Monument to Olena Teliha and Her Comrades, Who Died for the Independence of Ukraine'
     }
   },
   '15': {
@@ -256,6 +280,10 @@ export const PRESENT_DAY_POI_CONTENT = {
     image: {
       src: `${POI_IMAGE_ROOT}/17-mirror-field.webp`,
       alt: 'Аудіовізуальна інсталяція «Дзеркальне поле»'
+    },
+    en: {
+      title: 'Mirror Field',
+      alt: 'Mirror Field'
     }
   },
   '18': {
@@ -266,6 +294,10 @@ export const PRESENT_DAY_POI_CONTENT = {
     image: {
       src: `${POI_IMAGE_ROOT}/18-crystal-wailing-wall.webp`,
       alt: 'Кристалічна стіна плачу'
+    },
+    en: {
+      title: 'Crystal Wall of Crying',
+      alt: 'Crystal Wall of Crying'
     }
   },
   '19': {
@@ -276,8 +308,25 @@ export const PRESENT_DAY_POI_CONTENT = {
     image: {
       src: `${POI_IMAGE_ROOT}/19-symbolic-synagogue.webp`,
       alt: 'Символічна синагога «Місце для роздумів»'
+    },
+    en: {
+      title: 'Symbolic Synagogue “Place for Reflection”',
+      alt: 'Symbolic Synagogue “Place for Reflection”'
     }
   }
 } as const satisfies Record<string, PlaceContent>
 
 export type PlaceId = keyof typeof PRESENT_DAY_POI_CONTENT
+
+export function getLocalizedPlace(id: PlaceId, lang: Language) {
+  const place = PRESENT_DAY_POI_CONTENT[id]
+  const localized: PlaceContent['en'] =
+    lang === 'en' && 'en' in place ? place.en : undefined
+
+  return {
+    semanticId: place.semanticId,
+    title: localized?.title ?? place.title,
+    description: localized?.description ?? place.description,
+    image: { ...place.image, alt: localized?.alt ?? place.image.alt }
+  }
+}

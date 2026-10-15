@@ -1,3 +1,4 @@
+import { useHistoryMapTranslations } from './language'
 import { useRef, useState } from 'react'
 import ActiveMapLabel from './ActiveMapLabel'
 import MapImage from './MapImage'
@@ -73,6 +74,7 @@ function PoiPopover({
   images: Record<string, MapImageSource>
   onLabelChange: (poi: HistoryMapPoi | null) => void
 }) {
+  const t = useHistoryMapTranslations()
   const triggerRef = useRef<HTMLButtonElement>(null)
   const pointerTypeRef = useRef('mouse')
   const [choices, setChoices] = useState<readonly HistoryMapPoi[]>([poi])
@@ -118,7 +120,7 @@ function PoiPopover({
           onMouseLeave={() => onLabelChange(null)}
           onFocus={() => onLabelChange(poi)}
           onBlur={() => onLabelChange(null)}
-          aria-label={`Інформація про об’єкт: ${poi.title}`}
+          aria-label={t('historyMap.objectInfo').replace('{title}', poi.title)}
           className="group grid size-7 cursor-pointer place-items-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
         >
           <span
@@ -155,7 +157,7 @@ function PoiPopover({
             )}
             <div className="relative space-y-2 p-4">
               <Popover.Title className="pr-8 text-lg leading-tight font-bold sm:text-xl">
-                {selectedPoi?.title ?? 'Оберіть об’єкт'}
+                {selectedPoi?.title ?? t('historyMap.chooseObject')}
               </Popover.Title>
               {selectedPoi ? (
                 <>
@@ -168,14 +170,14 @@ function PoiPopover({
                       onClick={() => setSelectedPoi(null)}
                       className="cursor-pointer underline"
                     >
-                      Інші об’єкти поруч
+                      {t('historyMap.nearbyObjects')}
                     </button>
                   )}
                 </>
               ) : (
                 <>
                   <Popover.Description>
-                    У цій ділянці карти розташовано кілька об’єктів.
+                    {t('historyMap.multipleObjects')}
                   </Popover.Description>
                   <ul className="space-y-2">
                     {choices.map(choice => (
@@ -193,7 +195,7 @@ function PoiPopover({
                 </>
               )}
               <Popover.Close
-                aria-label="Закрити інформацію про об’єкт"
+                aria-label={t('historyMap.closeObject')}
                 className="absolute top-3 right-3 grid size-8 cursor-pointer place-items-center rounded-full text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-950"
               >
                 <X aria-hidden="true" className="size-5" />

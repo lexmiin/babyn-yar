@@ -24,8 +24,10 @@ for (const extension of ['.ts', '.tsx']) {
 }
 
 const {
-  OCCUPATION_SCENES
+  getOccupationScenes
 } = require('./src/components/history-map/occupation.ts')
+const { uk } = require('./src/components/history-map/content/uk.ts')
+const OCCUPATION_SCENES = getOccupationScenes(uk.occupation)
 const { createElement } = require('react')
 const { renderToStaticMarkup } = require('react-dom/server')
 const {

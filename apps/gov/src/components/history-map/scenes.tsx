@@ -1,12 +1,20 @@
-import { BEFORE_1941_SCENES } from './before1941'
-import { OCCUPATION_SCENES } from './occupation'
-import { POSTWAR_SCENES } from './postwar'
-import { PRESENT_DAY_SCENES } from './presentDay'
+import type { Language } from '@babyn-yar/i18n'
+import { getBefore1941Scenes } from './before1941'
+import { getOccupationScenes } from './occupation'
+import { getPostwarScenes } from './postwar'
+import { getPresentDayScenes } from './presentDay'
+import { uk } from './content/uk'
+import { en } from './content/en'
 import type { HistoryMapScene } from './sceneTypes'
 
-export const HISTORY_MAP_SCENES: readonly HistoryMapScene[] = [
-  ...BEFORE_1941_SCENES,
-  ...OCCUPATION_SCENES,
-  ...POSTWAR_SCENES,
-  ...PRESENT_DAY_SCENES
-]
+export function getHistoryMapScenes(
+  lang: Language
+): readonly HistoryMapScene[] {
+  const text = lang === 'en' ? en : uk
+  return [
+    ...getBefore1941Scenes(text.before1941),
+    ...getOccupationScenes(text.occupation),
+    ...getPostwarScenes(text.postwar),
+    ...getPresentDayScenes(text.presentDay, lang)
+  ]
+}
