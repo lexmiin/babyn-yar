@@ -8,6 +8,7 @@ import (
 	"github.com/lex-unix/babyn-yar/internal/validator"
 )
 
+// registerUserHandler creates an account and reports emails reserved by deactivated users.
 func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Request) {
 	var input struct {
 		FullName   string `json:"fullName"`
@@ -48,6 +49,9 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 	err = app.models.Users.Insert(user)
 	if err != nil {
 		switch {
+		case errors.Is(err, data.ErrDeactivatedEmail):
+			v.AddError("email", "This email belongs to a deactivated account.")
+			app.failedValidationResponse(w, r, v.Errors)
 		case errors.Is(err, data.ErrDuplicateEmail):
 			v.AddError("email", "a user with this email already exists")
 			app.failedValidationResponse(w, r, v.Errors)
@@ -171,6 +175,7 @@ func (app *application) listUsersHandler(w http.ResponseWriter, r *http.Request)
 	}
 }
 
+// updateUserHandler edits the signed-in account while respecting reserved emails.
 func (app *application) updateUserHandler(w http.ResponseWriter, r *http.Request) {
 	user := app.contextGetUser(r)
 
@@ -222,6 +227,9 @@ func (app *application) updateUserHandler(w http.ResponseWriter, r *http.Request
 		switch {
 		case errors.Is(err, data.ErrEditConflict):
 			app.editConflictResponse(w, r)
+		case errors.Is(err, data.ErrDeactivatedEmail):
+			v.AddError("email", "This email belongs to a deactivated account.")
+			app.failedValidationResponse(w, r, v.Errors)
 		case errors.Is(err, data.ErrDuplicateEmail):
 			v.AddError("email", "a user with this email already exists")
 			app.failedValidationResponse(w, r, v.Errors)
@@ -278,6 +286,7 @@ func (app *application) resetUserPasswordHandler(w http.ResponseWriter, r *http.
 	}
 }
 
+// adminUpdateUserHandler edits an active account and preserves the last active administrator.
 func (app *application) adminUpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 	userID, err := app.readIDParam(r)
 	if err != nil {
@@ -328,6 +337,9 @@ func (app *application) adminUpdateUserHandler(w http.ResponseWriter, r *http.Re
 		switch {
 		case errors.Is(err, data.ErrEditConflict):
 			app.editConflictResponse(w, r)
+		case errors.Is(err, data.ErrDeactivatedEmail):
+			v.AddError("email", "This email belongs to a deactivated account.")
+			app.failedValidationResponse(w, r, v.Errors)
 		case errors.Is(err, data.ErrDuplicateEmail):
 			v.AddError("email", "a user with this email already exists")
 			app.failedValidationResponse(w, r, v.Errors)
@@ -345,6 +357,7 @@ func (app *application) adminUpdateUserHandler(w http.ResponseWriter, r *http.Re
 	}
 }
 
+// deleteUserHandler deactivates an account while preserving its publications.
 func (app *application) deleteUserHandler(w http.ResponseWriter, r *http.Request) {
 	userID, err := app.readIDParam(r)
 	if err != nil {
@@ -367,7 +380,7 @@ func (app *application) deleteUserHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	err = app.writeJSON(w, http.StatusOK, envelope{"message": "user successfully deleted"}, nil)
+	err = app.writeJSON(w, http.StatusOK, envelope{"message": "user successfully deactivated"}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}

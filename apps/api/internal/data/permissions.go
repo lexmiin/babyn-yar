@@ -18,13 +18,14 @@ type PermissionModel struct {
 	DB *pgxpool.Pool
 }
 
+// GetAllForUser returns effective permissions only for active accounts.
 func (m PermissionModel) GetAllForUser(userID int64) (Permissions, error) {
 	query := `
 		SELECT permissions.name
 		FROM permissions
 		INNER JOIN users_permissions ON users_permissions.permission_id = permissions.id
 		INNER JOIN users ON users_permissions.user_id = users.id
-		WHERE users.id = $1`
+		WHERE users.id = $1 AND users.deleted_at IS NULL`
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()

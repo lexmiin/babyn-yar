@@ -19,11 +19,11 @@ export const userToasts = {
     }),
   deleteUserSuccess: () =>
     toast.success('Операція успішна', {
-      description: 'Користувача було видалено'
+      description: 'Користувача було деактивовано'
     }),
   deleteUserError: () =>
     toast.error('Виникла помилка', {
-      description: 'Не вдалося видалити користувача. Спробуйте ще раз.'
+      description: 'Не вдалося деактивувати користувача. Спробуйте ще раз.'
     }),
   resetPasswordSuccess: () =>
     toast.success('Пароль змінено', {
