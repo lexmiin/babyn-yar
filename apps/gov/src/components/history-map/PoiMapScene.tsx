@@ -4,6 +4,13 @@ import ActiveMapLabel from './ActiveMapLabel'
 import MapImage from './MapImage'
 import { Popover } from '@base-ui/react/popover'
 import { motion, type Transition } from 'framer-motion'
+import {
+  ENTER_EASE,
+  EXIT_EASE,
+  SCENE_TITLE_MOTION,
+  SCENE_MAP_MOTION,
+  SCENE_TEXT_MOTION
+} from './sceneMotion'
 import { X } from 'lucide-react'
 import HistoryMapLayout from './HistoryMapLayout'
 import { selectPoi } from './poiSelection'
@@ -17,8 +24,6 @@ import type {
   HistoryMapPoiSceneData
 } from './mapTypes'
 
-const OVERLAY_ENTER_EASE = [0.22, 1, 0.36, 1] as const
-const OVERLAY_EXIT_EASE = [0.64, 0, 0.78, 0] as const
 const BORDER_ENTER_DELAY_MS = 120
 const BORDER_ENTER_DURATION_MS = 500
 const BORDER_EXIT_DURATION_MS = 180
@@ -33,7 +38,7 @@ function getPoiEnterTransition(index: number): Transition {
   return {
     duration: 0.32,
     delay: (POI_INITIAL_DELAY_MS + index * POI_STAGGER_MS) / 1000,
-    ease: OVERLAY_ENTER_EASE
+    ease: ENTER_EASE
   }
 }
 
@@ -41,7 +46,7 @@ function getPoiExitTransition(index: number, poiCount: number): Transition {
   return {
     duration: POI_EXIT_DURATION_MS / 1000,
     delay: ((poiCount - index - 1) * POI_EXIT_STAGGER_MS) / 1000,
-    ease: OVERLAY_EXIT_EASE
+    ease: EXIT_EASE
   }
 }
 
@@ -217,13 +222,7 @@ export default function PoiMapScene({
   return (
     <HistoryMapLayout
       title={
-        <motion.span
-          className="block"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.44, ease: [0.22, 1, 0.36, 1] }}
-        >
+        <motion.span className="block" {...SCENE_TITLE_MOTION}>
           {period.title}
         </motion.span>
       }
@@ -231,8 +230,7 @@ export default function PoiMapScene({
         <motion.div
           data-history-map-pois
           className="absolute inset-0"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          {...SCENE_MAP_MOTION}
           exit={{
             opacity: 0,
             transition: {
@@ -241,10 +239,9 @@ export default function PoiMapScene({
                 (getPoiExitSequenceDurationMs(pois.length) +
                   BORDER_EXIT_DURATION_MS) /
                 1000,
-              ease: OVERLAY_EXIT_EASE
+              ease: EXIT_EASE
             }
           }}
-          transition={{ duration: 0.36, ease: [0.22, 1, 0.36, 1] }}
         >
           <MapImage mapBase={mapBase} />
           <motion.div
@@ -256,13 +253,13 @@ export default function PoiMapScene({
               transition: {
                 duration: BORDER_EXIT_DURATION_MS / 1000,
                 delay: getPoiExitSequenceDurationMs(pois.length) / 1000,
-                ease: OVERLAY_EXIT_EASE
+                ease: EXIT_EASE
               }
             }}
             transition={{
               duration: BORDER_ENTER_DURATION_MS / 1000,
               delay: BORDER_ENTER_DELAY_MS / 1000,
-              ease: OVERLAY_ENTER_EASE
+              ease: ENTER_EASE
             }}
           >
             <BorderComponent
@@ -296,13 +293,7 @@ export default function PoiMapScene({
       mapAspectRatio={mapBase.aspectRatio}
       mapSource={mapSource}
     >
-      <motion.div
-        className="space-y-5"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -10 }}
-        transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-      >
+      <motion.div className="space-y-5" {...SCENE_TEXT_MOTION}>
         {overview.map(paragraph => (
           <p key={paragraph}>{paragraph}</p>
         ))}

@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { ENTER_EASE, EXIT_EASE } from './sceneMotion'
 import type { SVGProps } from 'react'
 import type { HistoryMapOverlay } from './mapTypes'
 
@@ -31,13 +32,13 @@ export default function MapOverlays<T extends HistoryMapOverlay>({
           transition: {
             duration: 0.18,
             delay: 0,
-            ease: [0.64, 0, 0.78, 0]
+            ease: EXIT_EASE
           }
         }}
         transition={{
           duration,
           delay,
-          ease: [0.22, 1, 0.36, 1]
+          ease: ENTER_EASE
         }}
       >
         <Component

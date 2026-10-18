@@ -7,6 +7,13 @@ import {
   useReducedMotion,
   type Transition
 } from 'framer-motion'
+import {
+  ENTER_EASE,
+  EXIT_EASE,
+  SCENE_TITLE_MOTION,
+  SCENE_MAP_MOTION,
+  SCENE_TEXT_MOTION
+} from './sceneMotion'
 import { useId } from 'react'
 import ActiveMapLabel from './ActiveMapLabel'
 import HistoryMapLayout from './HistoryMapLayout'
@@ -34,7 +41,7 @@ function getFeatureTransition(
   return {
     duration,
     delay: delay ?? (initialDelayMs + index * FEATURE_STAGGER_MS) / 1000,
-    ease: [0.22, 1, 0.36, 1]
+    ease: ENTER_EASE
   }
 }
 
@@ -45,7 +52,7 @@ function getFeatureExitTransition(
   return {
     duration: FEATURE_EXIT_DURATION_MS / 1000,
     delay: ((featureCount - index - 1) * FEATURE_EXIT_STAGGER_MS) / 1000,
-    ease: [0.64, 0, 0.78, 0]
+    ease: EXIT_EASE
   }
 }
 
@@ -192,7 +199,7 @@ function RouteOverlay({
           transition: {
             duration: 0.2,
             delay: 0,
-            ease: [0.64, 0, 0.78, 0]
+            ease: EXIT_EASE
           }
         }}
         transition={{
@@ -245,13 +252,13 @@ function SymbolOverlay({
           transition: {
             duration: 0.18,
             delay: 0,
-            ease: [0.64, 0, 0.78, 0]
+            ease: EXIT_EASE
           }
         }}
         transition={{
           duration,
           delay,
-          ease: [0.22, 1, 0.36, 1]
+          ease: ENTER_EASE
         }}
       >
         <Component
@@ -304,13 +311,7 @@ export default function FeatureMapScene({
     <motion.div
       key="feature-map"
       className="absolute inset-0"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{
-        duration: 0.36,
-        ease: [0.22, 1, 0.36, 1]
-      }}
+      {...SCENE_MAP_MOTION}
     >
       <MapImage mapBase={mapBase} />
 
@@ -348,15 +349,14 @@ export default function FeatureMapScene({
           <motion.span
             key={period.id}
             className="block"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
+            {...SCENE_TITLE_MOTION}
             transition={getFeatureTransition({})}
             exit={{
               opacity: 0,
               y: -10,
               transition: {
                 duration: FEATURE_EXIT_DURATION_MS / 1000,
-                ease: [0.64, 0, 0.78, 0]
+                ease: EXIT_EASE
               }
             }}
           >
@@ -411,18 +411,13 @@ export default function FeatureMapScene({
           id={featureDetailsId}
           key={activeFeature?.id ?? 'period-overview'}
           className="space-y-5"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: 0.28,
-            ease: [0.22, 1, 0.36, 1]
-          }}
+          {...SCENE_TEXT_MOTION}
           exit={{
             opacity: 0,
             y: -10,
             transition: {
               duration: 0.2,
-              ease: [0.64, 0, 0.78, 0]
+              ease: EXIT_EASE
             }
           }}
         >
