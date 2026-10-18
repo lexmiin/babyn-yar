@@ -16,7 +16,7 @@ import {
   Layer3Point2,
   Layer3DevelopmentArea
 } from './generated/Layer3Svgs'
-import { MAP_ASPECT_RATIO } from './mapGeometry'
+import { MAP_ASPECT_RATIO, type MapPoint } from './mapGeometry'
 import type { MapImageSource } from './mapTypes'
 import type { HistoryMapScene } from './sceneTypes'
 import type { HistoryMapCopy } from './content/uk'
@@ -26,6 +26,8 @@ export function getPostwarScenes(
   image: MapImageSource
 ) {
   const period = { id: 'postwar', title: text['postwar.title'] }
+  // The Kurenivka flood spread from the failed earthen dam.
+  const damBreach: MapPoint = [561, 237]
   const mapBase = {
     id: 'postwar',
     alt: text['postwar.alt'],
@@ -135,7 +137,8 @@ export function getPostwarScenes(
             duration: 0.35,
             label: text['layer3-damba.label'],
             description: text['layer3-damba.description'],
-            mapLabel: { anchor: [561, 237] },
+            mapLabel: { anchor: damBreach },
+            fill: 'solid',
             Component: Layer3Damba
           },
           {
@@ -145,6 +148,8 @@ export function getPostwarScenes(
             label: text['layer3-razliv.label'],
             description: text['layer3-razliv.description'],
             mapLabel: { anchor: [790, 160] },
+            fill: 'flood',
+            floodReveal: { origin: damBreach, radius: 370 },
             Component: Layer3Razliv
           }
         ],

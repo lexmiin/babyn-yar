@@ -56,6 +56,12 @@ function getFeatureExitTransition(
   }
 }
 
+const RESTING_FILL_CLASSES = {
+  faint: '[--territory-fill-opacity:.3] [--territory-fill:#fff]',
+  solid: '[--territory-fill-opacity:1] [--territory-fill:#fff]',
+  flood: '[--territory-fill-opacity:.6] [--territory-fill:#ec2125]'
+} as const
+
 function FeatureOverlay({
   features,
   activeFeatureId,
@@ -87,9 +93,17 @@ function FeatureOverlay({
         }}
       >
         {features.map((feature, index) => {
-          const { id, isPoint, mapLabel, mapZIndex, Component } = feature
+          const {
+            id,
+            isPoint,
+            mapLabel,
+            mapZIndex,
+            fill = 'faint',
+            floodReveal,
+            Component
+          } = feature
           const isActive = activeFeatureId === id
-          const revealFlood = id === 'layer3-razliv' && !shouldReduceMotion
+          const revealFlood = floodReveal && !shouldReduceMotion
           const controlProps = getFeatureControlProps(feature)
 
           const overlay = (
@@ -99,7 +113,7 @@ function FeatureOverlay({
                 className={`pointer-events-none absolute inset-0 h-full w-full cursor-pointer transition-[filter] duration-150 outline-none focus-visible:drop-shadow-[0_0_5px_#fff] [&_circle]:pointer-events-none [&_path]:pointer-events-auto [&_polygon]:pointer-events-auto ${
                   isActive
                     ? '[--territory-fill-opacity:.48] [--territory-fill:#941f37]'
-                    : `${id === 'layer3-razliv' ? '[--territory-fill-opacity:.6] [--territory-fill:#ec2125]' : id === 'layer3-damba' ? '[--territory-fill-opacity:1] [--territory-fill:#fff]' : '[--territory-fill-opacity:.3] [--territory-fill:#fff]'} hover:[--territory-fill-opacity:.48] hover:[--territory-fill:#941f37]`
+                    : `${RESTING_FILL_CLASSES[fill]} hover:[--territory-fill-opacity:.48] hover:[--territory-fill:#941f37]`
                 }`}
               />
               {isPoint && (
@@ -152,6 +166,8 @@ function FeatureOverlay({
             >
               {revealFlood ? (
                 <FloodReveal
+                  origin={floodReveal.origin}
+                  radius={floodReveal.radius}
                   transition={getFeatureTransition(
                     feature,
                     index,

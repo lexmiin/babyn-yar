@@ -1,11 +1,19 @@
 import { useId, type ReactNode } from 'react'
 import { motion, type Transition } from 'framer-motion'
-import { MAP_VIEW_BOX, MAP_VIEW_BOX_ATTRIBUTE } from './mapGeometry'
+import {
+  MAP_VIEW_BOX,
+  MAP_VIEW_BOX_ATTRIBUTE,
+  type MapPoint
+} from './mapGeometry'
 
 export default function FloodReveal({
+  origin,
+  radius,
   transition,
   children
 }: {
+  origin: MapPoint
+  radius: number
   transition: Transition
   children: ReactNode
 }) {
@@ -36,16 +44,16 @@ export default function FloodReveal({
           height={MAP_VIEW_BOX.height}
           maskUnits="userSpaceOnUse"
         >
-          {/* Spread from the breach within the existing flood boundary. */}
+          {/* Spread from the origin within the existing flood boundary. */}
           <motion.circle
-            cx={561}
-            cy={237}
+            cx={origin[0]}
+            cy={origin[1]}
             fill="white"
             filter={`url(#${id}-edge)`}
             variants={{
               hidden: { r: 0 },
               visible: {
-                r: 370,
+                r: radius,
                 transition: { ...transition, ease: 'linear' }
               }
             }}
