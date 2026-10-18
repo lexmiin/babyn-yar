@@ -9,15 +9,20 @@ import {
   Layer1Envang,
   Layer1Luk
 } from './generated/Layer1Svgs'
+import type { MapImageSource } from './mapTypes'
 import type { HistoryMapScene } from './sceneTypes'
 import type { HistoryMapCopy } from './content/uk'
 
-export function getBefore1941Scenes(text: HistoryMapCopy['before1941']) {
+export function getBefore1941Scenes(
+  text: HistoryMapCopy['before1941'],
+  image: MapImageSource
+) {
   const period = { id: 'before-1941', title: text['before-1941.title'] }
   const mapBase = {
     id: 'before1941',
     alt: text['before1941.alt'],
-    aspectRatio: '894.14 / 783.2'
+    aspectRatio: '894.14 / 783.2',
+    image
   } as const
   const overview = text.overview
 

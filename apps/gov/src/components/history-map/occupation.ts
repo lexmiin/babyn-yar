@@ -10,15 +10,20 @@ import {
   Layer2Tank1,
   Layer2Tank2
 } from './generated/Layer2StaticSvgs'
+import type { MapImageSource } from './mapTypes'
 import type { HistoryMapScene } from './sceneTypes'
 import type { HistoryMapCopy } from './content/uk'
 
-export function getOccupationScenes(text: HistoryMapCopy['occupation']) {
+export function getOccupationScenes(
+  text: HistoryMapCopy['occupation'],
+  image: MapImageSource
+) {
   const period = { id: 'occupation', title: text['occupation.title'] }
   const mapBase = {
     id: 'occupation',
     alt: text['occupation.alt'],
-    aspectRatio: '894.14 / 783.2'
+    aspectRatio: '894.14 / 783.2',
+    image
   } as const
 
   return [

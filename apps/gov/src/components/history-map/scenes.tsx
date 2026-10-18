@@ -5,16 +5,21 @@ import { getPostwarScenes } from './postwar'
 import { getPresentDayScenes } from './presentDay'
 import { uk } from './content/uk'
 import { en } from './content/en'
+import type { HistoryMapAssets } from './mapTypes'
 import type { HistoryMapScene } from './sceneTypes'
 
 export function getHistoryMapScenes(
-  lang: Language
+  lang: Language,
+  { maps, pois }: HistoryMapAssets
 ): readonly HistoryMapScene[] {
   const text = lang === 'en' ? en : uk
   return [
-    ...getBefore1941Scenes(text.before1941),
-    ...getOccupationScenes(text.occupation),
-    ...getPostwarScenes(text.postwar),
-    ...getPresentDayScenes(text.presentDay, lang)
+    ...getBefore1941Scenes(text.before1941, maps.before1941),
+    ...getOccupationScenes(text.occupation, maps.occupation),
+    ...getPostwarScenes(text.postwar, maps.postwar),
+    ...getPresentDayScenes(text.presentDay, lang, {
+      map: maps.presentDay,
+      pois
+    })
   ]
 }

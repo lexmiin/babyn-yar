@@ -68,10 +68,26 @@ type HistoryMapSelectableOverlay = HistoryMapOverlay & {
  */
 export type HistoryMapSymbol = HistoryMapFeature & HistoryMapOverlay
 
+export type MapImageSource = {
+  src: string
+  srcSet: string
+  width: number
+  height: number
+}
+
 export type HistoryMapBase = {
   id: 'before1941' | 'occupation' | 'postwar' | 'presentDay'
   alt: string
   aspectRatio: string
+  image: MapImageSource
+}
+
+export type MapImages = Record<HistoryMapBase['id'], MapImageSource>
+
+/** Responsive images resolved at build time, keyed by map base and POI image path. */
+export type HistoryMapAssets = {
+  maps: MapImages
+  pois: Record<string, MapImageSource>
 }
 
 export type HistoryMapPeriod = {
@@ -112,10 +128,7 @@ export type HistoryMapPoi = {
   title: string
   description: string
   center: readonly [x: number, y: number]
-  image: {
-    src: string
-    alt: string
-  }
+  image: MapImageSource & { alt: string }
 }
 
 export type HistoryMapPoiSceneData = {

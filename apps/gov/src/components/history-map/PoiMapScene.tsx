@@ -16,7 +16,6 @@ import type {
   HistoryMapPoi,
   HistoryMapPoiSceneData
 } from './mapTypes'
-import type { MapImageSource } from './MapImage'
 
 const OVERLAY_ENTER_EASE = [0.22, 1, 0.36, 1] as const
 const OVERLAY_EXIT_EASE = [0.64, 0, 0.78, 0] as const
@@ -64,14 +63,12 @@ function PoiPopover({
   index,
   poiCount,
   pois,
-  images,
   onLabelChange
 }: {
   poi: HistoryMapPoi
   index: number
   poiCount: number
   pois: readonly HistoryMapPoi[]
-  images: Record<string, MapImageSource>
   onLabelChange: (poi: HistoryMapPoi | null) => void
 }) {
   const t = useHistoryMapTranslations()
@@ -147,8 +144,7 @@ function PoiPopover({
           <Popover.Popup className="max-h-[calc(100dvh-2rem)] w-[min(21rem,calc(100vw-2rem))] overflow-y-auto overscroll-contain rounded-xl border border-neutral-200 bg-white text-neutral-950 shadow-xl transition-[opacity,transform] duration-150 data-[starting-style]:scale-95 data-[starting-style]:opacity-0 motion-reduce:transition-none max-sm:w-full max-sm:max-w-md">
             {selectedPoi && (
               <img
-                {...images[selectedPoi.image.src]}
-                alt={selectedPoi.image.alt}
+                {...selectedPoi.image}
                 sizes={POI_IMAGE_SIZES}
                 loading="lazy"
                 decoding="async"
@@ -210,12 +206,10 @@ function PoiPopover({
 
 export default function PoiMapScene({
   period,
-  scene,
-  images
+  scene
 }: {
   period: HistoryMapPeriod
   scene: HistoryMapPoiSceneData
-  images: Record<string, MapImageSource>
 }) {
   const [labelPoi, setLabelPoi] = useState<HistoryMapPoi | null>(null)
   const { mapBase, mapSource, BorderComponent, pois, overview } = scene
@@ -285,7 +279,6 @@ export default function PoiMapScene({
               index={index}
               poiCount={pois.length}
               pois={pois}
-              images={images}
             />
           ))}
           <ActiveMapLabel

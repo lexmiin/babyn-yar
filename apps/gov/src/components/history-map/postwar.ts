@@ -16,15 +16,20 @@ import {
   Layer3Point2,
   Layer3DevelopmentArea
 } from './generated/Layer3Svgs'
+import type { MapImageSource } from './mapTypes'
 import type { HistoryMapScene } from './sceneTypes'
 import type { HistoryMapCopy } from './content/uk'
 
-export function getPostwarScenes(text: HistoryMapCopy['postwar']) {
+export function getPostwarScenes(
+  text: HistoryMapCopy['postwar'],
+  image: MapImageSource
+) {
   const period = { id: 'postwar', title: text['postwar.title'] }
   const mapBase = {
     id: 'postwar',
     alt: text['postwar.alt'],
-    aspectRatio: '894.14 / 783.2'
+    aspectRatio: '894.14 / 783.2',
+    image
   } as const
   const floodOverview = text.floodOverview
 
