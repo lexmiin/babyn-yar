@@ -4,6 +4,10 @@ import type { HistoryMapFeature } from './mapTypes'
 
 type SelectableMapFeature = Pick<HistoryMapFeature, 'id' | 'label'>
 
+export type GetFeatureControlProps = ReturnType<
+  typeof useMapFeatureSelection
+>['getFeatureControlProps']
+
 export function useMapFeatureSelection<T extends SelectableMapFeature>(
   features: readonly T[],
   detailsId?: string

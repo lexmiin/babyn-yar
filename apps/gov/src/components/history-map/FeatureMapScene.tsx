@@ -26,7 +26,11 @@ import {
   type HistoryMapRoute,
   type HistoryMapSymbol
 } from './mapTypes'
-import { useMapFeatureSelection } from './useMapFeatureSelection'
+import {
+  useMapFeatureSelection,
+  type GetFeatureControlProps
+} from './useMapFeatureSelection'
+import { FOCUS_GLOW, glowClass, territoryFillClass } from './mapHighlight'
 
 const FEATURE_INITIAL_DELAY_MS = 250
 const FEATURE_STAGGER_MS = 220
@@ -56,12 +60,6 @@ function getFeatureExitTransition(
   }
 }
 
-const RESTING_FILL_CLASSES = {
-  faint: '[--territory-fill-opacity:.3] [--territory-fill:#fff]',
-  solid: '[--territory-fill-opacity:1] [--territory-fill:#fff]',
-  flood: '[--territory-fill-opacity:.6] [--territory-fill:#ec2125]'
-} as const
-
 function FeatureOverlay({
   features,
   activeFeatureId,
@@ -70,9 +68,7 @@ function FeatureOverlay({
 }: {
   features: readonly HistoryMapFeature[]
   activeFeatureId: string | null
-  getFeatureControlProps: ReturnType<
-    typeof useMapFeatureSelection
-  >['getFeatureControlProps']
+  getFeatureControlProps: GetFeatureControlProps
   initialDelayMs: number
 }) {
   const shouldReduceMotion = useReducedMotion()
@@ -98,7 +94,7 @@ function FeatureOverlay({
             isPoint,
             mapLabel,
             mapZIndex,
-            fill = 'faint',
+            fill,
             floodReveal,
             Component
           } = feature
@@ -110,11 +106,10 @@ function FeatureOverlay({
             <>
               <Component
                 {...controlProps}
-                className={`pointer-events-none absolute inset-0 h-full w-full cursor-pointer transition-[filter] duration-150 outline-none focus-visible:drop-shadow-[0_0_5px_#fff] [&_circle]:pointer-events-none [&_path]:pointer-events-auto [&_polygon]:pointer-events-auto ${
-                  isActive
-                    ? '[--territory-fill-opacity:.48] [--territory-fill:#941f37]'
-                    : `${RESTING_FILL_CLASSES[fill]} hover:[--territory-fill-opacity:.48] hover:[--territory-fill:#941f37]`
-                }`}
+                className={`pointer-events-none absolute inset-0 h-full w-full cursor-pointer transition-[filter] duration-150 outline-none ${FOCUS_GLOW} [&_circle]:pointer-events-none [&_path]:pointer-events-auto [&_polygon]:pointer-events-auto ${territoryFillClass(
+                  isActive,
+                  fill
+                )}`}
               />
               {isPoint && (
                 <svg
@@ -194,9 +189,7 @@ function RouteOverlay({
 }: {
   routes: readonly HistoryMapRoute[]
   activeFeatureId: string | null
-  getFeatureControlProps: ReturnType<
-    typeof useMapFeatureSelection
-  >['getFeatureControlProps']
+  getFeatureControlProps: GetFeatureControlProps
 }) {
   const shouldReduceMotion = useReducedMotion()
 
@@ -227,11 +220,9 @@ function RouteOverlay({
           {...getFeatureControlProps(route)}
           shouldReduceMotion={Boolean(shouldReduceMotion)}
           timing={route.timing}
-          className={`pointer-events-none absolute inset-0 h-full w-full cursor-pointer focus-visible:outline-none ${
+          className={`pointer-events-none absolute inset-0 h-full w-full cursor-pointer focus-visible:outline-none ${glowClass(
             isActive
-              ? 'drop-shadow-[0_0_5px_rgba(255,255,255,.95)]'
-              : 'focus-visible:drop-shadow-[0_0_5px_#fff]'
-          }`}
+          )}`}
         />
       </motion.div>
     )
@@ -245,9 +236,7 @@ function SymbolOverlay({
 }: {
   symbols: readonly HistoryMapSymbol[]
   activeFeatureId: string | null
-  getFeatureControlProps: ReturnType<
-    typeof useMapFeatureSelection
-  >['getFeatureControlProps']
+  getFeatureControlProps: GetFeatureControlProps
 }) {
   return symbols.map(symbol => {
     const { id, delay, duration = 0.32, Component } = symbol
@@ -279,11 +268,9 @@ function SymbolOverlay({
       >
         <Component
           {...getFeatureControlProps(symbol)}
-          className={`pointer-events-none absolute inset-0 h-full w-full cursor-pointer focus-visible:outline-none [&_path]:pointer-events-auto [&_polyline]:pointer-events-auto ${
+          className={`pointer-events-none absolute inset-0 h-full w-full cursor-pointer focus-visible:outline-none [&_path]:pointer-events-auto [&_polyline]:pointer-events-auto ${glowClass(
             isActive
-              ? 'drop-shadow-[0_0_5px_rgba(255,255,255,.95)]'
-              : 'focus-visible:drop-shadow-[0_0_5px_#fff]'
-          }`}
+          )}`}
         />
       </motion.div>
     )

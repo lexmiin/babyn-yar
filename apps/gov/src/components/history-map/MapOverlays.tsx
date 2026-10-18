@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { ENTER_EASE, EXIT_EASE } from './sceneMotion'
 import type { SVGProps } from 'react'
+import { FOCUS_FILL, territoryFillClass } from './mapHighlight'
 import type { HistoryMapOverlay } from './mapTypes'
 
 export default function MapOverlays<T extends HistoryMapOverlay>({
@@ -48,11 +49,9 @@ export default function MapOverlays<T extends HistoryMapOverlay>({
           })}
           className={`pointer-events-none absolute inset-0 h-full w-full focus-visible:outline-none ${
             isInteractive
-              ? `cursor-pointer [&_path]:pointer-events-auto [&_polygon]:pointer-events-auto ${
+              ? `cursor-pointer [&_path]:pointer-events-auto [&_polygon]:pointer-events-auto ${territoryFillClass(
                   isActive
-                    ? '[--territory-fill-opacity:.48] [--territory-fill:#941f37]'
-                    : '[--territory-fill-opacity:.3] [--territory-fill:#fff] hover:[--territory-fill-opacity:.48] hover:[--territory-fill:#941f37] focus-visible:[--territory-fill-opacity:.48] focus-visible:[--territory-fill:#941f37]'
-                }`
+                )} ${isActive ? '' : FOCUS_FILL}`
               : ''
           }`}
         />

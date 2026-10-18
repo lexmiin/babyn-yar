@@ -1,5 +1,6 @@
 import type { ComponentType, SVGProps } from 'react'
 import type { MapPoint } from './mapGeometry'
+import type { TerritoryFill } from './mapHighlight'
 import type {
   HistoryMapRouteProps,
   HistoryMapRouteTiming
@@ -26,7 +27,7 @@ export type HistoryMapFeature = {
     width?: number
   }
   // Resting territory fill; omitted uses faint white. Hover and selection override it.
-  fill?: 'solid' | 'flood'
+  fill?: TerritoryFill
   // Spreads the feature outward from `origin` instead of fading it in.
   floodReveal?: { origin: MapPoint; radius: number }
   Component: ComponentType<SVGProps<SVGSVGElement>>
