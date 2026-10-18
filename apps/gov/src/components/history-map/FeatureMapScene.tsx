@@ -406,20 +406,12 @@ export default function FeatureMapScene({
           ? t('historyMap.selected').replace('{title}', activeFeature.label)
           : t('historyMap.overview')}
       </div>
-      <AnimatePresence mode="wait" initial={false}>
+      <AnimatePresence mode="wait">
         <motion.div
           id={featureDetailsId}
           key={activeFeature?.id ?? 'period-overview'}
           className="space-y-5"
           {...SCENE_TEXT_MOTION}
-          exit={{
-            opacity: 0,
-            y: -10,
-            transition: {
-              duration: 0.2,
-              ease: EXIT_EASE
-            }
-          }}
         >
           {activeFeature ? (
             <>
