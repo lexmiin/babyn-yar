@@ -32,22 +32,19 @@ const recording = stop && recordings[lang][stop.id]
     lang={guide.language}
   >
     <header class:list={{ 'text-center': !stop }}>
-      {
-        stop && (
-          <a
-            class="mb-8 inline-flex items-center gap-1.5 text-lg"
-            href={path('/guides/audio')}
-          >
-            <ArrowLeft size={18} aria-hidden="true" />
-            <span>{t('audioGuide.about')}</span>
-          </a>
-        )
-      }
+      {stop && (
+        <a
+          class="mb-8 inline-flex items-center gap-1.5 text-lg"
+          href={path('/guides/audio')}
+        >
+          <ArrowLeft size={18} aria-hidden="true" />
+          <span>{t('audioGuide.about')}</span>
+        </a>
+      )}
       <p class="mb-[0.6rem] text-[#626262]">
-        {t('audioGuide.title')}{
-          stop &&
-            ` · ${t('audioGuide.stopProgress').replace('{number}', String(Number(stop.id)))}`
-        }
+        {t('audioGuide.title')}
+        {stop &&
+          ` · ${t('audioGuide.stopProgress').replace('{number}', String(Number(stop.id)))}`}
       </p>
       <h1
         class:list={[
@@ -61,30 +58,28 @@ const recording = stop && recordings[lang][stop.id]
       </h1>
       {stop && <p class="mt-5 text-[#626262]">{stop.location}</p>}
     </header>
-    {
-      stop ? (
-        <section
-          class="mt-10 leading-[1.55] [&_p+p]:mt-5"
-          aria-label={t('audioGuide.aboutStop')}
+    {stop ? (
+      <section
+        class="mt-10 leading-[1.55] [&_p+p]:mt-5"
+        aria-label={t('audioGuide.aboutStop')}
+      >
+        {stop.paragraphs.map(paragraph => (
+          <p>{paragraph}</p>
+        ))}
+        <a
+          class="mt-6 inline-block underline underline-offset-[0.2em]"
+          href={stop.map}
         >
-          {stop.paragraphs.map(paragraph => (
-            <p>{paragraph}</p>
-          ))}
-          <a
-            class="mt-6 inline-block underline underline-offset-[0.2em]"
-            href={stop.map}
-          >
-            {t('audioGuide.openMap')} ↗
-          </a>
-        </section>
-      ) : (
-        <section class="mt-10 text-center leading-[1.55] [&_p+p]:mt-5">
-          <p>{guide.introduction}</p>
-          <p class="font-bold">{guide.duration}</p>
-          <p>{guide.instructions}</p>
-        </section>
-      )
-    }
+          {t('audioGuide.openMap')} ↗
+        </a>
+      </section>
+    ) : (
+      <section class="mt-10 text-center leading-[1.55] [&_p+p]:mt-5">
+        <p>{guide.introduction}</p>
+        <p class="font-bold">{guide.duration}</p>
+        <p>{guide.instructions}</p>
+      </section>
+    )}
     <nav class="route mt-14" aria-labelledby="route-title">
       <h2
         id="route-title"
@@ -92,59 +87,53 @@ const recording = stop && recordings[lang][stop.id]
       >
         {t('audioGuide.route')}
       </h2>
-      {
-        !stop ? (
-          <AudioGuideRoute lang={lang} />
-        ) : (
-          <ol class="list-none p-0">
-            {guide.stops.map((item, index) => (
-              <li class="relative pb-7">
-                <a
-                  class="group relative flex gap-5 text-[#626262] aria-[current=page]:text-black"
-                  href={path(`/guides/audio/${item.id}`)}
-                  aria-current={item.id === id ? 'page' : undefined}
+      {!stop ? (
+        <AudioGuideRoute lang={lang} />
+      ) : (
+        <ol class="list-none p-0">
+          {guide.stops.map((item, index) => (
+            <li class="relative pb-7">
+              <a
+                class="group relative flex gap-5 text-[#626262] aria-[current=page]:text-black"
+                href={path(`/guides/audio/${item.id}`)}
+                aria-current={item.id === id ? 'page' : undefined}
+              >
+                <span
+                  class="grid h-8 shrink-0 grow-0 basis-8 place-items-center rounded-full bg-[#eee] text-base text-[#555] group-aria-[current=page]:bg-black group-aria-[current=page]:text-white"
+                  aria-hidden="true"
                 >
-                  <span
-                    class="grid h-8 shrink-0 grow-0 basis-8 place-items-center rounded-full bg-[#eee] text-base text-[#555] group-aria-[current=page]:bg-black group-aria-[current=page]:text-white"
-                    aria-hidden="true"
-                  >
-                    {index + 1}
-                  </span>
-                  <span>
-                    <>
-                      <strong class="block text-[1.4rem] leading-[1.2] group-hover:underline group-hover:underline-offset-[0.15em]">
-                        {item.title}
-                      </strong>
-                      <span class="mt-[0.4rem] block text-lg leading-[1.3]">
-                        {item.location}
-                      </span>
-                    </>
-                  </span>
-                </a>
-              </li>
-            ))}
-          </ol>
-        )
-      }
-    </nav>
-    {
-      !stop && (
-        <section
-          class="mt-12 border-t border-[#ddd] pt-8 text-lg leading-normal [&_p+p]:mt-5"
-          aria-label={t('audioGuide.project')}
-        >
-          {guide.credits.map(credit => (
-            <p>{credit}</p>
+                  {index + 1}
+                </span>
+                <span>
+                  <>
+                    <strong class="block text-[1.4rem] leading-[1.2] group-hover:underline group-hover:underline-offset-[0.15em]">
+                      {item.title}
+                    </strong>
+                    <span class="mt-[0.4rem] block text-lg leading-[1.3]">
+                      {item.location}
+                    </span>
+                  </>
+                </span>
+              </a>
+            </li>
           ))}
-        </section>
-      )
-    }
+        </ol>
+      )}
+    </nav>
+    {!stop && (
+      <section
+        class="mt-12 border-t border-[#ddd] pt-8 text-lg leading-normal [&_p+p]:mt-5"
+        aria-label={t('audioGuide.project')}
+      >
+        {guide.credits.map(credit => (
+          <p>{credit}</p>
+        ))}
+      </section>
+    )}
     {!stop && <ProjectPartners lang={lang} />}
-    {
-      stop && (
-        <AudioGuidePlayer lang={lang} title={stop.title} src={recording} />
-      )
-    }
+    {stop && (
+      <AudioGuidePlayer lang={lang} title={stop.title} src={recording} />
+    )}
   </article>
 </BaseLayout>
 

@@ -40,16 +40,14 @@ function addPageNumber(pageNum: number) {
   >
     <ChevronLeft className="h-4 w-4" />
   </a>
-  {
-    pages.map(pageNum => (
-      <a
-        href={addPageNumber(pageNum)}
-        class={`text-base ${pageNum === current ? 'font-bold' : ''}`}
-      >
-        {pageNum}
-      </a>
-    ))
-  }
+  {pages.map(pageNum => (
+    <a
+      href={addPageNumber(pageNum)}
+      class={`text-base ${pageNum === current ? 'font-bold' : ''}`}
+    >
+      {pageNum}
+    </a>
+  ))}
   <a
     href={addPageNumber(current + 1)}
     class={`${next ? '' : 'pointer-events-none opacity-30'}`}

@@ -71,43 +71,42 @@ const stops = [
     stroke-width="3"
     stroke-dasharray="18 8 3 8"
     stroke-linecap="round"
-    stroke-linejoin="round"></path>
-  {
-    stops.map((stop, index) => (
-      <a
-        href={path(`/guides/audio/${stop.id}`)}
-        aria-label={`${t('audioGuide.stop')} ${index + 1}: ${stop.title.join(' ')}`}
+    stroke-linejoin="round"
+  ></path>
+  {stops.map((stop, index) => (
+    <a
+      href={path(`/guides/audio/${stop.id}`)}
+      aria-label={`${t('audioGuide.stop')} ${index + 1}: ${stop.title.join(' ')}`}
+    >
+      <circle
+        class="hit-area"
+        cx={stop.x}
+        cy={stop.y}
+        r="24"
+        fill="transparent"
+      />
+      <circle cx={stop.x} cy={stop.y} r="14" fill="#ef2229" />
+      <text class="number" x={stop.x} y={stop.y + 8} text-anchor="middle">
+        {index + 1}
+      </text>
+      <text
+        class:list={['label', { final: index === 4 }]}
+        x={stop.tx}
+        y={stop.ty}
       >
-        <circle
-          class="hit-area"
-          cx={stop.x}
-          cy={stop.y}
-          r="24"
-          fill="transparent"
-        />
-        <circle cx={stop.x} cy={stop.y} r="14" fill="#ef2229" />
-        <text class="number" x={stop.x} y={stop.y + 8} text-anchor="middle">
-          {index + 1}
-        </text>
-        <text
-          class:list={['label', { final: index === 4 }]}
-          x={stop.tx}
-          y={stop.ty}
-        >
-          {stop.title.map((line, i) => (
-            <tspan x={stop.tx} dy={i ? 20 : 0}>
-              {line}
-            </tspan>
-          ))}
-          {stop.address.map((line, i) => (
-            <tspan class="address" x={stop.tx} dy={i ? 17 : 21}>
-              {line}
-            </tspan>
-          ))}
-        </text>
-      </a>
-    ))
-  }
+        {stop.title.map((line, i) => (
+          <tspan x={stop.tx} dy={i ? 20 : 0}>
+            {line}
+          </tspan>
+        ))}
+        {stop.address.map((line, i) => (
+          <tspan class="address" x={stop.tx} dy={i ? 17 : 21}>
+            {line}
+          </tspan>
+        ))}
+      </text>
+    </a>
+  ))}
 </svg>
 
 <style>

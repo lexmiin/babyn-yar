@@ -13,91 +13,87 @@ const { victims, metadata } = await VictimAPI.list({ fullname, info, page })
 ---
 
 {
-  (
-    <MainLayout
-      title="List of Holocaust Victims"
-      description="List of Holocaust Victims"
-    >
-      <div class="not-prose mx-auto max-w-4xl">
-        <div class="mb-7">
-          <h1 class="text-3xl font-bold">List of Holocaust Victims</h1>
-          <p class="mt-2 text-sm italic">
-            The materials are taken from the "Memory of Babyny Yar" fund, the
-            head of which is I. M. Levitas
-          </p>
-        </div>
-        <div class="mb-10">
-          <form
-            method="GET"
-            class="rounded border border-stone-300 bg-stone-200 px-8 py-4 text-base"
-          >
-            <input type="hidden" name="page" value="1" />
-            <div class="grid grid-cols-1 gap-x-5 gap-y-5 md:grid-cols-2">
-              <label class="block w-full text-base">
-                Full name
-                <input
-                  type="text"
-                  name="fullname"
-                  value={fullname ?? ''}
-                  class="block h-10 w-full rounded border border-stone-900/20 px-2 outline-none focus:ring-2 focus:ring-stone-400"
-                />
-              </label>
-              <label class="block text-base">
-                Info
-                <input
-                  type="text"
-                  name="info"
-                  value={info ?? ''}
-                  class="block h-10 w-full rounded border border-stone-900/20 px-2 outline-none focus:ring-2 focus:ring-stone-400"
-                />
-              </label>
-            </div>
-            <button class="mt-5 rounded bg-stone-600 px-4 py-2 text-stone-100 outline-none focus:ring-2 focus:ring-stone-200 focus:ring-offset-stone-950">
-              Search
-            </button>
-          </form>
-        </div>
-        {victims.length > 0 ? (
-          <>
-            <table class="w-full max-w-4xl table-auto border-collapse">
-              <thead>
-                <tr>
-                  <th class="border-t border-l" />
-                  <th class="border-t py-2 pl-3 text-left font-bold">
-                    Full name
-                  </th>
-                  <th class="border-t border-r py-2 pl-3 text-left font-bold">
-                    Info
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {victims.map((victim, i) => (
-                  <tr class="text-base odd:bg-zinc-50 even:bg-white">
-                    <td class="border-t border-b border-l pl-3">
-                      {(metadata.currentPage! - 1) * metadata.pageSize! + i + 1}
-                    </td>
-                    <td class="border-t border-b py-2 pl-3">
-                      {victim.fullname}
-                    </td>
-                    <td class="border-t border-r border-b py-2 pl-3">
-                      {victim.info}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <div class="mt-10 max-w-4xl">
-              <SSRPagination
-                current={metadata.currentPage!}
-                total={metadata.lastPage!}
-              />
-            </div>
-          </>
-        ) : (
-          <p>No results were found for your query</p>
-        )}
+  <MainLayout
+    title="List of Holocaust Victims"
+    description="List of Holocaust Victims"
+  >
+    <div class="not-prose mx-auto max-w-4xl">
+      <div class="mb-7">
+        <h1 class="text-3xl font-bold">List of Holocaust Victims</h1>
+        <p class="mt-2 text-sm italic">
+          The materials are taken from the "Memory of Babyny Yar" fund, the head
+          of which is I. M. Levitas
+        </p>
       </div>
-    </MainLayout>
-  )
+      <div class="mb-10">
+        <form
+          method="GET"
+          class="rounded border border-stone-300 bg-stone-200 px-8 py-4 text-base"
+        >
+          <input type="hidden" name="page" value="1" />
+          <div class="grid grid-cols-1 gap-x-5 gap-y-5 md:grid-cols-2">
+            <label class="block w-full text-base">
+              Full name
+              <input
+                type="text"
+                name="fullname"
+                value={fullname ?? ''}
+                class="block h-10 w-full rounded border border-stone-900/20 px-2 outline-none focus:ring-2 focus:ring-stone-400"
+              />
+            </label>
+            <label class="block text-base">
+              Info
+              <input
+                type="text"
+                name="info"
+                value={info ?? ''}
+                class="block h-10 w-full rounded border border-stone-900/20 px-2 outline-none focus:ring-2 focus:ring-stone-400"
+              />
+            </label>
+          </div>
+          <button class="mt-5 rounded bg-stone-600 px-4 py-2 text-stone-100 outline-none focus:ring-2 focus:ring-stone-200 focus:ring-offset-stone-950">
+            Search
+          </button>
+        </form>
+      </div>
+      {victims.length > 0 ? (
+        <>
+          <table class="w-full max-w-4xl table-auto border-collapse">
+            <thead>
+              <tr>
+                <th class="border-t border-l" />
+                <th class="border-t py-2 pl-3 text-left font-bold">
+                  Full name
+                </th>
+                <th class="border-t border-r py-2 pl-3 text-left font-bold">
+                  Info
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {victims.map((victim, i) => (
+                <tr class="text-base odd:bg-zinc-50 even:bg-white">
+                  <td class="border-t border-b border-l pl-3">
+                    {(metadata.currentPage! - 1) * metadata.pageSize! + i + 1}
+                  </td>
+                  <td class="border-t border-b py-2 pl-3">{victim.fullname}</td>
+                  <td class="border-t border-r border-b py-2 pl-3">
+                    {victim.info}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div class="mt-10 max-w-4xl">
+            <SSRPagination
+              current={metadata.currentPage!}
+              total={metadata.lastPage!}
+            />
+          </div>
+        </>
+      ) : (
+        <p>No results were found for your query</p>
+      )}
+    </div>
+  </MainLayout>
 }

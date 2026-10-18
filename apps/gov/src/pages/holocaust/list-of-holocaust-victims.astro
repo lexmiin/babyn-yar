@@ -46,51 +46,47 @@ const { victims, metadata } = await VictimAPI.list({ fullname, info, page })
             />
           </label>
         </div>
-        <button
-          class="mt-5 rounded bg-stone-600 px-4 py-2 text-stone-100 outline-none focus:ring-2 focus:ring-stone-200 focus:ring-offset-stone-950"
-        >
+        <button class="mt-5 rounded bg-stone-600 px-4 py-2 text-stone-100 outline-none focus:ring-2 focus:ring-stone-200 focus:ring-offset-stone-950">
           Пошук
         </button>
       </form>
     </div>
-    {
-      victims.length > 0 ? (
-        <>
-          <table class="w-full max-w-4xl table-auto border-collapse">
-            <thead>
-              <tr>
-                <th class="border-t border-l" />
-                <th class="border-t py-2 pl-3 text-left font-bold">ПІБ</th>
-                <th class="border-t border-r py-2 pl-3 text-left font-bold">
-                  Інфо
-                </th>
+    {victims.length > 0 ? (
+      <>
+        <table class="w-full max-w-4xl table-auto border-collapse">
+          <thead>
+            <tr>
+              <th class="border-t border-l" />
+              <th class="border-t py-2 pl-3 text-left font-bold">ПІБ</th>
+              <th class="border-t border-r py-2 pl-3 text-left font-bold">
+                Інфо
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {victims.map((victim, i) => (
+              <tr class="text-base odd:bg-zinc-50 even:bg-white">
+                <td class="border-t border-b border-l pl-3">
+                  {/* Note: non-null assert is fine as long as we check array length above */}
+                  {(metadata.currentPage! - 1) * metadata.pageSize! + i + 1}
+                </td>
+                <td class="border-t border-b py-2 pl-3">{victim.fullname}</td>
+                <td class="border-t border-r border-b py-2 pl-3">
+                  {victim.info}
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {victims.map((victim, i) => (
-                <tr class="text-base odd:bg-zinc-50 even:bg-white">
-                  <td class="border-t border-b border-l pl-3">
-                    {/* Note: non-null assert is fine as long as we check array length above */}
-                    {(metadata.currentPage! - 1) * metadata.pageSize! + i + 1}
-                  </td>
-                  <td class="border-t border-b py-2 pl-3">{victim.fullname}</td>
-                  <td class="border-t border-r border-b py-2 pl-3">
-                    {victim.info}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <div class="mt-10 max-w-4xl">
-            <SSRPagination
-              current={metadata.currentPage!}
-              total={metadata.lastPage!}
-            />
-          </div>
-        </>
-      ) : (
-        <p>За вашим запитом не знайдено результатів</p>
-      )
-    }
+            ))}
+          </tbody>
+        </table>
+        <div class="mt-10 max-w-4xl">
+          <SSRPagination
+            current={metadata.currentPage!}
+            total={metadata.lastPage!}
+          />
+        </div>
+      </>
+    ) : (
+      <p>За вашим запитом не знайдено результатів</p>
+    )}
   </div>
 </MainLayout>

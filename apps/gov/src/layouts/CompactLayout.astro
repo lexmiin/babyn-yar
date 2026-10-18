@@ -10,9 +10,7 @@ const { title, description } = Astro.props
 ---
 
 <BaseLayout {title} {description}>
-  <div
-    class="prose-p:my-3 prose-li:list-inside prose-ol:p-0 prose-li:p-0 prose prose-ul:marker:text-black prose-li:marker:text-black max-w-none text-lg text-black"
-  >
+  <div class="prose max-w-none text-lg text-black prose-p:my-3 prose-ol:p-0 prose-ul:marker:text-black prose-li:list-inside prose-li:p-0 prose-li:marker:text-black">
     <slot />
   </div>
 </BaseLayout>

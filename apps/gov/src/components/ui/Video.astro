@@ -8,9 +8,7 @@ export interface Props {
 const { src, poster, type = 'video/mp4; codec=h.264' } = Astro.props
 ---
 
-<div
-  class="!-mx-4 h-auto w-[calc(100%+2rem)] max-w-[calc(100%+2rem)] md:!-mx-[calc(2rem+39px)] md:w-[calc(100%+((2rem+39px)*2))] md:max-w-[calc(100%+((2rem+39px)*2))] lg:!-mx-[calc(39px+3rem)] lg:w-[calc(100%+((3rem+39px)*2))] lg:max-w-[calc(100%+((3rem+39px)*2))]"
->
+<div class="!-mx-4 h-auto w-[calc(100%+2rem)] max-w-[calc(100%+2rem)] md:!-mx-[calc(2rem+39px)] md:w-[calc(100%+((2rem+39px)*2))] md:max-w-[calc(100%+((2rem+39px)*2))] lg:!-mx-[calc(39px+3rem)] lg:w-[calc(100%+((3rem+39px)*2))] lg:max-w-[calc(100%+((3rem+39px)*2))]">
   <div class="my-4 flex items-center justify-center md:my-8">
     <video controls class="block w-full" poster={poster}>
       <source src={src} type={type} />

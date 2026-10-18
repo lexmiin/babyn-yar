@@ -1,0 +1,34 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "arrowParens": "avoid",
+  "singleQuote": true,
+  "bracketSpacing": true,
+  "endOfLine": "lf",
+  "semi": false,
+  "tabWidth": 2,
+  "trailingComma": "none",
+  "printWidth": 80,
+  "sortPackageJson": false,
+  "astro": true,
+  "svelte": true,
+  "overrides": [
+    {
+      "files": ["apps/admin/**/*"],
+      "options": {
+        "proseWrap": "always",
+        "sortTailwindcss": {
+          "stylesheet": "apps/admin/src/app.css"
+        }
+      }
+    },
+    {
+      "files": ["apps/gov/**/*"],
+      "options": {
+        "sortTailwindcss": {
+          "stylesheet": "apps/gov/src/styles/global.css"
+        }
+      }
+    }
+  ],
+  "ignorePatterns": ["pnpm-lock.yaml", "apps/gov/src/content/**", "fnox.toml"]
+}

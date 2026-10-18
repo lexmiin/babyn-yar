@@ -12,14 +12,12 @@ interface Props {
 const { title, description, type } = Astro.props
 ---
 
-{
-  type === 'compact' ? (
-    <CompactLayout {title} {description}>
-      <slot />
-    </CompactLayout>
-  ) : (
-    <MainLayout {title} {description}>
-      <slot />
-    </MainLayout>
-  )
-}
+{type === 'compact' ? (
+  <CompactLayout {title} {description}>
+    <slot />
+  </CompactLayout>
+) : (
+  <MainLayout {title} {description}>
+    <slot />
+  </MainLayout>
+)}

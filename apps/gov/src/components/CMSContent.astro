@@ -18,16 +18,14 @@ const html = generateHTML(content)
 <MainLayout title={title} description={description}>
   <div class="cms-content">
     <Fragment set:html={html} />
-    {
-      attachemnts && attachemnts.length > 0 && (
-        <div class="max-w-md">
-          <p class="font-semibold">Долучення</p>
-          {attachemnts.map(url => (
-            <Document href={url}>{url.split('/').at(-1)}</Document>
-          ))}
-        </div>
-      )
-    }
+    {attachemnts && attachemnts.length > 0 && (
+      <div class="max-w-md">
+        <p class="font-semibold">Долучення</p>
+        {attachemnts.map(url => (
+          <Document href={url}>{url.split('/').at(-1)}</Document>
+        ))}
+      </div>
+    )}
   </div>
 </MainLayout>
 

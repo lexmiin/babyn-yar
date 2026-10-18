@@ -18,40 +18,36 @@ description ??= title
 
 <MainLayout {title} {description}>
   <div class="not-prose">
-    {
-      list.map((e, i) => (
-        <MediaListItem
-          href={`/${slug}/${e.id}`}
-          maxImgWidth={`${i === 0 ? 'md:max-w-[480px]' : 'md:max-w-[400px]'}`}
+    {list.map((e, i) => (
+      <MediaListItem
+        href={`/${slug}/${e.id}`}
+        maxImgWidth={`${i === 0 ? 'md:max-w-[480px]' : 'md:max-w-[400px]'}`}
+      >
+        <h2
+          slot="header"
+          class={`${i === 0 ? 'text-3xl' : 'text-2xl'} font-bold text-black`}
         >
-          <h2
-            slot="header"
-            class={`${i === 0 ? 'text-3xl' : 'text-2xl'} font-bold text-black`}
-          >
-            {e.title}
-          </h2>
-          <FloatImage slot="left" src={e.cover} alt={e.title} />
+          {e.title}
+        </h2>
+        <FloatImage slot="left" src={e.cover} alt={e.title} />
 
-          <p
-            slot="right"
-            class={`${
-              i === 0 ? 'line-clamp-4' : 'line-clamp-2'
-            } italic hover:underline hover:underline-offset-4`}
-          >
-            {e.description}
-          </p>
-        </MediaListItem>
-      ))
-    }
+        <p
+          slot="right"
+          class={`${
+            i === 0 ? 'line-clamp-4' : 'line-clamp-2'
+          } italic hover:underline hover:underline-offset-4`}
+        >
+          {e.description}
+        </p>
+      </MediaListItem>
+    ))}
     <div class="mt-10">
-      {
-        list.length > 0 && metadata && (
-          <SSRPagination
-            current={metadata.currentPage}
-            total={metadata.lastPage}
-          />
-        )
-      }
+      {list.length > 0 && metadata && (
+        <SSRPagination
+          current={metadata.currentPage}
+          total={metadata.lastPage}
+        />
+      )}
     </div>
   </div>
 </MainLayout>

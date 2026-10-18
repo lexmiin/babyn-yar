@@ -39,9 +39,7 @@ const ogImage = lang === 'en' ? '/og-image-en.png' : '/og-image.png'
   <body class="relative">
     <Header />
     <MobileMenu />
-    <main
-      class="px-4 pt-32 text-xl text-black md:px-[calc(2rem+39px)] lg:px-[calc(3rem+39px)]"
-    >
+    <main class="px-4 pt-32 text-xl text-black md:px-[calc(2rem+39px)] lg:px-[calc(3rem+39px)]">
       <slot />
     </main>
     <Footer flushMobile={flushMobileFooter} />

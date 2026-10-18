@@ -12,9 +12,7 @@ const translatePath = createLocalizedPath(lang)
   id="mobile-nav"
   class="fixed inset-x-0 top-28 bottom-0 z-20 hidden bg-white px-4 lg:hidden"
 >
-  <ul
-    class="max-h-full space-y-8 overflow-x-visible overflow-y-auto overscroll-contain pb-4"
-  >
+  <ul class="max-h-full space-y-8 overflow-x-visible overflow-y-auto overscroll-contain pb-4">
     <li class="my-4 text-lg font-bold lowercase">
       <a href={translatePath('/events')}>{t('mobile.events')}</a>
     </li>
@@ -46,8 +44,10 @@ const translatePath = createLocalizedPath(lang)
       <a
         href="https://archive.babynyar.gov.ua/"
         target="_blank"
-        rel="noopener noreferrer">{t('mobile.archive')}</a
+        rel="noopener noreferrer"
       >
+        {t('mobile.archive')}
+      </a>
     </li>
     <MobileNavContent
       group={t('mobile.education')}

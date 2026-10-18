@@ -65,39 +65,35 @@ const periods = [
         <p>{text.intro[3]}</p>
       </div>
     </div>
-    <p class="mt-8 text-lg">
-      {text.prompt}
-    </p>
+    <p class="mt-8 text-lg">{text.prompt}</p>
 
     <nav class="timeline mt-14 xl:mt-20" aria-labelledby="timeline-title">
       <h2 id="timeline-title" class="mb-6 text-[2rem] font-bold">
         {text.timelineTitle}
       </h2>
       <ol class="list-none p-0">
-        {
-          periods.map((entry, index) => {
-            const period = { ...entry, ...text.periods[entry.id] }
-            return (
-              <li
-                class:list={{ above: [1, 2, 4, 6].includes(index) }}
-                style={`--column: ${period.column}`}
+        {periods.map((entry, index) => {
+          const period = { ...entry, ...text.periods[entry.id] }
+          return (
+            <li
+              class:list={{ above: [1, 2, 4, 6].includes(index) }}
+              style={`--column: ${period.column}`}
+            >
+              <a
+                href={`${translatePath('/history')}#${period.scene}`}
+                class="group block leading-[1.1] no-underline focus-visible:outline-2 focus-visible:outline-offset-6 focus-visible:outline-current xl:text-[clamp(1rem,1.1vw,1.375rem)]"
               >
-                <a
-                  href={`${translatePath('/history')}#${period.scene}`}
-                  class="group block leading-[1.1] no-underline focus-visible:outline-2 focus-visible:outline-offset-6 focus-visible:outline-current xl:text-[clamp(1rem,1.1vw,1.375rem)]"
-                >
-                  <h3 class="font-bold underline-offset-[0.2em] group-hover:underline group-focus-visible:underline xl:min-h-15">
-                    <span class="block text-[1.5rem] xl:text-[clamp(1.25rem,1.4vw,1.75rem)]">
-                      {period.date}
-                    </span>
-                    {period.title && <span class="block">{period.title}</span>}
-                  </h3>
-                  <p class="mt-4 max-w-[32ch]">{period.description}</p>
-                </a>
-              </li>
-            )
-          })
-        }
+                <h3 class="font-bold underline-offset-[0.2em] group-hover:underline group-focus-visible:underline xl:min-h-15">
+                  <span class="block text-[1.5rem] xl:text-[clamp(1.25rem,1.4vw,1.75rem)]">
+                    {period.date}
+                  </span>
+                  {period.title && <span class="block">{period.title}</span>}
+                </h3>
+                <p class="mt-4 max-w-[32ch]">{period.description}</p>
+              </a>
+            </li>
+          )
+        })}
       </ol>
     </nav>
 

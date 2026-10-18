@@ -24,15 +24,13 @@ try {
 }
 ---
 
-{
-  publication ? (
-    <CMSContent
-      title={publication.title}
-      description={publication.description}
-      content={publication.content}
-      attachemnts={publication.documents}
-    />
-  ) : (
-    <NotFoundError />
-  )
-}
+{publication ? (
+  <CMSContent
+    title={publication.title}
+    description={publication.description}
+    content={publication.content}
+    attachemnts={publication.documents}
+  />
+) : (
+  <NotFoundError />
+)}

@@ -67,9 +67,11 @@ const poiImages: Record<string, MapImageSource> = Object.fromEntries(
 
 <BaseLayout
   title={text.before1941['before-1941.title']}
-  description={lang === 'en'
-    ? 'Historical map of Babyn Yar and its surroundings before 1941.'
-    : 'Історична карта Бабиного Яру та прилеглих територій до 1941 року.'}
+  description={
+    lang === 'en'
+      ? 'Historical map of Babyn Yar and its surroundings before 1941.'
+      : 'Історична карта Бабиного Яру та прилеглих територій до 1941 року.'
+  }
   flushMobileFooter
 >
   <!-- URL fragments are only available in the browser. Avoid rendering the

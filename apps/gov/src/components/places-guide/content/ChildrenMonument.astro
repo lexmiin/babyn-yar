@@ -10,4 +10,6 @@ const { lang } = Astro.props
 const place = getLocalizedPlace('05', lang)
 ---
 
-{place.description.split('\n\n').map(paragraph => <p>{paragraph}</p>)}
+{place.description.split('\n\n').map(paragraph => (
+  <p>{paragraph}</p>
+))}

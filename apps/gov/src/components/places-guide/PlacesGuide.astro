@@ -18,9 +18,7 @@ const places = getPlacesGuideEntries(lang)
     class="guide-nav relative z-[1] rounded-b-lg border border-[#dedede] bg-white shadow-[0_4px_12px_rgba(0,0,0,0.04)] md:rounded-lg"
     aria-label={t('placesGuide.navigation')}
   >
-    <div
-      class="grid grid-cols-[3rem_minmax(0,1fr)_3rem] items-center gap-1 px-1 pt-4 pb-3 md:grid-cols-[3.5rem_minmax(0,1fr)_3.5rem] md:px-3 md:pt-5 md:pb-4"
-    >
+    <div class="grid grid-cols-[3rem_minmax(0,1fr)_3rem] items-center gap-1 px-1 pt-4 pb-3 md:grid-cols-[3.5rem_minmax(0,1fr)_3.5rem] md:px-3 md:pt-5 md:pb-4">
       <button
         class="grid size-11 cursor-pointer place-items-center border-0 bg-transparent focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#ec2125] disabled:cursor-default disabled:opacity-[0.22]"
         type="button"
@@ -30,39 +28,39 @@ const places = getPlacesGuideEntries(lang)
         <svg
           class="w-7 fill-none stroke-current stroke-[1.75] [stroke-linecap:round] [stroke-linejoin:round]"
           aria-hidden="true"
-          viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"></path></svg
+          viewBox="0 0 24 24"
         >
+          <path d="m15 18-6-6 6-6"></path>
+        </svg>
       </button>
 
       <div
         class="relative flex snap-x snap-mandatory [scrollbar-width:none] gap-3 overflow-x-auto overscroll-x-contain [&::-webkit-scrollbar]:hidden"
         data-thumbnail-strip
       >
-        {
-          places.map((place, index) => (
-            <a
-              class="thumbnail grid h-20 w-24 flex-[0_0_6rem] snap-center place-items-center overflow-hidden border-[3px] border-transparent bg-[#f1f1f1] text-base font-bold text-[#555] focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#ec2125] aria-[current=location]:border-[#ec2125] md:h-24 md:w-[7.5rem] md:basis-[7.5rem] [&_img]:h-full [&_img]:w-full [&_img]:object-cover"
-              href={`#${place.id}`}
-              data-guide-link
-              aria-label={`${index + 1}. ${place.title}`}
-            >
-              {place.image ? (
-                <Image
-                  src={place.image}
-                  alt=""
-                  widths={[160, 320]}
-                  sizes="96px"
-                  loading="lazy"
-                  decoding="async"
-                />
-              ) : (
-                <span aria-hidden="true">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-              )}
-            </a>
-          ))
-        }
+        {places.map((place, index) => (
+          <a
+            class="thumbnail grid h-20 w-24 flex-[0_0_6rem] snap-center place-items-center overflow-hidden border-[3px] border-transparent bg-[#f1f1f1] text-base font-bold text-[#555] focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#ec2125] aria-[current=location]:border-[#ec2125] md:h-24 md:w-[7.5rem] md:basis-[7.5rem] [&_img]:h-full [&_img]:w-full [&_img]:object-cover"
+            href={`#${place.id}`}
+            data-guide-link
+            aria-label={`${index + 1}. ${place.title}`}
+          >
+            {place.image ? (
+              <Image
+                src={place.image}
+                alt=""
+                widths={[160, 320]}
+                sizes="96px"
+                loading="lazy"
+                decoding="async"
+              />
+            ) : (
+              <span aria-hidden="true">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+            )}
+          </a>
+        ))}
       </div>
 
       <button
@@ -74,50 +72,46 @@ const places = getPlacesGuideEntries(lang)
         <svg
           class="w-7 fill-none stroke-current stroke-[1.75] [stroke-linecap:round] [stroke-linejoin:round]"
           aria-hidden="true"
-          viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg
+          viewBox="0 0 24 24"
         >
+          <path d="m9 18 6-6-6-6"></path>
+        </svg>
       </button>
     </div>
 
     <details class="group border-t border-[#dedede]" data-place-list>
-      <summary
-        class="flex min-h-14 cursor-pointer list-none items-center justify-center gap-2 px-4 py-3 text-base font-bold focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#ec2125] [&::-webkit-details-marker]:hidden"
-      >
+      <summary class="flex min-h-14 cursor-pointer list-none items-center justify-center gap-2 px-4 py-3 text-base font-bold focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#ec2125] [&::-webkit-details-marker]:hidden">
         <span>{t('placesGuide.all')}</span>
         <svg
           class="w-5 fill-none stroke-current stroke-[1.75] transition-transform duration-150 [stroke-linecap:round] [stroke-linejoin:round] group-open:rotate-180 motion-reduce:transition-none"
           aria-hidden="true"
-          viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg
+          viewBox="0 0 24 24"
         >
+          <path d="m6 9 6 6 6-6"></path>
+        </svg>
       </summary>
-      <ol
-        class="relative m-0 grid max-h-[min(60vh,38rem)] list-none gap-1 overflow-y-auto px-4 pt-2 pb-5 md:grid-cols-2 md:px-6"
-      >
-        {
-          places.map(place => (
-            <li>
-              <a
-                class="block border-l-[3px] border-transparent px-3 py-[0.6rem] text-[1.05rem] leading-[1.2] focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#ec2125] aria-[current=location]:border-l-[#ec2125] aria-[current=location]:font-bold"
-                href={`#${place.id}`}
-                data-guide-link
-              >
-                {place.title}
-              </a>
-            </li>
-          ))
-        }
+      <ol class="relative m-0 grid max-h-[min(60vh,38rem)] list-none gap-1 overflow-y-auto px-4 pt-2 pb-5 md:grid-cols-2 md:px-6">
+        {places.map(place => (
+          <li>
+            <a
+              class="block border-l-[3px] border-transparent px-3 py-[0.6rem] text-[1.05rem] leading-[1.2] focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#ec2125] aria-[current=location]:border-l-[#ec2125] aria-[current=location]:font-bold"
+              href={`#${place.id}`}
+              data-guide-link
+            >
+              {place.title}
+            </a>
+          </li>
+        ))}
       </ol>
     </details>
   </nav>
 
   <div class="mt-0 md:mt-4">
-    {
-      places.map(({ id, semanticId, title, image, alt, Content }) => (
-        <PlaceGuideItem {id} {semanticId} {title} {image} {alt}>
-          <Content {lang} />
-        </PlaceGuideItem>
-      ))
-    }
+    {places.map(({ id, semanticId, title, image, alt, Content }) => (
+      <PlaceGuideItem {id} {semanticId} {title} {image} {alt}>
+        <Content {lang} />
+      </PlaceGuideItem>
+    ))}
   </div>
 </section>
 

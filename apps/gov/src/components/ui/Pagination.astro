@@ -28,16 +28,14 @@ const pages = Array.from({ length: upper - lower + 1 }, (_, i) => i + lower)
   <a href={prev} class={`${prev ? '' : 'pointer-events-none opacity-30'}`}>
     <ChevronLeft className="h-4 w-4" />
   </a>
-  {
-    pages.map(pageNum => (
-      <a
-        href={baseUrl + pageNum}
-        class={`text-base ${pageNum === current ? 'font-bold' : ''}`}
-      >
-        {pageNum}
-      </a>
-    ))
-  }
+  {pages.map(pageNum => (
+    <a
+      href={baseUrl + pageNum}
+      class={`text-base ${pageNum === current ? 'font-bold' : ''}`}
+    >
+      {pageNum}
+    </a>
+  ))}
   <a href={next} class={`${next ? '' : 'pointer-events-none opacity-30'}`}>
     <ChevronRight className="h-4 w-4" />
   </a>
