@@ -4,6 +4,7 @@ import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import process from 'node:process'
 import { format, resolveConfig } from 'prettier'
+import { MAP_VIEW_BOX } from '../apps/gov/src/components/history-map/mapGeometry.ts'
 
 const SOURCE_NAME = /^BY_Digital_Map_layer4_(\d{2})\.svg$/i
 
@@ -13,7 +14,7 @@ const HELP = `Usage:
     --output <positions.ts>
 
 The generator reads the normal, numbered layer 4 POI SVGs. Each source must
-contain two concentric circles in the shared map viewBox. Selected (_ins),
+contain two concentric circles in the map viewBox from mapGeometry.ts. Selected (_ins),
 preview, border, and other SVG files are ignored.
 `
 
@@ -135,8 +136,9 @@ async function main() {
     throw new Error(`No normal layer 4 POI SVGs found in ${options.input}`)
   }
 
+  const { minX, minY, width, height } = MAP_VIEW_BOX
+  const mapViewBox = [minX, minY, width, height]
   const positions = []
-  let sharedViewBox
 
   for (const [index, source] of sources.entries()) {
     const expectedId = String(index + 1).padStart(2, '0')
@@ -150,17 +152,15 @@ async function main() {
     const svg = await readFile(resolve(options.input, source.name), 'utf8')
     const viewBox = extractViewBox(svg, source.name)
 
-    if (sharedViewBox && !sameViewBox(sharedViewBox, viewBox)) {
+    if (!sameViewBox(mapViewBox, viewBox)) {
       throw new Error(
-        `Expected "${source.name}" to use the shared viewBox ${sharedViewBox.join(' ')}.`
+        `Expected "${source.name}" to use the map viewBox ${mapViewBox.join(' ')}.`
       )
     }
 
-    sharedViewBox ??= viewBox
     positions.push({ id: source.id, center: extractCenter(svg, source.name) })
   }
 
-  const [minX, minY, width, height] = sharedViewBox
   const prettierOptions = (await resolveConfig(resolve('package.json'))) ?? {}
   const generated = await format(
     `/**
@@ -168,17 +168,12 @@ async function main() {
      * Do not edit; update the normal layer 4 POI SVGs and regenerate.
      */
 
+    import type { MapPoint } from '../mapGeometry'
+
     export type HistoryMapPoiPosition = {
       id: string
-      center: readonly [x: number, y: number]
+      center: MapPoint
     }
-
-    export const LAYER_FOUR_POI_VIEW_BOX = {
-      minX: ${minX},
-      minY: ${minY},
-      width: ${width},
-      height: ${height}
-    } as const
 
     export const LAYER_FOUR_POI_POSITIONS = ${JSON.stringify(
       positions

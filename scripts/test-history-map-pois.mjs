@@ -16,8 +16,11 @@ require.extensions['.ts'] = (module, filename) => {
 }
 const { selectPoi } = require('./src/components/history-map/poiSelection.ts')
 const {
-  LAYER_FOUR_POI_POSITIONS,
-  LAYER_FOUR_POI_VIEW_BOX: box
+  MAP_VIEW_BOX: box,
+  toClientPoint
+} = require('./src/components/history-map/mapGeometry.ts')
+const {
+  LAYER_FOUR_POI_POSITIONS
 } = require('./src/components/history-map/generated/Layer4PoiPositions.ts')
 const pois = LAYER_FOUR_POI_POSITIONS
 const menorah = pois.find(poi => poi.id === '06')
@@ -30,11 +33,7 @@ for (const width of [330, 600, 1000]) {
     width,
     height: (width * box.height) / box.width
   }
-  const point = poi => ({
-    type: 'mouse',
-    x: map.left + (poi.center[0] * map.width) / box.width,
-    y: map.top + (poi.center[1] * map.height) / box.height
-  })
+  const point = poi => ({ type: 'mouse', ...toClientPoint(poi.center, map) })
   // Simulate the topmost overlapping trigger receiving the click instead of 06.
   const mouse = selectPoi(synagogue, pois, map, point(menorah))
   assert.equal(mouse.selectedPoi.id, '06')

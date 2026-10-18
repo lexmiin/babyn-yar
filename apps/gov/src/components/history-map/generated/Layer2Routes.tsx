@@ -4,8 +4,8 @@
  */
 import { motion } from 'framer-motion'
 import type { SVGProps } from 'react'
+import { MAP_VIEW_BOX_ATTRIBUTE } from '../mapGeometry'
 
-const VIEW_BOX = '0 0 894.14 783.2'
 const ROUTE_EASE = [0.4, 0, 0.2, 1] as const
 
 // ponytail: timing uses topology order; use named segments if route reordering becomes common.
@@ -94,7 +94,7 @@ export function Layer2Way1({
   }
 
   return (
-    <svg viewBox={VIEW_BOX} {...props}>
+    <svg viewBox={MAP_VIEW_BOX_ATTRIBUTE} {...props}>
       <g aria-hidden="true" pointerEvents="none">
         <RouteSegment
           points="-156.05 932.53 -9.63 616.93 82.61 614.06"
@@ -187,7 +187,7 @@ export function Layer2Way2({
   }
 
   return (
-    <svg viewBox={VIEW_BOX} {...props}>
+    <svg viewBox={MAP_VIEW_BOX_ATTRIBUTE} {...props}>
       <g aria-hidden="true" pointerEvents="none">
         <RouteSegment
           points="1230.6 995.4 738.31 637.38 700.22 604.06 641.98 563.03 612.69 551.32 464.1 526.47 426.67 626 368.01 634.64 202.7 626.71 181.32 590.97"

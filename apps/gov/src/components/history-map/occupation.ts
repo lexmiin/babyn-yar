@@ -22,7 +22,6 @@ export function getOccupationScenes(
   const mapBase = {
     id: 'occupation',
     alt: text['occupation.alt'],
-    aspectRatio: '894.14 / 783.2',
     image
   } as const
 

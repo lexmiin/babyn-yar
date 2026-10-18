@@ -1,4 +1,5 @@
 import type { ComponentType, SVGProps } from 'react'
+import type { MapPoint } from './mapGeometry'
 import type {
   HistoryMapRouteProps,
   HistoryMapRouteTiming
@@ -20,7 +21,7 @@ export type HistoryMapFeature = {
   description: readonly string[]
   mapZIndex?: number
   mapLabel: {
-    anchor: readonly [x: number, y: number]
+    anchor: MapPoint
     lines?: readonly string[]
     width?: number
   }
@@ -78,7 +79,6 @@ export type MapImageSource = {
 export type HistoryMapBase = {
   id: 'before1941' | 'occupation' | 'postwar' | 'presentDay'
   alt: string
-  aspectRatio: string
   image: MapImageSource
 }
 
@@ -127,7 +127,7 @@ export type HistoryMapPoi = {
   id: string
   title: string
   description: string
-  center: readonly [x: number, y: number]
+  center: MapPoint
   image: MapImageSource & { alt: string }
 }
 

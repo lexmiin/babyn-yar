@@ -21,7 +21,6 @@ export function getBefore1941Scenes(
   const mapBase = {
     id: 'before1941',
     alt: text['before1941.alt'],
-    aspectRatio: '894.14 / 783.2',
     image
   } as const
   const overview = text.overview

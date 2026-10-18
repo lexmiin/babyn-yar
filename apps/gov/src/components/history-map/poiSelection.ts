@@ -1,4 +1,4 @@
-import { LAYER_FOUR_POI_VIEW_BOX } from './generated/Layer4PoiPositions'
+import { toClientPoint } from './mapGeometry'
 import type { HistoryMapPoi } from './mapTypes'
 
 /** Touch taps disambiguate overlapping targets; mouse clicks select by distance. */
@@ -11,15 +11,12 @@ export function selectPoi(
   // Keyboard and assistive-technology activation identify the focused POI.
   if (!pointer) return { choices: [poi], selectedPoi: poi }
 
-  const { minX, minY, width, height } = LAYER_FOUR_POI_VIEW_BOX
-  const nearby = pois.filter(
-    candidate =>
-      candidate.id === poi.id ||
-      ((Math.abs(candidate.center[0] - poi.center[0]) * map.width) / width <
-        28 &&
-        (Math.abs(candidate.center[1] - poi.center[1]) * map.height) / height <
-          28)
-  )
+  const target = toClientPoint(poi.center, map)
+  const nearby = pois.filter(candidate => {
+    if (candidate.id === poi.id) return true
+    const { x, y } = toClientPoint(candidate.center, map)
+    return Math.abs(x - target.x) < 28 && Math.abs(y - target.y) < 28
+  })
 
   if (pointer.type === 'touch') {
     return {
@@ -30,8 +27,7 @@ export function selectPoi(
 
   const { x: clickX, y: clickY } = pointer
   function distance(candidate: HistoryMapPoi) {
-    const x = map.left + ((candidate.center[0] - minX) * map.width) / width
-    const y = map.top + ((candidate.center[1] - minY) * map.height) / height
+    const { x, y } = toClientPoint(candidate.center, map)
     return Math.hypot(clickX - x, clickY - y)
   }
 

@@ -8,6 +8,7 @@ import {
 import ActiveMapLabel from './ActiveMapLabel'
 import HistoryMapLayout from './HistoryMapLayout'
 import MapOverlays from './MapOverlays'
+import { MAP_ASPECT_RATIO } from './mapGeometry'
 import type { HistoryMapPeriod, HistoryMapOverlaySceneData } from './mapTypes'
 import { useMapFeatureSelection } from './useMapFeatureSelection'
 
@@ -43,7 +44,7 @@ export default function OverlayMapScene({
           ))}
         </motion.div>
       }
-      mapAspectRatio={mapBase.aspectRatio}
+      mapAspectRatio={MAP_ASPECT_RATIO}
       mapSource={mapSource}
     >
       <motion.div className="space-y-5" {...SCENE_TEXT_MOTION}>

@@ -19,7 +19,6 @@ export function getPresentDayScenes(
     mapBase: {
       id: 'presentDay',
       alt: text['presentDay.alt'],
-      aspectRatio: '894.14 / 783.2',
       image: images.map
     },
     mapSource: text['present-day-pois.mapSource'],

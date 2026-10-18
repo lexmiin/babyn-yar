@@ -1,5 +1,6 @@
 import { useId, type ReactNode } from 'react'
 import { motion, type Transition } from 'framer-motion'
+import { MAP_VIEW_BOX, MAP_VIEW_BOX_ATTRIBUTE } from './mapGeometry'
 
 export default function FloodReveal({
   transition,
@@ -12,27 +13,27 @@ export default function FloodReveal({
 
   return (
     <svg
-      viewBox="0 0 894.14 783.2"
+      viewBox={MAP_VIEW_BOX_ATTRIBUTE}
       className="pointer-events-none absolute inset-0 h-full w-full"
       focusable="false"
     >
       <defs>
         <filter
           id={`${id}-edge`}
-          x="0"
-          y="0"
-          width="894.14"
-          height="783.2"
+          x={MAP_VIEW_BOX.minX}
+          y={MAP_VIEW_BOX.minY}
+          width={MAP_VIEW_BOX.width}
+          height={MAP_VIEW_BOX.height}
           filterUnits="userSpaceOnUse"
         >
           <feGaussianBlur stdDeviation="4" />
         </filter>
         <mask
           id={`${id}-flow`}
-          x="0"
-          y="0"
-          width="894.14"
-          height="783.2"
+          x={MAP_VIEW_BOX.minX}
+          y={MAP_VIEW_BOX.minY}
+          width={MAP_VIEW_BOX.width}
+          height={MAP_VIEW_BOX.height}
           maskUnits="userSpaceOnUse"
         >
           {/* Spread from the breach within the existing flood boundary. */}

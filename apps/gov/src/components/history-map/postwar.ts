@@ -16,6 +16,7 @@ import {
   Layer3Point2,
   Layer3DevelopmentArea
 } from './generated/Layer3Svgs'
+import { MAP_ASPECT_RATIO } from './mapGeometry'
 import type { MapImageSource } from './mapTypes'
 import type { HistoryMapScene } from './sceneTypes'
 import type { HistoryMapCopy } from './content/uk'
@@ -28,7 +29,6 @@ export function getPostwarScenes(
   const mapBase = {
     id: 'postwar',
     alt: text['postwar.alt'],
-    aspectRatio: '894.14 / 783.2',
     image
   } as const
   const floodOverview = text.floodOverview
@@ -73,7 +73,7 @@ export function getPostwarScenes(
       period,
       kind: 'video',
       data: {
-        aspectRatio: mapBase.aspectRatio,
+        aspectRatio: MAP_ASPECT_RATIO,
         src: import.meta.env.DEV
           ? '/assets/layer-3-video.mp4'
           : 'https://static.babynyar.work/layer-3-video.mp4',

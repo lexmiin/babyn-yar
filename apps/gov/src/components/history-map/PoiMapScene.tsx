@@ -14,10 +14,7 @@ import {
 import { X } from 'lucide-react'
 import HistoryMapLayout from './HistoryMapLayout'
 import { selectPoi } from './poiSelection'
-import {
-  LAYER_FOUR_POI_VIEW_BOX,
-  type HistoryMapPoiPosition
-} from './generated/Layer4PoiPositions'
+import { MAP_ASPECT_RATIO, toMapPercent, type MapPoint } from './mapGeometry'
 import type {
   HistoryMapPeriod,
   HistoryMapPoi,
@@ -54,13 +51,9 @@ function getPoiExitSequenceDurationMs(poiCount: number) {
   return POI_EXIT_DURATION_MS + (poiCount - 1) * POI_EXIT_STAGGER_MS
 }
 
-function mapPosition([x, y]: HistoryMapPoiPosition['center']) {
-  const { minX, minY, width, height } = LAYER_FOUR_POI_VIEW_BOX
-
-  return {
-    left: `${((x - minX) / width) * 100}%`,
-    top: `${((y - minY) / height) * 100}%`
-  }
+function mapPosition(point: MapPoint) {
+  const { x, y } = toMapPercent(point)
+  return { left: `${x}%`, top: `${y}%` }
 }
 
 function PoiPopover({
@@ -290,7 +283,7 @@ export default function PoiMapScene({
           />
         </motion.div>
       }
-      mapAspectRatio={mapBase.aspectRatio}
+      mapAspectRatio={MAP_ASPECT_RATIO}
       mapSource={mapSource}
     >
       <motion.div className="space-y-5" {...SCENE_TEXT_MOTION}>

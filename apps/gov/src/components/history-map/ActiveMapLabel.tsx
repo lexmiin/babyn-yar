@@ -1,7 +1,16 @@
 import { AnimatePresence, motion } from 'framer-motion'
+import { toMapPercent, type MapPoint } from './mapGeometry'
 import type { HistoryMapFeature } from './mapTypes'
 
 type LabelledMapFeature = Pick<HistoryMapFeature, 'label' | 'mapLabel'>
+
+function labelPosition(anchor: MapPoint) {
+  const { x, y } = toMapPercent(anchor)
+  return {
+    left: `clamp(min(35%, 8.5rem), ${x}%, calc(100% - min(35%, 8.5rem)))`,
+    top: `max(4rem, ${y}%)`
+  }
+}
 
 export default function ActiveMapLabel({
   feature
@@ -15,10 +24,7 @@ export default function ActiveMapLabel({
           key={feature.label}
           aria-hidden="true"
           className="pointer-events-none absolute z-30 w-[min(70%,17rem)] -translate-x-1/2 -translate-y-full pb-3"
-          style={{
-            left: `clamp(min(35%, 8.5rem), ${(feature.mapLabel.anchor[0] / 894.14) * 100}%, calc(100% - min(35%, 8.5rem)))`,
-            top: `max(4rem, ${(feature.mapLabel.anchor[1] / 783.2) * 100}%)`
-          }}
+          style={labelPosition(feature.mapLabel.anchor)}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

@@ -4,6 +4,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import process from 'node:process'
 import { format, resolveConfig } from 'prettier'
+import { MAP_VIEW_BOX } from '../apps/gov/src/components/history-map/mapGeometry.ts'
 
 const HELP = `Usage:
   node scripts/generate-history-map-routes.mjs \\
@@ -125,7 +126,7 @@ function routeComponent(route, geometry) {
       }
 
       return (
-        <svg viewBox={VIEW_BOX} {...props}>
+        <svg viewBox={MAP_VIEW_BOX_ATTRIBUTE} {...props}>
           <g aria-hidden="true" pointerEvents="none">
             ${segments
               .map(
@@ -163,6 +164,22 @@ function routeComponent(route, geometry) {
   `
 }
 
+function assertMapViewBox(svg, sourceName) {
+  const viewBox = svg
+    .match(/<svg\b[^>]*\bviewBox="([^"]*)"/i)?.[1]
+    .trim()
+    .split(/[\s,]+/)
+    .map(Number)
+  const { minX, minY, width, height } = MAP_VIEW_BOX
+  const expected = [minX, minY, width, height]
+
+  if (!expected.every((value, index) => value === viewBox?.[index])) {
+    throw new Error(
+      `Expected "${sourceName}" to use the map viewBox ${expected.join(' ')}.`
+    )
+  }
+}
+
 async function main() {
   const options = parseArguments(process.argv.slice(2))
   const config = JSON.parse(await readFile(options.config, 'utf8'))
@@ -170,6 +187,7 @@ async function main() {
 
   for (const route of config.routes) {
     const svg = await readFile(resolve(options.input, route.source), 'utf8')
+    assertMapViewBox(svg, route.source)
     components.push(routeComponent(route, extractGeometry(svg)))
   }
 
@@ -181,8 +199,8 @@ async function main() {
      */
     import { motion } from 'framer-motion'
     import type { SVGProps } from 'react'
+    import { MAP_VIEW_BOX_ATTRIBUTE } from '../mapGeometry'
 
-    const VIEW_BOX = '0 0 894.14 783.2'
     const ROUTE_EASE = [0.4, 0, 0.2, 1] as const
 
     // ponytail: timing uses topology order; use named segments if route reordering becomes common.

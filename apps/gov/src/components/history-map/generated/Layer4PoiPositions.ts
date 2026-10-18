@@ -3,17 +3,12 @@
  * Do not edit; update the normal layer 4 POI SVGs and regenerate.
  */
 
+import type { MapPoint } from '../mapGeometry'
+
 export type HistoryMapPoiPosition = {
   id: string
-  center: readonly [x: number, y: number]
+  center: MapPoint
 }
-
-export const LAYER_FOUR_POI_VIEW_BOX = {
-  minX: 0,
-  minY: 0,
-  width: 894.14,
-  height: 783.2
-} as const
 
 export const LAYER_FOUR_POI_POSITIONS = [
   { id: '01', center: [178.51, 651.88] },

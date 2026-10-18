@@ -18,6 +18,7 @@ import { useId } from 'react'
 import ActiveMapLabel from './ActiveMapLabel'
 import HistoryMapLayout from './HistoryMapLayout'
 import MapOverlays from './MapOverlays'
+import { MAP_ASPECT_RATIO, MAP_VIEW_BOX_ATTRIBUTE } from './mapGeometry'
 import {
   type HistoryMapFeature,
   type HistoryMapFeatureSceneData,
@@ -31,7 +32,6 @@ const FEATURE_INITIAL_DELAY_MS = 250
 const FEATURE_STAGGER_MS = 220
 const FEATURE_EXIT_DURATION_MS = 320
 const FEATURE_EXIT_STAGGER_MS = 55
-const MAP_VIEW_BOX = '0 0 894.14 783.2'
 
 function getFeatureTransition(
   { delay, duration = 0.44 }: Pick<HistoryMapFeature, 'delay' | 'duration'>,
@@ -104,7 +104,7 @@ function FeatureOverlay({
               />
               {isPoint && (
                 <svg
-                  viewBox={MAP_VIEW_BOX}
+                  viewBox={MAP_VIEW_BOX_ATTRIBUTE}
                   aria-hidden="true"
                   focusable="false"
                   className="pointer-events-none absolute inset-0 h-full w-full"
@@ -365,7 +365,7 @@ export default function FeatureMapScene({
         </AnimatePresence>
       }
       map={map}
-      mapAspectRatio={mapBase.aspectRatio}
+      mapAspectRatio={MAP_ASPECT_RATIO}
       mapSource={mapSource}
       belowMap={
         <section aria-labelledby={featureListHeadingId} className="mt-7">
