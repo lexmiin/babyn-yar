@@ -1,10 +1,14 @@
 package main
 
 import (
+	"errors"
 	"log/slog"
 	"net/http"
 
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/lex-unix/babyn-yar/internal/apperr"
+	"github.com/lex-unix/babyn-yar/internal/users"
+	"github.com/lex-unix/babyn-yar/internal/validator"
 )
 
 func (app *application) logError(r *http.Request, err error) {
@@ -68,4 +72,21 @@ func (app *application) authenticationRequireResponse(w http.ResponseWriter, r *
 func (app *application) notPermittedResponse(w http.ResponseWriter, r *http.Request) {
 	message := "your user account doesn't have the necessary permissons to access this resource"
 	app.errorResponse(w, r, http.StatusForbidden, message)
+}
+
+// useCaseErrorResponse writes the response for an error returned by a use case.
+func (app *application) useCaseErrorResponse(w http.ResponseWriter, r *http.Request, err error) {
+	var v *validator.Validator
+	switch {
+	case errors.As(err, &v):
+		app.failedValidationResponse(w, r, v.Errors)
+	case errors.Is(err, apperr.ErrNotFound):
+		app.notFoundResponse(w, r)
+	case errors.Is(err, apperr.ErrEditConflict):
+		app.editConflictResponse(w, r)
+	case errors.Is(err, users.ErrInvalidCredentials):
+		app.invalidCredentialResponse(w, r)
+	default:
+		app.serverErrorResponse(w, r, err)
+	}
 }

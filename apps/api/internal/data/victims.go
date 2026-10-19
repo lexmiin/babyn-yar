@@ -7,6 +7,7 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/lex-unix/babyn-yar/internal/pagination"
 )
 
 type Victim struct {
@@ -20,7 +21,7 @@ type VictimModel struct {
 	DB *pgxpool.Pool
 }
 
-func (m VictimModel) GetAll(fullname string, info string, filters Filters) ([]*Victim, Metadata, error) {
+func (m VictimModel) GetAll(fullname string, info string, filters pagination.Filters) ([]*Victim, pagination.Metadata, error) {
 	// sorting by id here because of mixed langauge in full_name column
 	// full_name ordering gives unexpected results
 	// because this table probably won't change this is okay
@@ -34,8 +35,8 @@ func (m VictimModel) GetAll(fullname string, info string, filters Filters) ([]*V
 		).
 		From("victims").
 		OrderBy("id").
-		Limit(uint64(filters.limit())).
-		Offset(uint64(filters.offset()))
+		Limit(uint64(filters.Limit())).
+		Offset(uint64(filters.Offset()))
 
 	if fullname != "" {
 		query = query.Where(sq.Expr(
@@ -53,7 +54,7 @@ func (m VictimModel) GetAll(fullname string, info string, filters Filters) ([]*V
 
 	sql, args, err := query.ToSql()
 	if err != nil {
-		return nil, Metadata{}, err
+		return nil, pagination.Metadata{}, err
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
@@ -61,7 +62,7 @@ func (m VictimModel) GetAll(fullname string, info string, filters Filters) ([]*V
 
 	rows, err := m.DB.Query(ctx, sql, args...)
 	if err != nil {
-		return nil, Metadata{}, err
+		return nil, pagination.Metadata{}, err
 	}
 	defer rows.Close()
 
@@ -73,10 +74,10 @@ func (m VictimModel) GetAll(fullname string, info string, filters Filters) ([]*V
 	})
 
 	if err != nil {
-		return nil, Metadata{}, err
+		return nil, pagination.Metadata{}, err
 	}
 
-	metadata := calculateMetadata(totalRecords, filters.Page, filters.PageSize)
+	metadata := pagination.CalculateMetadata(totalRecords, filters.Page, filters.PageSize)
 
 	return victims, metadata, nil
 }

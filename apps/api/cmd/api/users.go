@@ -4,7 +4,9 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/lex-unix/babyn-yar/internal/data"
+	"github.com/lex-unix/babyn-yar/internal/apperr"
+	"github.com/lex-unix/babyn-yar/internal/pagination"
+	"github.com/lex-unix/babyn-yar/internal/users"
 	"github.com/lex-unix/babyn-yar/internal/validator"
 )
 
@@ -22,55 +24,21 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	v := validator.New()
-	data.ValidatePasswordPlaintext(v, input.Password)
-	if !v.Valid() {
-		app.failedValidationResponse(w, r, v.Errors)
-		return
-	}
-
-	user := &data.User{
+	user, err := app.users.Register(r.Context(), users.RegisterUser{
 		FullName: input.FullName,
 		Email:    input.Email,
-	}
-
-	err = user.Password.Set(input.Password)
+		Password: input.Password,
+		Role:     input.Permission,
+	})
 	if err != nil {
-		app.serverErrorResponse(w, r, err)
+		app.useCaseErrorResponse(w, r, err)
 		return
 	}
-
-	if data.ValidateUser(v, user); !v.Valid() {
-		app.failedValidationResponse(w, r, v.Errors)
-		return
-	}
-
-	err = app.models.Users.Insert(user)
-	if err != nil {
-		switch {
-		case errors.Is(err, data.ErrDuplicateEmail):
-			v.AddError("email", "a user with this email already exists")
-			app.failedValidationResponse(w, r, v.Errors)
-		default:
-			app.serverErrorResponse(w, r, err)
-
-		}
-		return
-	}
-
-	err = app.models.Permissions.AddForUser(user.ID, input.Permission)
-	if err != nil {
-		app.serverErrorResponse(w, r, err)
-		return
-	}
-
-	user.Permissions = append(user.Permissions, input.Permission)
 
 	err = app.writeJSON(w, http.StatusCreated, envelope{"user": user}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
-
 }
 
 func (app *application) loginUserHandler(w http.ResponseWriter, r *http.Request) {
@@ -85,24 +53,9 @@ func (app *application) loginUserHandler(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	user, err := app.models.Users.GetByEmail(input.Email)
+	user, err := app.users.Authenticate(r.Context(), input.Email, input.Password)
 	if err != nil {
-		switch {
-		case errors.Is(err, data.ErrRecordNotFound):
-			app.invalidCredentialResponse(w, r)
-		default:
-			app.serverErrorResponse(w, r, err)
-		}
-		return
-	}
-
-	match, err := user.Password.Matches(input.Password)
-	if err != nil {
-		app.serverErrorResponse(w, r, err)
-		return
-	}
-	if !match {
-		app.invalidCredentialResponse(w, r)
+		app.useCaseErrorResponse(w, r, err)
 		return
 	}
 
@@ -122,10 +75,10 @@ func (app *application) loginUserHandler(w http.ResponseWriter, r *http.Request)
 func (app *application) meHandler(w http.ResponseWriter, r *http.Request) {
 	userID := app.contextGetUser(r).ID
 
-	user, err := app.models.Users.GetByID(userID)
+	user, err := app.userQueries.GetByID(r.Context(), userID)
 	if err != nil {
 		switch {
-		case errors.Is(err, data.ErrRecordNotFound):
+		case errors.Is(err, apperr.ErrNotFound):
 			app.notFoundResponse(w, r)
 		default:
 			app.serverErrorResponse(w, r, err)
@@ -141,7 +94,7 @@ func (app *application) meHandler(w http.ResponseWriter, r *http.Request) {
 
 func (app *application) listUsersHandler(w http.ResponseWriter, r *http.Request) {
 	var input struct {
-		data.Filters
+		pagination.Filters
 	}
 
 	v := validator.New()
@@ -154,26 +107,24 @@ func (app *application) listUsersHandler(w http.ResponseWriter, r *http.Request)
 	input.Filters.Sort = app.readString(qs, "sort", "-created_at")
 	input.Filters.SortSafelist = []string{"created_at", "-created_at"}
 
-	if data.ValidateFilters(v, input.Filters); !v.Valid() {
+	if pagination.Validate(v, input.Filters); !v.Valid() {
 		app.failedValidationResponse(w, r, v.Errors)
 		return
 	}
 
-	users, metadata, err := app.models.Users.GetAll(input.Filters)
+	all, metadata, err := app.userQueries.GetAll(r.Context(), input.Filters)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 		return
 	}
 
-	err = app.writeJSON(w, http.StatusOK, envelope{"users": users, "metadata": metadata}, nil)
+	err = app.writeJSON(w, http.StatusOK, envelope{"users": all, "metadata": metadata}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
 }
 
 func (app *application) updateUserHandler(w http.ResponseWriter, r *http.Request) {
-	user := app.contextGetUser(r)
-
 	var input struct {
 		FullName *string `json:"fullName"`
 		Email    *string `json:"email"`
@@ -186,48 +137,14 @@ func (app *application) updateUserHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	if input.FullName != nil {
-		user.FullName = *input.FullName
-	}
-
-	if input.Email != nil {
-		user.Email = *input.Email
-	}
-
-	if input.Password != nil {
-		v := validator.New()
-		data.ValidatePasswordPlaintext(v, *input.Password)
-		if !v.Valid() {
-			app.failedValidationResponse(w, r, v.Errors)
-			return
-		}
-
-		err = user.Password.Set(*input.Password)
-		if err != nil {
-			app.serverErrorResponse(w, r, err)
-			return
-		}
-	}
-
-	v := validator.New()
-
-	if data.ValidateUser(v, user); !v.Valid() {
-		app.failedValidationResponse(w, r, v.Errors)
-		return
-	}
-
-	err = app.models.Users.Update(user)
-
+	user, err := app.users.UpdateProfile(r.Context(), users.UpdateProfile{
+		UserID:   app.contextGetUser(r).ID,
+		FullName: input.FullName,
+		Email:    input.Email,
+		Password: input.Password,
+	})
 	if err != nil {
-		switch {
-		case errors.Is(err, data.ErrEditConflict):
-			app.editConflictResponse(w, r)
-		case errors.Is(err, data.ErrDuplicateEmail):
-			v.AddError("email", "a user with this email already exists")
-			app.failedValidationResponse(w, r, v.Errors)
-		default:
-			app.serverErrorResponse(w, r, err)
-		}
+		app.useCaseErrorResponse(w, r, err)
 		return
 	}
 
@@ -254,21 +171,8 @@ func (app *application) resetUserPasswordHandler(w http.ResponseWriter, r *http.
 		return
 	}
 
-	v := validator.New()
-	data.ValidatePasswordPlaintext(v, input.Password)
-	if !v.Valid() {
-		app.failedValidationResponse(w, r, v.Errors)
-		return
-	}
-
-	err = app.models.Users.UpdatePassword(userID, input.Password)
-	if err != nil {
-		switch {
-		case errors.Is(err, data.ErrRecordNotFound):
-			app.notFoundResponse(w, r)
-		default:
-			app.serverErrorResponse(w, r, err)
-		}
+	if err = app.users.ResetPassword(r.Context(), userID, input.Password); err != nil {
+		app.useCaseErrorResponse(w, r, err)
 		return
 	}
 
@@ -295,48 +199,14 @@ func (app *application) adminUpdateUserHandler(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	v := validator.New()
-	if input.Permission != nil {
-		v.Check(validator.In(*input.Permission, "admin", "publisher"), "permission", "must be admin or publisher")
-	}
-
-	user, err := app.models.Users.GetByID(userID)
+	user, err := app.users.AdminUpdate(r.Context(), users.AdminUpdateUser{
+		UserID:   userID,
+		FullName: input.FullName,
+		Email:    input.Email,
+		Role:     input.Permission,
+	})
 	if err != nil {
-		switch {
-		case errors.Is(err, data.ErrRecordNotFound):
-			app.notFoundResponse(w, r)
-		default:
-			app.serverErrorResponse(w, r, err)
-		}
-		return
-	}
-
-	if input.FullName != nil {
-		user.FullName = *input.FullName
-	}
-	if input.Email != nil {
-		user.Email = *input.Email
-	}
-	data.ValidateUser(v, user)
-	if !v.Valid() {
-		app.failedValidationResponse(w, r, v.Errors)
-		return
-	}
-
-	err = app.models.Users.UpdateByAdmin(user, input.Permission)
-	if err != nil {
-		switch {
-		case errors.Is(err, data.ErrEditConflict):
-			app.editConflictResponse(w, r)
-		case errors.Is(err, data.ErrDuplicateEmail):
-			v.AddError("email", "a user with this email already exists")
-			app.failedValidationResponse(w, r, v.Errors)
-		case errors.Is(err, data.ErrLastAdmin):
-			v.AddError("permission", "at least one administrator must remain")
-			app.failedValidationResponse(w, r, v.Errors)
-		default:
-			app.serverErrorResponse(w, r, err)
-		}
+		app.useCaseErrorResponse(w, r, err)
 		return
 	}
 
@@ -352,18 +222,8 @@ func (app *application) deleteUserHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	err = app.models.Users.Delete(userID)
-	if err != nil {
-		switch {
-		case errors.Is(err, data.ErrRecordNotFound):
-			app.notFoundResponse(w, r)
-		case errors.Is(err, data.ErrLastAdmin):
-			v := validator.New()
-			v.AddError("id", "at least one administrator must remain")
-			app.failedValidationResponse(w, r, v.Errors)
-		default:
-			app.serverErrorResponse(w, r, err)
-		}
+	if err = app.users.Delete(r.Context(), userID); err != nil {
+		app.useCaseErrorResponse(w, r, err)
 		return
 	}
 

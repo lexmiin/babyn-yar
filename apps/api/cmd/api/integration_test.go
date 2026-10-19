@@ -15,6 +15,8 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lex-unix/babyn-yar/internal/config"
 	"github.com/lex-unix/babyn-yar/internal/data"
+	"github.com/lex-unix/babyn-yar/internal/users"
+	userspg "github.com/lex-unix/babyn-yar/internal/users/postgres"
 	"github.com/stretchr/testify/require"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/modules/postgres"
@@ -24,6 +26,7 @@ import (
 type apiTest struct {
 	db     *pgxpool.Pool
 	server *httptest.Server
+	users  *users.Service
 }
 
 func newAPITest(t *testing.T) *apiTest {
@@ -32,9 +35,12 @@ func newAPITest(t *testing.T) *apiTest {
 	applyTestMigrations(t, db)
 
 	cfg := config.Config{Env: "test"}
+	userService := users.NewService(userspg.UnitOfWork{DB: db}, userspg.NewUserRepository(db))
 	app := &application{
 		config:       cfg,
 		models:       data.NewModels(db),
+		users:        userService,
+		userQueries:  userspg.Queries{DB: db},
 		sessionStore: sessions.NewCookieStore([]byte("test-session-secret")),
 		logger:       slog.New(slog.NewJSONHandler(io.Discard, nil)),
 	}
@@ -42,7 +48,7 @@ func newAPITest(t *testing.T) *apiTest {
 	server := httptest.NewServer(app.routes())
 	t.Cleanup(server.Close)
 
-	return &apiTest{db: db, server: server}
+	return &apiTest{db: db, server: server, users: userService}
 }
 
 func newTestDatabase(t *testing.T) *pgxpool.Pool {

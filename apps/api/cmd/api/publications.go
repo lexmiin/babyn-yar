@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/lex-unix/babyn-yar/internal/data"
+	"github.com/lex-unix/babyn-yar/internal/pagination"
 	"github.com/lex-unix/babyn-yar/internal/validator"
 )
 
@@ -47,7 +48,7 @@ func (app *application) listPublicationsHandler(w http.ResponseWriter, r *http.R
 		Locale        string
 		MissingLocale string
 		Title         string
-		data.Filters
+		pagination.Filters
 	}
 
 	v := validator.New()
@@ -74,7 +75,7 @@ func (app *application) listPublicationsHandler(w http.ResponseWriter, r *http.R
 		data.ValidatePublicationLocale(v, input.MissingLocale)
 	}
 
-	data.ValidateFilters(v, input.Filters)
+	pagination.Validate(v, input.Filters)
 	if !v.Valid() {
 		app.failedValidationResponse(w, r, v.Errors)
 		return

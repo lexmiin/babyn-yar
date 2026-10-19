@@ -4,11 +4,12 @@ import (
 	"errors"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/lex-unix/babyn-yar/internal/apperr"
 )
 
 var (
-	ErrRecordNotFound             = errors.New("record not found")
-	ErrEditConflict               = errors.New("edit conflict")
+	ErrRecordNotFound             = apperr.ErrNotFound
+	ErrEditConflict               = apperr.ErrEditConflict
 	ErrIncompleteCopy             = errors.New("not all records were added")
 	ErrDuplicatePublicationLocale = errors.New("publication already has this locale")
 )
@@ -16,8 +17,6 @@ var (
 type Models struct {
 	Victims       VictimModel
 	Assets        AssetModel
-	Users         UserModel
-	Permissions   PermissionModel
 	GalleryImages GalleryModel
 	Publications  PublicationModel
 	CachePurges   CachePurgeRequestModel
@@ -27,8 +26,6 @@ func NewModels(db *pgxpool.Pool) Models {
 	return Models{
 		Victims:       VictimModel{DB: db},
 		Assets:        AssetModel{DB: db},
-		Users:         UserModel{DB: db},
-		Permissions:   PermissionModel{DB: db},
 		GalleryImages: GalleryModel{DB: db},
 		Publications:  PublicationModel{DB: db},
 		CachePurges:   CachePurgeRequestModel{DB: db},

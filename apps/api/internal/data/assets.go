@@ -8,6 +8,7 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/lex-unix/babyn-yar/internal/pagination"
 )
 
 type Asset struct {
@@ -63,7 +64,7 @@ func (m AssetModel) InsertBulk(assets [][]any) error {
 	return err
 }
 
-func (m AssetModel) GetAll(filename, contentType string, filters Filters) ([]*Asset, Metadata, error) {
+func (m AssetModel) GetAll(filename, contentType string, filters pagination.Filters) ([]*Asset, pagination.Metadata, error) {
 	query := psql.
 		Select(
 			"count(*) OVER()",
@@ -74,10 +75,10 @@ func (m AssetModel) GetAll(filename, contentType string, filters Filters) ([]*As
 			"content_type",
 		).
 		From("assets").
-		OrderBy(fmt.Sprintf("%s %s", filters.sortColumn(), filters.sortDirection())).
+		OrderBy(fmt.Sprintf("%s %s", filters.SortColumn(), filters.SortDirection())).
 		OrderBy("id ASC").
-		Limit(uint64(filters.limit())).
-		Offset(uint64(filters.offset()))
+		Limit(uint64(filters.Limit())).
+		Offset(uint64(filters.Offset()))
 
 	if filename != "" {
 		query = query.Where(sq.Expr("STRPOS(lower(file_name), lower(?)) > 0", filename))
@@ -89,7 +90,7 @@ func (m AssetModel) GetAll(filename, contentType string, filters Filters) ([]*As
 
 	sql, args, err := query.ToSql()
 	if err != nil {
-		return nil, Metadata{}, err
+		return nil, pagination.Metadata{}, err
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
@@ -97,7 +98,7 @@ func (m AssetModel) GetAll(filename, contentType string, filters Filters) ([]*As
 
 	rows, err := m.DB.Query(ctx, sql, args...)
 	if err != nil {
-		return nil, Metadata{}, err
+		return nil, pagination.Metadata{}, err
 	}
 	defer rows.Close()
 
@@ -115,10 +116,10 @@ func (m AssetModel) GetAll(filename, contentType string, filters Filters) ([]*As
 	})
 
 	if err != nil {
-		return nil, Metadata{}, err
+		return nil, pagination.Metadata{}, err
 	}
 
-	metadata := calculateMetadata(totalRecords, filters.Page, filters.PageSize)
+	metadata := pagination.CalculateMetadata(totalRecords, filters.Page, filters.PageSize)
 
 	return assets, metadata, nil
 }
