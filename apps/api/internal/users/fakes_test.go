@@ -8,14 +8,16 @@ import (
 
 	"github.com/lex-unix/babyn-yar/internal/apperr"
 	"github.com/stretchr/testify/require"
+	"golang.org/x/crypto/bcrypt"
 )
 
 const testPassword = "password123"
 
-// testPasswordHash is computed once because bcrypt is deliberately slow.
+// testPasswordHash is computed once, at the lowest cost, because bcrypt is
+// deliberately slow.
 var testPasswordHash = sync.OnceValue(func() []byte {
 	var password Password
-	if err := password.Set(testPassword); err != nil {
+	if err := password.Set(testPassword, bcrypt.MinCost); err != nil {
 		panic(err)
 	}
 	return password.Hash()

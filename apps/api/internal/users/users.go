@@ -38,6 +38,9 @@ func (p Permissions) Include(name string) bool {
 	return slices.Contains(p, name)
 }
 
+// DefaultPasswordCost is the bcrypt cost for new passwords in production.
+const DefaultPasswordCost = 12
+
 type Password struct {
 	plaintext *string
 	hash      []byte
@@ -48,8 +51,10 @@ func PasswordFromHash(hash []byte) Password {
 	return Password{hash: hash}
 }
 
-func (p *Password) Set(plaintextPassword string) error {
-	hash, err := bcrypt.GenerateFromPassword([]byte(plaintextPassword), 12)
+// Set hashes the password with the given bcrypt cost. Matches reads the cost
+// back from the hash.
+func (p *Password) Set(plaintextPassword string, cost int) error {
+	hash, err := bcrypt.GenerateFromPassword([]byte(plaintextPassword), cost)
 	if err != nil {
 		return err
 	}

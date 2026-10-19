@@ -28,6 +28,7 @@ import (
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/modules/postgres"
 	"github.com/testcontainers/testcontainers-go/wait"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type apiTest struct {
@@ -41,7 +42,12 @@ func newAPITest(t *testing.T) *apiTest {
 	db := newTestDatabase(t)
 
 	cfg := config.Config{Env: "test"}
-	userService := users.NewService(userspg.UnitOfWork{DB: db}, userspg.NewUserRepository(db))
+	// The lowest bcrypt cost keeps sign-ins fast; the cost is not under test.
+	userService := users.NewService(
+		userspg.UnitOfWork{DB: db},
+		userspg.NewUserRepository(db),
+		users.WithPasswordCost(bcrypt.MinCost),
+	)
 	app := &application{
 		config:             cfg,
 		models:             data.NewModels(db),

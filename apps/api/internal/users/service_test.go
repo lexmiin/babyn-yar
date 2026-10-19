@@ -7,11 +7,12 @@ import (
 	"github.com/lex-unix/babyn-yar/internal/validator"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func newTestService() (*Service, *fakeStore) {
 	store := newFakeStore()
-	return NewService(fakeUnitOfWork{store: store}, fakeUsers{store}), store
+	return NewService(fakeUnitOfWork{store: store}, fakeUsers{store}, WithPasswordCost(bcrypt.MinCost)), store
 }
 
 func fieldErrors(t *testing.T, err error) map[string]string {

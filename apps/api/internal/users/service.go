@@ -13,13 +13,26 @@ var ErrInvalidCredentials = errors.New("invalid credentials")
 // Service holds the write operations on users. Each one validates its command
 // and reports field-level problems as a *validator.Validator error.
 type Service struct {
-	uow   UnitOfWork
-	users UserRepository
+	uow          UnitOfWork
+	users        UserRepository
+	passwordCost int
+}
+
+type Option func(*Service)
+
+// WithPasswordCost sets the bcrypt cost for new passwords. Tests lower it;
+// production keeps DefaultPasswordCost.
+func WithPasswordCost(cost int) Option {
+	return func(s *Service) { s.passwordCost = cost }
 }
 
 // NewService takes users for operations that need no unit of work.
-func NewService(uow UnitOfWork, users UserRepository) *Service {
-	return &Service{uow: uow, users: users}
+func NewService(uow UnitOfWork, users UserRepository, opts ...Option) *Service {
+	s := &Service{uow: uow, users: users, passwordCost: DefaultPasswordCost}
+	for _, opt := range opts {
+		opt(s)
+	}
+	return s
 }
 
 type RegisterUser struct {
@@ -41,7 +54,7 @@ func (s *Service) Register(ctx context.Context, cmd RegisterUser) (*User, error)
 
 	user := &User{FullName: cmd.FullName, Email: cmd.Email}
 	// Hash before the unit of work so the roster stays locked only briefly.
-	if err := user.Password.Set(cmd.Password); err != nil {
+	if err := user.Password.Set(cmd.Password, s.passwordCost); err != nil {
 		return nil, err
 	}
 	if ValidateUser(v, user); !v.Valid() {
@@ -110,7 +123,7 @@ func (s *Service) UpdateProfile(ctx context.Context, cmd UpdateProfile) (*User, 
 			return nil, v.Err()
 		}
 		password = &Password{}
-		if err := password.Set(*cmd.Password); err != nil {
+		if err := password.Set(*cmd.Password, s.passwordCost); err != nil {
 			return nil, err
 		}
 	}
@@ -208,7 +221,7 @@ func (s *Service) ResetPassword(ctx context.Context, userID int64, plaintext str
 		return v.Err()
 	}
 	var password Password
-	if err := password.Set(plaintext); err != nil {
+	if err := password.Set(plaintext, s.passwordCost); err != nil {
 		return err
 	}
 
