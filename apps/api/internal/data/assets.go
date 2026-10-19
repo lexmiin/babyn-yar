@@ -8,6 +8,7 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/lex-unix/babyn-yar/internal/cachepurge"
 	"github.com/lex-unix/babyn-yar/internal/pagination"
 )
 
@@ -180,7 +181,7 @@ func (m AssetModel) DeleteMultiple(ids []int64) error {
 		return err
 	}
 	if affectsGallery {
-		if err := enqueueCachePurge(ctx, tx, "gallery"); err != nil {
+		if err := cachepurge.Enqueue(ctx, tx, "gallery"); err != nil {
 			return err
 		}
 	}

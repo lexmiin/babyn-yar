@@ -18,18 +18,6 @@ type CachePurgeRequestModel struct {
 	DB *pgxpool.Pool
 }
 
-func enqueueCachePurge(
-	ctx context.Context,
-	tx pgx.Tx,
-	scope string,
-) error {
-	_, err := tx.Exec(ctx, `
-		INSERT INTO cache_purge_requests (scope)
-		VALUES ($1)
-	`, scope)
-	return err
-}
-
 func (m CachePurgeRequestModel) Claim(
 	ctx context.Context,
 	limit int,

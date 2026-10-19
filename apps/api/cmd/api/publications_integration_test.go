@@ -10,7 +10,10 @@ import (
 	"net/http/cookiejar"
 	"sort"
 	"testing"
+	"time"
 
+	"github.com/lex-unix/babyn-yar/internal/publications"
+	publicationspg "github.com/lex-unix/babyn-yar/internal/publications/postgres"
 	"github.com/lex-unix/babyn-yar/internal/users"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -770,4 +773,98 @@ func seedPublication(t *testing.T, testAPI *apiTest, publisherID int64, seed pub
 	require.NoError(t, tx.Commit(ctx))
 
 	return publicationID
+}
+
+func TestPublicationDeleteWaitsForConcurrentEdit(t *testing.T) {
+	testAPI := newAPITest(t)
+	client, publisherID := authenticatedPublicationClient(t, testAPI, "Waiting Publisher", "waiting-publisher@example.com")
+	publicationID := seedPublication(t, testAPI, publisherID, publicationSeed{
+		kind:       "event",
+		occurredOn: "2024-07-01",
+		translations: []publicationTranslationSeed{
+			{locale: "uk", title: "Подія", createdAt: "2024-01-01T00:00:00Z", content: `{}`, documents: []string{}},
+			{locale: "en", title: "Event", createdAt: "2024-01-01T00:00:00Z", content: `{}`, documents: []string{}},
+		},
+	})
+
+	// Hold an uncommitted edit so the delete starts while the publication is
+	// about to change underneath it.
+	tx, err := testAPI.db.Begin(t.Context())
+	require.NoError(t, err)
+	defer tx.Rollback(t.Context())
+	_, err = tx.Exec(t.Context(), `UPDATE publications SET version = version + 1 WHERE id = $1`, publicationID)
+	require.NoError(t, err)
+
+	statuses := make(chan int, 1)
+	go func() {
+		url := fmt.Sprintf("%s/v1/publications/%d/translations/en", testAPI.server.URL, publicationID)
+		request, err := http.NewRequest(http.MethodDelete, url, nil)
+		if err != nil {
+			statuses <- 0
+			return
+		}
+		response, err := client.Do(request)
+		if err != nil {
+			statuses <- 0
+			return
+		}
+		response.Body.Close()
+		statuses <- response.StatusCode
+	}()
+
+	require.Eventually(t, func() bool {
+		var waiting bool
+		err := testAPI.db.QueryRow(t.Context(), `
+			SELECT EXISTS (SELECT 1 FROM pg_stat_activity WHERE wait_event_type = 'Lock')`).Scan(&waiting)
+		return err == nil && waiting
+	}, 5*time.Second, 10*time.Millisecond)
+	require.NoError(t, tx.Commit(t.Context()))
+
+	assert.Equal(t, http.StatusOK, <-statuses)
+	remaining := getPublication(t, testAPI, publicationID, "event", "uk")
+	assert.Equal(t, int32(3), remaining.PublicationVersion)
+}
+
+func TestPublicationRepositorySavesSeveralChangesAtOnce(t *testing.T) {
+	testAPI := newAPITest(t)
+	_, publisherID := authenticatedPublicationClient(t, testAPI, "Grouped Publisher", "grouped-publisher@example.com")
+	publicationID := seedPublication(t, testAPI, publisherID, publicationSeed{
+		kind:       "event",
+		occurredOn: "2024-07-01",
+		translations: []publicationTranslationSeed{
+			{locale: "uk", title: "Подія", createdAt: "2024-01-01T00:00:00Z", content: `{}`, documents: []string{}},
+		},
+	})
+
+	// Add, edit and remove English and edit Ukrainian, all in one save: each
+	// change must persist what it recorded, not the publication's final state.
+	err := publicationspg.UnitOfWork{DB: testAPI.db}.Do(t.Context(), func(ctx context.Context, repos publications.Repositories) error {
+		p, err := repos.Publications.Load(ctx, publicationID)
+		if err != nil {
+			return err
+		}
+		fields := publications.TranslationFields{
+			Title:       "Event",
+			Description: "Description",
+			Content:     json.RawMessage(`{}`),
+			Cover:       "https://example.com/cover.jpg",
+		}
+		require.NoError(t, p.AddTranslation(publications.English, p.OccurredOn, fields, publisherID))
+		fields.Title = "Updated event"
+		require.NoError(t, p.UpdateTranslation(publications.English, p.OccurredOn, fields))
+		require.NoError(t, p.RemoveTranslation(publications.English))
+		fields.Title = "Оновлена подія"
+		require.NoError(t, p.UpdateTranslation(publications.Ukrainian, p.OccurredOn, fields))
+		return repos.Publications.Save(ctx, p)
+	})
+	require.NoError(t, err)
+
+	ukrainian := getPublication(t, testAPI, publicationID, "event", "uk")
+	assert.Equal(t, "Оновлена подія", ukrainian.Title)
+	assert.Equal(t, int32(2), ukrainian.PublicationVersion, "one save advances the version once")
+
+	response, err := http.Get(fmt.Sprintf("%s/v1/publications/%d?kind=event&locale=en", testAPI.server.URL, publicationID))
+	require.NoError(t, err)
+	response.Body.Close()
+	assert.Equal(t, http.StatusNotFound, response.StatusCode)
 }

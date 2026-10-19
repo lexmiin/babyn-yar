@@ -6,6 +6,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/lex-unix/babyn-yar/internal/cachepurge"
 )
 
 type GalleryImage struct {
@@ -36,7 +37,7 @@ func (m GalleryModel) Insert(img *GalleryImage) error {
 	if err != nil {
 		return err
 	}
-	if err := enqueueCachePurge(ctx, tx, "gallery"); err != nil {
+	if err := cachepurge.Enqueue(ctx, tx, "gallery"); err != nil {
 		return err
 	}
 
@@ -128,7 +129,7 @@ func (m GalleryModel) Delete(id int64) error {
 	if rowsAffected == 0 {
 		return ErrRecordNotFound
 	}
-	if err := enqueueCachePurge(ctx, tx, "gallery"); err != nil {
+	if err := cachepurge.Enqueue(ctx, tx, "gallery"); err != nil {
 		return err
 	}
 
