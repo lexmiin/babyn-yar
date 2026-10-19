@@ -27,7 +27,6 @@ func (purger *recordingCachePurger) PurgePrefixes(_ context.Context, prefixes []
 
 func TestCachePurgeWorkerCompletesSuccessfulBatch(t *testing.T) {
 	db := newTestDatabase(t)
-	applyTestMigrations(t, db)
 
 	insertCachePurge(t, db, data.CachePurgeRequest{
 		Scope: "event",
@@ -61,7 +60,6 @@ func TestCachePurgeWorkerCompletesSuccessfulBatch(t *testing.T) {
 
 func TestCachePurgeWorkerRetriesFailedBatch(t *testing.T) {
 	db := newTestDatabase(t)
-	applyTestMigrations(t, db)
 	insertCachePurge(t, db, data.CachePurgeRequest{
 		Scope: "event",
 	})
@@ -89,7 +87,6 @@ func TestCachePurgeWorkerRetriesFailedBatch(t *testing.T) {
 
 func TestCachePurgeClaimUsesExpiringLeases(t *testing.T) {
 	db := newTestDatabase(t)
-	applyTestMigrations(t, db)
 	insertCachePurge(t, db, data.CachePurgeRequest{
 		Scope: "event",
 	})
