@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/lex-unix/babyn-yar/internal/apperr"
+	"github.com/lex-unix/babyn-yar/internal/validator"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -70,4 +71,35 @@ func TestPublicationRejectsInvalidTranslationChanges(t *testing.T) {
 	assert.False(t, publication.HasChanges())
 	require.Len(t, publication.Translations, 1)
 	assert.Equal(t, "Подія", publication.Translations[0].Title)
+}
+
+func TestValidateTranslationRequiresHTTPSDocuments(t *testing.T) {
+	occurredOn := time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)
+	fields := TranslationFields{
+		Title:       "Подія",
+		Description: "Опис",
+		Content:     json.RawMessage(`{}`),
+		Cover:       "https://example.com/cover.jpg",
+	}
+
+	testCases := []struct {
+		document  string
+		wantValid bool
+	}{
+		{document: "https://example.com/document.pdf", wantValid: true},
+		{document: "HTTPS://example.com/document.pdf", wantValid: true},
+		{document: "not a URL", wantValid: false},
+		{document: "http://example.com/document.pdf", wantValid: false},
+		{document: "JaVaScRiPt://example/payload", wantValid: false},
+		{document: "data://example/text/html,payload", wantValid: false},
+		{document: "https:///no-host.pdf", wantValid: false},
+	}
+	for _, testCase := range testCases {
+		t.Run(testCase.document, func(t *testing.T) {
+			v := validator.New()
+			fields.Documents = []string{testCase.document}
+			ValidateTranslation(v, occurredOn, fields)
+			assert.Equal(t, testCase.wantValid, v.Valid(), v.Errors)
+		})
+	}
 }

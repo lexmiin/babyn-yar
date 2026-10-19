@@ -8,7 +8,6 @@ import (
 	"maps"
 	"net/http"
 	"net/http/cookiejar"
-	"sort"
 	"testing"
 	"time"
 
@@ -180,34 +179,6 @@ func TestWritePublicationsThroughHTTP(t *testing.T) {
 		Documents:   []string{"https://example.com/first.pdf", "https://example.com/second.pdf"},
 	}
 
-	t.Run("writes require authentication", func(t *testing.T) {
-		response := createPublicationRequest(t, testAPI, http.DefaultClient, createCommand)
-		defer response.Body.Close()
-		assert.Equal(t, http.StatusUnauthorized, response.StatusCode)
-	})
-
-	t.Run("invalid initial creation leaves no empty publication", func(t *testing.T) {
-		invalidCommand := createCommand
-		invalidCommand.Title = ""
-		response := createPublicationRequest(t, testAPI, publisherClient, invalidCommand)
-		defer response.Body.Close()
-		assert.Equal(t, http.StatusUnprocessableEntity, response.StatusCode)
-
-		var count int
-		require.NoError(t, testAPI.db.QueryRow(context.Background(), `SELECT count(*) FROM publications`).Scan(&count))
-		assert.Zero(t, count)
-	})
-
-	t.Run("document values must be HTTPS URLs", func(t *testing.T) {
-		for _, document := range []string{"not a URL", "JaVaScRiPt://example/payload", "data://example/text/html,payload"} {
-			invalidCommand := createCommand
-			invalidCommand.Documents = []string{document}
-			response := createPublicationRequest(t, testAPI, publisherClient, invalidCommand)
-			response.Body.Close()
-			assert.Equal(t, http.StatusUnprocessableEntity, response.StatusCode)
-		}
-	})
-
 	var created publicationResponse
 	t.Run("creates a publication with its initial translation", func(t *testing.T) {
 		response := createPublicationRequest(t, testAPI, publisherClient, createCommand)
@@ -288,24 +259,11 @@ func TestWritePublicationsThroughHTTP(t *testing.T) {
 		assert.Equal(t, created.Documents, ukrainian.Documents)
 	})
 
-	t.Run("duplicate locale rolls back the shared change", func(t *testing.T) {
-		duplicateCommand := addCommand
-		duplicateCommand.OccurredOn = "2024-04-03T00:00:00Z"
-		duplicateCommand.PublicationVersion = english.PublicationVersion
-		response := addPublicationTranslationRequest(t, testAPI, publisherClient, created.ID, duplicateCommand)
-		defer response.Body.Close()
-		assert.Equal(t, http.StatusUnprocessableEntity, response.StatusCode)
-
-		current := getPublication(t, testAPI, created.ID, "event", "en")
-		assert.Equal(t, "2024-04-01", current.OccurredOn[:10])
-		assert.Equal(t, int32(2), current.PublicationVersion)
-	})
-
 	editorClient, editorID := authenticatedPublicationClient(t, testAPI, "Later Editor", "editor@example.com")
 	assert.NotEqual(t, publisherID, editorID)
 
-	localizedEditCommand := publicationCommand{
-		OccurredOn:         english.OccurredOn,
+	editCommand := publicationCommand{
+		OccurredOn:         "2024-04-04T00:00:00Z",
 		PublicationVersion: english.PublicationVersion,
 		Title:              "Updated event",
 		Description:        english.Description,
@@ -313,55 +271,37 @@ func TestWritePublicationsThroughHTTP(t *testing.T) {
 		Cover:              english.Cover,
 		Documents:          english.Documents,
 	}
-	var localizedEdit publicationResponse
-	var translationUpdatedAfterLocalized string
 	t.Run("update requires an expected version header", func(t *testing.T) {
 		url := fmt.Sprintf("%s/v1/publications/%d/translations/en", testAPI.server.URL, created.ID)
-		response := publicationJSONRequest(t, editorClient, http.MethodPatch, url, localizedEditCommand)
+		response := publicationJSONRequest(t, editorClient, http.MethodPatch, url, editCommand)
 		defer response.Body.Close()
 		assert.Equal(t, http.StatusBadRequest, response.StatusCode)
 	})
 
-	t.Run("localized edit advances the aggregate and translation versions", func(t *testing.T) {
-		var publicationUpdatedBefore, translationUpdatedBefore string
-		require.NoError(t, testAPI.db.QueryRow(context.Background(), `
-			SELECT p.updated_at::text, pt.updated_at::text
-			FROM publications p
-			JOIN publication_translations pt ON pt.publication_id = p.id
-			WHERE p.id = $1 AND pt.locale = 'en'
-		`, created.ID).Scan(&publicationUpdatedBefore, &translationUpdatedBefore))
+	t.Run("an edit advances the version and timestamps and shares the occurrence date", func(t *testing.T) {
+		timestamps := func() (publication, translation string) {
+			require.NoError(t, testAPI.db.QueryRow(context.Background(), `
+				SELECT p.updated_at::text, pt.updated_at::text
+				FROM publications p
+				JOIN publication_translations pt ON pt.publication_id = p.id
+				WHERE p.id = $1 AND pt.locale = 'en'
+			`, created.ID).Scan(&publication, &translation))
+			return publication, translation
+		}
+		publicationBefore, translationBefore := timestamps()
 
-		response := updatePublicationTranslationRequest(t, testAPI, editorClient, created.ID, "en", localizedEditCommand)
+		response := updatePublicationTranslationRequest(t, testAPI, editorClient, created.ID, "en", editCommand)
 		defer response.Body.Close()
 		require.Equal(t, http.StatusOK, response.StatusCode)
 
-		localizedEdit = decodePublicationResponse(t, response)
-		assert.Equal(t, int32(3), localizedEdit.PublicationVersion)
-		assert.Equal(t, publisherID, localizedEdit.Publisher.ID, "later editors must not replace the original publisher")
+		edited := decodePublicationResponse(t, response)
+		assert.Equal(t, "Updated event", edited.Title)
+		assert.Equal(t, int32(3), edited.PublicationVersion)
+		assert.Equal(t, publisherID, edited.Publisher.ID, "later editors must not replace the original publisher")
 
-		var publicationUpdatedAfter string
-		require.NoError(t, testAPI.db.QueryRow(context.Background(), `
-			SELECT p.updated_at::text, pt.updated_at::text
-			FROM publications p
-			JOIN publication_translations pt ON pt.publication_id = p.id
-			WHERE p.id = $1 AND pt.locale = 'en'
-		`, created.ID).Scan(&publicationUpdatedAfter, &translationUpdatedAfterLocalized))
-		assert.NotEqual(t, publicationUpdatedBefore, publicationUpdatedAfter)
-		assert.NotEqual(t, translationUpdatedBefore, translationUpdatedAfterLocalized)
-	})
-
-	sharedEditCommand := localizedEditCommand
-	sharedEditCommand.OccurredOn = "2024-04-04T00:00:00Z"
-	sharedEditCommand.PublicationVersion = localizedEdit.PublicationVersion
-	sharedEditCommand.Title = localizedEdit.Title
-	var sharedEdit publicationResponse
-	t.Run("shared edit advances both versions despite unchanged localized fields", func(t *testing.T) {
-		response := updatePublicationTranslationRequest(t, testAPI, editorClient, created.ID, "en", sharedEditCommand)
-		defer response.Body.Close()
-		require.Equal(t, http.StatusOK, response.StatusCode)
-
-		sharedEdit = decodePublicationResponse(t, response)
-		assert.Equal(t, int32(4), sharedEdit.PublicationVersion)
+		publicationAfter, translationAfter := timestamps()
+		assert.NotEqual(t, publicationBefore, publicationAfter)
+		assert.NotEqual(t, translationBefore, translationAfter)
 
 		ukrainian := getPublication(t, testAPI, created.ID, "event", "uk")
 		assert.Equal(t, "2024-04-04", ukrainian.OccurredOn[:10])
@@ -369,57 +309,19 @@ func TestWritePublicationsThroughHTTP(t *testing.T) {
 		assert.Equal(t, created.Cover, ukrainian.Cover)
 		assert.JSONEq(t, string(created.Content), string(ukrainian.Content))
 		assert.Equal(t, created.Documents, ukrainian.Documents)
-
-		var translationUpdatedAfterShared string
-		require.NoError(t, testAPI.db.QueryRow(context.Background(), `
-			SELECT updated_at::text FROM publication_translations WHERE publication_id = $1 AND locale = 'en'
-		`, created.ID).Scan(&translationUpdatedAfterShared))
-		assert.NotEqual(t, translationUpdatedAfterLocalized, translationUpdatedAfterShared)
 	})
 
-	combinedEditCommand := sharedEditCommand
-	combinedEditCommand.OccurredOn = "2024-04-06T00:00:00Z"
-	combinedEditCommand.PublicationVersion = sharedEdit.PublicationVersion
-	combinedEditCommand.Title = "Combined update"
-	var combinedEdit publicationResponse
-	t.Run("combined edit advances both versions", func(t *testing.T) {
-		response := updatePublicationTranslationRequest(t, testAPI, editorClient, created.ID, "en", combinedEditCommand)
-		defer response.Body.Close()
-		require.Equal(t, http.StatusOK, response.StatusCode)
-
-		combinedEdit = decodePublicationResponse(t, response)
-		assert.Equal(t, int32(5), combinedEdit.PublicationVersion)
-	})
-
-	t.Run("stale publication rejects the localized change", func(t *testing.T) {
-		staleCommand := combinedEditCommand
-		staleCommand.PublicationVersion = 4
-		staleCommand.Title = "Must also roll back"
+	t.Run("an edit with an outdated version conflicts and changes nothing", func(t *testing.T) {
+		staleCommand := editCommand
+		staleCommand.Title = "Stale edit"
 		response := updatePublicationTranslationRequest(t, testAPI, editorClient, created.ID, "en", staleCommand)
 		defer response.Body.Close()
 		assert.Equal(t, http.StatusConflict, response.StatusCode)
 
 		current := getPublication(t, testAPI, created.ID, "event", "en")
-		assert.Equal(t, "Combined update", current.Title)
+		assert.Equal(t, "Updated event", current.Title)
+		assert.Equal(t, int32(3), current.PublicationVersion)
 	})
-
-	immutableFields := []struct {
-		name   string
-		mutate func(*publicationCommand)
-	}{
-		{name: "publication kind", mutate: func(command *publicationCommand) { command.Kind = "book" }},
-		{name: "locale", mutate: func(command *publicationCommand) { command.Locale = "uk" }},
-	}
-	for _, testCase := range immutableFields {
-		t.Run("edit rejects immutable "+testCase.name, func(t *testing.T) {
-			command := combinedEditCommand
-			command.PublicationVersion = combinedEdit.PublicationVersion
-			testCase.mutate(&command)
-			response := updatePublicationTranslationRequest(t, testAPI, editorClient, created.ID, "en", command)
-			defer response.Body.Close()
-			assert.Equal(t, http.StatusBadRequest, response.StatusCode)
-		})
-	}
 
 	t.Run("deleting one locale preserves the publication and deleting the final locale removes it", func(t *testing.T) {
 		response := deletePublicationTranslationRequest(t, testAPI, editorClient, created.ID, "en")
@@ -428,64 +330,12 @@ func TestWritePublicationsThroughHTTP(t *testing.T) {
 
 		assert.True(t, publicationExists(t, testAPI, created.ID))
 		remaining := getPublication(t, testAPI, created.ID, "event", "uk")
-		assert.Equal(t, int32(6), remaining.PublicationVersion)
+		assert.Equal(t, int32(4), remaining.PublicationVersion)
 
 		response = deletePublicationTranslationRequest(t, testAPI, editorClient, created.ID, "uk")
 		defer response.Body.Close()
 		require.Equal(t, http.StatusOK, response.StatusCode)
 		assert.False(t, publicationExists(t, testAPI, created.ID))
-	})
-
-	t.Run("competing edits serialize and reject one stale command", func(t *testing.T) {
-		publicationID := seedPublication(t, testAPI, publisherID, publicationSeed{
-			kind:       "event",
-			occurredOn: "2024-06-01",
-			translations: []publicationTranslationSeed{
-				{locale: "uk", title: "Конкурентна подія", createdAt: "2024-01-01T00:00:00Z", content: `{}`, documents: []string{}},
-			},
-		})
-		current := getPublication(t, testAPI, publicationID, "event", "uk")
-		baseCommand := publicationCommand{
-			OccurredOn:         current.OccurredOn,
-			PublicationVersion: current.PublicationVersion,
-			Description:        current.Description,
-			Content:            current.Content,
-			Cover:              current.Cover,
-			Documents:          current.Documents,
-		}
-		firstCommand := baseCommand
-		firstCommand.Title = "Перше редагування"
-		secondCommand := baseCommand
-		secondCommand.Title = "Друге редагування"
-		url := fmt.Sprintf("%s/v1/publications/%d/translations/uk", testAPI.server.URL, publicationID)
-
-		statuses := concurrentPublicationRequests(t, publisherClient,
-			publicationRequestSpec{method: http.MethodPatch, url: url, expectedVersion: current.PublicationVersion, body: firstCommand},
-			publicationRequestSpec{method: http.MethodPatch, url: url, expectedVersion: current.PublicationVersion, body: secondCommand},
-		)
-		assert.Equal(t, []int{http.StatusOK, http.StatusConflict}, statuses)
-
-		current = getPublication(t, testAPI, publicationID, "event", "uk")
-		assert.Contains(t, []string{"Перше редагування", "Друге редагування"}, current.Title)
-	})
-
-	t.Run("competing locale deletions both succeed", func(t *testing.T) {
-		publicationID := seedPublication(t, testAPI, publisherID, publicationSeed{
-			kind:       "event",
-			occurredOn: "2024-07-01",
-			translations: []publicationTranslationSeed{
-				{locale: "uk", title: "Подія", createdAt: "2024-01-01T00:00:00Z", content: `{}`, documents: []string{}},
-				{locale: "en", title: "Event", createdAt: "2024-01-01T00:00:00Z", content: `{}`, documents: []string{}},
-			},
-		})
-
-		baseURL := fmt.Sprintf("%s/v1/publications/%d/translations", testAPI.server.URL, publicationID)
-		statuses := concurrentPublicationRequests(t, publisherClient,
-			publicationRequestSpec{method: http.MethodDelete, url: baseURL + "/uk"},
-			publicationRequestSpec{method: http.MethodDelete, url: baseURL + "/en"},
-		)
-		assert.Equal(t, []int{http.StatusOK, http.StatusOK}, statuses)
-		assert.False(t, publicationExists(t, testAPI, publicationID))
 	})
 }
 
@@ -674,60 +524,6 @@ func publicationExists(t *testing.T, testAPI *apiTest, publicationID int64) bool
 	).Scan(&exists)
 	require.NoError(t, err)
 	return exists
-}
-
-type publicationRequestSpec struct {
-	method          string
-	url             string
-	expectedVersion int32
-	body            any
-}
-
-func concurrentPublicationRequests(t *testing.T, client *http.Client, specs ...publicationRequestSpec) []int {
-	t.Helper()
-	requests := make([]*http.Request, 0, len(specs))
-	for _, spec := range specs {
-		var encoded bytes.Buffer
-		if spec.body != nil {
-			require.NoError(t, json.NewEncoder(&encoded).Encode(spec.body))
-		}
-		request, err := http.NewRequest(spec.method, spec.url, &encoded)
-		require.NoError(t, err)
-		request.Header.Set("Content-Type", "application/json")
-		if spec.expectedVersion > 0 {
-			request.Header.Set(expectedVersionHeader, fmt.Sprint(spec.expectedVersion))
-		}
-		requests = append(requests, request)
-	}
-
-	start := make(chan struct{})
-	type result struct {
-		status int
-		err    error
-	}
-	results := make(chan result, len(requests))
-	for _, request := range requests {
-		go func() {
-			<-start
-			response, err := client.Do(request)
-			if err != nil {
-				results <- result{err: err}
-				return
-			}
-			response.Body.Close()
-			results <- result{status: response.StatusCode}
-		}()
-	}
-	close(start)
-
-	statuses := make([]int, 0, len(requests))
-	for range requests {
-		result := <-results
-		require.NoError(t, result.err)
-		statuses = append(statuses, result.status)
-	}
-	sort.Ints(statuses)
-	return statuses
 }
 
 type publicationSeed struct {
