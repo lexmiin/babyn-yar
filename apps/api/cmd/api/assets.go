@@ -1,158 +1,94 @@
 package main
 
 import (
-	"errors"
 	"net/http"
 
-	"github.com/lex-unix/babyn-yar/internal/data"
+	"github.com/lex-unix/babyn-yar/internal/assets"
+	assetspg "github.com/lex-unix/babyn-yar/internal/assets/postgres"
 	"github.com/lex-unix/babyn-yar/internal/pagination"
 	"github.com/lex-unix/babyn-yar/internal/validator"
 )
 
+// assetUploadMemory is how much of an upload is held in memory; the rest
+// goes to temporary files.
+const assetUploadMemory = 512
+
 func (app *application) createAssetsHandler(w http.ResponseWriter, r *http.Request) {
-	var maxMemory int64 = 512
-	r.ParseMultipartForm(maxMemory)
-
-	files := r.MultipartForm.File["assets"]
-
-	v := validator.New()
-
-	assets := make([]*data.Asset, len(files))
-	for i, fileHeader := range files {
-		file, err := fileHeader.Open()
-		if err != nil {
-			app.serverErrorResponse(w, r, err)
-			return
-		}
-		defer file.Close()
-
-		exists, err := app.storage.Exists(fileHeader.Filename)
-		if err != nil {
-			app.serverErrorResponse(w, r, err)
-			return
-		}
-
-		if exists {
-			v.AddError(fileHeader.Filename, "already exists")
-			continue
-		}
-
-		contentType, err := app.detectContentType(file)
-
-		if err != nil {
-			app.serverErrorResponse(w, r, err)
-			return
-		}
-
-		url, err := app.storage.Upload(file, fileHeader.Filename, contentType)
-		if err != nil {
-			app.serverErrorResponse(w, r, err)
-			return
-		}
-
-		assets[i] = &data.Asset{
-			URL:         url,
-			ContentType: contentType,
-			Filename:    fileHeader.Filename,
-		}
-
-	}
-
-	if !v.Valid() {
-		app.failedValidationResponse(w, r, v.Errors)
+	if err := r.ParseMultipartForm(assetUploadMemory); err != nil {
+		app.badRequestResponse(w, r, err)
 		return
 	}
 
-	err := app.models.Assets.Insert(assets)
+	headers := r.MultipartForm.File["assets"]
+	files := make([]assets.File, 0, len(headers))
+	for _, header := range headers {
+		content, err := header.Open()
+		if err != nil {
+			app.serverErrorResponse(w, r, err)
+			return
+		}
+		defer content.Close()
+		files = append(files, assets.File{Name: header.Filename, Content: content})
+	}
+
+	uploaded, err := app.assets.Upload(r.Context(), files)
 	if err != nil {
-		app.serverErrorResponse(w, r, err)
+		app.useCaseErrorResponse(w, r, err)
 		return
 	}
 
-	err = app.writeJSON(w, http.StatusCreated, envelope{"assets": assets}, nil)
-	if err != nil {
+	if err := app.writeJSON(w, http.StatusCreated, envelope{"assets": uploaded}, nil); err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
 }
 
 func (app *application) listAssetsHandler(w http.ResponseWriter, r *http.Request) {
 	var input struct {
-		Filename    string
-		ContentType string
+		assetspg.ListFilter
 		pagination.Filters
 	}
 
 	v := validator.New()
-
 	qs := r.URL.Query()
 
 	input.Filename = app.readString(qs, "filename", "")
 	input.ContentType = app.readString(qs, "content_type", "")
-
 	input.Filters.Page = app.readInt(qs, "page", 1, v)
 	input.Filters.PageSize = app.readInt(qs, "page_size", 10, v)
-
 	input.Filters.Sort = app.readString(qs, "sort", "-created_at")
 	input.Filters.SortSafelist = []string{"created_at", "file_name", "-created_at", "-file_name"}
 
-	if pagination.Validate(v, input.Filters); !v.Valid() {
+	pagination.Validate(v, input.Filters)
+	if !v.Valid() {
 		app.failedValidationResponse(w, r, v.Errors)
 		return
 	}
 
-	assets, metadata, err := app.models.Assets.GetAll(input.Filename, input.ContentType, input.Filters)
+	list, metadata, err := app.assetQueries.List(r.Context(), input.ListFilter, input.Filters)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 		return
 	}
 
-	err = app.writeJSON(w, http.StatusOK, envelope{"assets": assets, "metadata": metadata}, nil)
-	if err != nil {
+	if err := app.writeJSON(w, http.StatusOK, envelope{"assets": list, "metadata": metadata}, nil); err != nil {
 		app.serverErrorResponse(w, r, err)
-		return
 	}
 }
 
 func (app *application) deleteAssetsHandler(w http.ResponseWriter, r *http.Request) {
 	v := validator.New()
-
-	qs := r.URL.Query()
-
-	ids := app.readIntList(qs, "ids", v)
-
+	ids := app.readIntList(r.URL.Query(), "ids", v)
 	if !v.Valid() {
 		app.failedValidationResponse(w, r, v.Errors)
-	}
-
-	filenames, err := app.models.Assets.GetFileNames(ids)
-	if err != nil {
-		switch {
-		case errors.Is(err, data.ErrRecordNotFound):
-			app.notFoundResponse(w, r)
-		default:
-			app.serverErrorResponse(w, r, err)
-		}
 		return
 	}
 
-	err = app.storage.Delete(filenames)
-	if err != nil {
-		app.serverErrorResponse(w, r, err)
-	}
-
-	err = app.models.Assets.DeleteMultiple(ids)
-	if err != nil {
-		switch {
-		case errors.Is(err, data.ErrRecordNotFound):
-			app.notFoundResponse(w, r)
-		default:
-			app.serverErrorResponse(w, r, err)
-		}
+	if err := app.assets.Delete(r.Context(), ids); err != nil {
+		app.useCaseErrorResponse(w, r, err)
 		return
 	}
 
-	err = app.writeJSON(w, http.StatusOK, envelope{"message": "assets successfully deleted"}, nil)
-	if err != nil {
+	if err := app.writeJSON(w, http.StatusOK, envelope{"message": "assets successfully deleted"}, nil); err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
 }
