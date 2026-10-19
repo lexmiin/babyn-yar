@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	"github.com/lex-unix/babyn-yar/internal/data"
+	"github.com/lex-unix/babyn-yar/internal/pagination"
 	"github.com/lex-unix/babyn-yar/internal/validator"
 )
 
@@ -11,7 +11,7 @@ func (app *application) listVictimsHandler(w http.ResponseWriter, r *http.Reques
 	var input struct {
 		Fullname string
 		Info     string
-		data.Filters
+		pagination.Filters
 	}
 
 	v := validator.New()
@@ -27,7 +27,7 @@ func (app *application) listVictimsHandler(w http.ResponseWriter, r *http.Reques
 	input.Filters.Sort = app.readString(qs, "sort", "-fullname")
 	input.Filters.SortSafelist = []string{"fullname", "-fullname"}
 
-	if data.ValidateFilters(v, input.Filters); !v.Valid() {
+	if pagination.Validate(v, input.Filters); !v.Valid() {
 		app.failedValidationResponse(w, r, v.Errors)
 		return
 	}

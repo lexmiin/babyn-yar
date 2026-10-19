@@ -13,6 +13,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/lex-unix/babyn-yar/internal/pagination"
 	"github.com/lex-unix/babyn-yar/internal/validator"
 )
 
@@ -161,7 +162,7 @@ func validPublicationDocumentURL(document string) bool {
 	return err == nil && strings.EqualFold(parsed.Scheme, "https") && parsed.Host != ""
 }
 
-func (m PublicationModel) GetAll(kind string, locale string, missingLocale string, title string, filters Filters) ([]*PublicationSummary, Metadata, error) {
+func (m PublicationModel) GetAll(kind string, locale string, missingLocale string, title string, filters pagination.Filters) ([]*PublicationSummary, pagination.Metadata, error) {
 	query := psql.
 		Select(
 			"count(*) OVER()",
@@ -181,11 +182,11 @@ func (m PublicationModel) GetAll(kind string, locale string, missingLocale strin
 		From("publication_translations pt").
 		Join("publications p ON p.id = pt.publication_id").
 		Join("users u ON u.id = pt.publisher_id").
-		OrderBy(fmt.Sprintf("%s %s", publicationSortColumn(filters), filters.sortDirection())).
+		OrderBy(fmt.Sprintf("%s %s", publicationSortColumn(filters), filters.SortDirection())).
 		OrderBy("p.id ASC").
 		OrderBy("pt.locale ASC").
-		Limit(uint64(filters.limit())).
-		Offset(uint64(filters.offset()))
+		Limit(uint64(filters.Limit())).
+		Offset(uint64(filters.Offset()))
 
 	if kind != "" {
 		query = query.Where(sq.Eq{"p.kind": kind})
@@ -211,7 +212,7 @@ func (m PublicationModel) GetAll(kind string, locale string, missingLocale strin
 
 	sql, args, err := query.ToSql()
 	if err != nil {
-		return nil, Metadata{}, err
+		return nil, pagination.Metadata{}, err
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
@@ -219,7 +220,7 @@ func (m PublicationModel) GetAll(kind string, locale string, missingLocale strin
 
 	rows, err := m.DB.Query(ctx, sql, args...)
 	if err != nil {
-		return nil, Metadata{}, err
+		return nil, pagination.Metadata{}, err
 	}
 
 	totalRecords := 0
@@ -246,10 +247,10 @@ func (m PublicationModel) GetAll(kind string, locale string, missingLocale strin
 	})
 
 	if err != nil {
-		return nil, Metadata{}, err
+		return nil, pagination.Metadata{}, err
 	}
 
-	return publications, calculateMetadata(totalRecords, filters.Page, filters.PageSize), nil
+	return publications, pagination.CalculateMetadata(totalRecords, filters.Page, filters.PageSize), nil
 }
 
 func (m PublicationModel) GetByID(id int64) (*Publication, error) {
@@ -559,8 +560,8 @@ func publicationKind(ctx context.Context, tx pgx.Tx, id int64) (string, error) {
 	return kind, err
 }
 
-func publicationSortColumn(filters Filters) string {
-	switch filters.sortColumn() {
+func publicationSortColumn(filters pagination.Filters) string {
+	switch filters.SortColumn() {
 	case "created_at":
 		return "pt.created_at"
 	case "occurred_on":

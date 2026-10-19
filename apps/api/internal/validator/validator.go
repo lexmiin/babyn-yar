@@ -1,8 +1,11 @@
 package validator
 
-import "slices"
-
-import "regexp"
+import (
+	"maps"
+	"regexp"
+	"slices"
+	"strings"
+)
 
 type Validator struct {
 	Errors map[string]string
@@ -14,6 +17,24 @@ func New() *Validator {
 
 func (v *Validator) Valid() bool {
 	return len(v.Errors) == 0
+}
+
+// Err returns v as an error when it holds field errors, and nil otherwise.
+// Return it instead of v itself: a nil *Validator stored in an error is not nil.
+func (v *Validator) Err() error {
+	if v.Valid() {
+		return nil
+	}
+	return v
+}
+
+func (v *Validator) Error() string {
+	keys := slices.Sorted(maps.Keys(v.Errors))
+	fields := make([]string, len(keys))
+	for i, key := range keys {
+		fields[i] = key + ": " + v.Errors[key]
+	}
+	return "validation failed: " + strings.Join(fields, "; ")
 }
 
 func (v *Validator) AddError(key, message string) {

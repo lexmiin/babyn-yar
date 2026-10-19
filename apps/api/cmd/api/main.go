@@ -14,6 +14,8 @@ import (
 	"github.com/lex-unix/babyn-yar/internal/config"
 	"github.com/lex-unix/babyn-yar/internal/data"
 	"github.com/lex-unix/babyn-yar/internal/storage"
+	"github.com/lex-unix/babyn-yar/internal/users"
+	userspg "github.com/lex-unix/babyn-yar/internal/users/postgres"
 )
 
 const (
@@ -24,6 +26,8 @@ const (
 type application struct {
 	config       config.Config
 	models       data.Models
+	users        *users.Service
+	userQueries  userspg.Queries
 	storage      storage.Storage
 	sessionStore sessions.Store
 	logger       *slog.Logger
@@ -83,13 +87,15 @@ func run(logger *slog.Logger) error {
 
 	logger.Info("storage handler initialized")
 
+	userService := users.NewService(userspg.UnitOfWork{DB: db}, userspg.NewUserRepository(db))
+
 	if cfg.Seed {
-		err := data.SeedInitialUser(
-			db,
-			os.Getenv("SEED_USER_NAME"),
-			os.Getenv("SEED_USER_EMAIL"),
-			os.Getenv("SEED_USER_PASSWORD"),
-		)
+		_, err := userService.Register(context.Background(), users.RegisterUser{
+			FullName: os.Getenv("SEED_USER_NAME"),
+			Email:    os.Getenv("SEED_USER_EMAIL"),
+			Password: os.Getenv("SEED_USER_PASSWORD"),
+			Role:     string(users.Admin),
+		})
 		if err != nil {
 			return err
 		}
@@ -99,6 +105,8 @@ func run(logger *slog.Logger) error {
 	app := &application{
 		config:       cfg,
 		models:       data.NewModels(db),
+		users:        userService,
+		userQueries:  userspg.Queries{DB: db},
 		storage:      storageHandler,
 		sessionStore: store,
 		logger:       logger,

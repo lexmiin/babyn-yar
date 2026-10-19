@@ -11,7 +11,7 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/lex-unix/babyn-yar/internal/data"
+	"github.com/lex-unix/babyn-yar/internal/users"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -599,10 +599,14 @@ func deletePublicationTranslationRequest(
 
 func authenticatedPublicationClient(t *testing.T, testAPI *apiTest, fullName, email string) (*http.Client, int64) {
 	t.Helper()
-	require.NoError(t, data.SeedInitialUser(testAPI.db, fullName, email, "password123"))
-
-	var userID int64
-	require.NoError(t, testAPI.db.QueryRow(context.Background(), `SELECT id FROM users WHERE email = $1`, email).Scan(&userID))
+	user, err := testAPI.users.Register(t.Context(), users.RegisterUser{
+		FullName: fullName,
+		Email:    email,
+		Password: "password123",
+		Role:     string(users.Admin),
+	})
+	require.NoError(t, err)
+	userID := user.ID
 	jar, err := cookiejar.New(nil)
 	require.NoError(t, err)
 	client := &http.Client{Jar: jar}

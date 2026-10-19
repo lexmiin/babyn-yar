@@ -1,13 +1,18 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/cookiejar"
 	"testing"
+	"time"
 
-	"github.com/lex-unix/babyn-yar/internal/data"
+	"github.com/lex-unix/babyn-yar/internal/apperr"
+	"github.com/lex-unix/babyn-yar/internal/users"
+	userspg "github.com/lex-unix/babyn-yar/internal/users/postgres"
+	"github.com/lex-unix/babyn-yar/internal/validator"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -140,12 +145,12 @@ func TestAdminUpdateUserThroughHTTP(t *testing.T) {
 		require.Equal(t, http.StatusOK, response.StatusCode)
 
 		var body struct {
-			User data.User `json:"user"`
+			User users.User `json:"user"`
 		}
 		require.NoError(t, json.NewDecoder(response.Body).Decode(&body))
 		assert.Equal(t, "Original Publisher", body.User.FullName)
 		assert.Equal(t, "original-publisher@example.com", body.User.Email)
-		assert.Equal(t, data.Permissions{"publisher"}, body.User.Permissions)
+		assert.Equal(t, users.Permissions{"publisher"}, body.User.Permissions)
 	})
 
 	t.Run("null fields are omitted and invalid values are rejected", func(t *testing.T) {
@@ -182,12 +187,12 @@ func TestAdminUpdateUserThroughHTTP(t *testing.T) {
 		require.Equal(t, http.StatusOK, response.StatusCode)
 
 		var body struct {
-			User data.User `json:"user"`
+			User users.User `json:"user"`
 		}
 		require.NoError(t, json.NewDecoder(response.Body).Decode(&body))
 		assert.Equal(t, "Updated Publisher", body.User.FullName)
 		assert.Equal(t, "original-publisher@example.com", body.User.Email)
-		assert.Equal(t, data.Permissions{"publisher"}, body.User.Permissions)
+		assert.Equal(t, users.Permissions{"publisher"}, body.User.Permissions)
 	})
 
 	t.Run("all editable fields and the single role are replaced", func(t *testing.T) {
@@ -200,12 +205,12 @@ func TestAdminUpdateUserThroughHTTP(t *testing.T) {
 		require.Equal(t, http.StatusOK, response.StatusCode)
 
 		var body struct {
-			User data.User `json:"user"`
+			User users.User `json:"user"`
 		}
 		require.NoError(t, json.NewDecoder(response.Body).Decode(&body))
 		assert.Equal(t, "Promoted Publisher", body.User.FullName)
 		assert.Equal(t, "promoted-publisher@example.com", body.User.Email)
-		assert.Equal(t, data.Permissions{"admin"}, body.User.Permissions)
+		assert.Equal(t, users.Permissions{"admin"}, body.User.Permissions)
 	})
 
 	t.Run("the last admin cannot be demoted", func(t *testing.T) {
@@ -236,15 +241,14 @@ func TestAdminUpdateUserThroughHTTP(t *testing.T) {
 	})
 
 	t.Run("stale versions are rejected", func(t *testing.T) {
-		models := data.NewModels(testAPI.db)
-		user, err := models.Users.GetByID(publisherID)
+		user, err := userspg.Queries{DB: testAPI.db}.GetByID(t.Context(), publisherID)
 		require.NoError(t, err)
 		_, err = testAPI.db.Exec(t.Context(), `UPDATE users SET version = version + 1 WHERE id = $1`, publisherID)
 		require.NoError(t, err)
 
 		user.FullName = "Stale Update"
-		err = models.Users.UpdateByAdmin(user, nil)
-		assert.ErrorIs(t, err, data.ErrEditConflict)
+		err = userspg.NewUserRepository(testAPI.db).Update(t.Context(), user)
+		assert.ErrorIs(t, err, apperr.ErrEditConflict)
 	})
 }
 
@@ -269,8 +273,8 @@ func TestDeleteUserPreservesAnAdmin(t *testing.T) {
 	defer response.Body.Close()
 	require.Equal(t, http.StatusUnprocessableEntity, response.StatusCode)
 
-	models := data.NewModels(testAPI.db)
-	_, err := models.Users.GetByID(adminID)
+	queries := userspg.Queries{DB: testAPI.db}
+	_, err := queries.GetByID(t.Context(), adminID)
 	require.NoError(t, err)
 
 	publisherDeleteURL := fmt.Sprintf("%s/v1/users/%d", testAPI.server.URL, publisherID)
@@ -278,8 +282,8 @@ func TestDeleteUserPreservesAnAdmin(t *testing.T) {
 	defer response.Body.Close()
 	require.Equal(t, http.StatusOK, response.StatusCode)
 
-	_, err = models.Users.GetByID(publisherID)
-	assert.ErrorIs(t, err, data.ErrRecordNotFound)
+	_, err = queries.GetByID(t.Context(), publisherID)
+	assert.ErrorIs(t, err, apperr.ErrNotFound)
 
 	_, secondAdminID := createAuthenticatedUser(
 		t,
@@ -292,9 +296,9 @@ func TestDeleteUserPreservesAnAdmin(t *testing.T) {
 	defer response.Body.Close()
 	require.Equal(t, http.StatusOK, response.StatusCode)
 
-	_, err = models.Users.GetByID(adminID)
-	assert.ErrorIs(t, err, data.ErrRecordNotFound)
-	_, err = models.Users.GetByID(secondAdminID)
+	_, err = queries.GetByID(t.Context(), adminID)
+	assert.ErrorIs(t, err, apperr.ErrNotFound)
+	_, err = queries.GetByID(t.Context(), secondAdminID)
 	require.NoError(t, err)
 }
 
@@ -306,11 +310,13 @@ func createAuthenticatedUser(
 	permission string,
 ) (*http.Client, int64) {
 	t.Helper()
-	user := &data.User{FullName: fullName, Email: email}
-	require.NoError(t, user.Password.Set("password123"))
-	models := data.NewModels(testAPI.db)
-	require.NoError(t, models.Users.Insert(user))
-	require.NoError(t, models.Permissions.AddForUser(user.ID, permission))
+	user, err := testAPI.users.Register(t.Context(), users.RegisterUser{
+		FullName: fullName,
+		Email:    email,
+		Password: "password123",
+		Role:     permission,
+	})
+	require.NoError(t, err)
 
 	jar, err := cookiejar.New(nil)
 	require.NoError(t, err)
@@ -330,4 +336,112 @@ func loginStatus(t *testing.T, testAPI *apiTest, email, password string) int {
 	})
 	defer response.Body.Close()
 	return response.StatusCode
+}
+
+func TestRegisterUserThroughHTTP(t *testing.T) {
+	testAPI := newAPITest(t)
+	adminClient, _ := authenticatedPublicationClient(
+		t,
+		testAPI,
+		"Register Administrator",
+		"register-admin@example.com",
+	)
+	registerURL := testAPI.server.URL + "/v1/users/register"
+
+	t.Run("unknown permissions are rejected without creating the user", func(t *testing.T) {
+		response := publicationJSONRequest(t, adminClient, http.MethodPost, registerURL, map[string]string{
+			"fullName":   "Unknown Role",
+			"email":      "unknown-role@example.com",
+			"password":   "password123",
+			"permission": "owner",
+		})
+		defer response.Body.Close()
+		require.Equal(t, http.StatusUnprocessableEntity, response.StatusCode)
+
+		var body struct {
+			Error map[string]string `json:"error"`
+		}
+		require.NoError(t, json.NewDecoder(response.Body).Decode(&body))
+		assert.Contains(t, body.Error, "permission")
+		assert.Equal(t, http.StatusUnauthorized, loginStatus(t, testAPI, "unknown-role@example.com", "password123"))
+	})
+
+	t.Run("the user is created with the single role", func(t *testing.T) {
+		response := publicationJSONRequest(t, adminClient, http.MethodPost, registerURL, map[string]string{
+			"fullName":   "New Publisher",
+			"email":      "new-publisher@example.com",
+			"password":   "password123",
+			"permission": "publisher",
+		})
+		defer response.Body.Close()
+		require.Equal(t, http.StatusCreated, response.StatusCode)
+
+		var body struct {
+			User users.User `json:"user"`
+		}
+		require.NoError(t, json.NewDecoder(response.Body).Decode(&body))
+		assert.Equal(t, users.Permissions{"publisher"}, body.User.Permissions)
+		assert.Equal(t, http.StatusOK, loginStatus(t, testAPI, "new-publisher@example.com", "password123"))
+	})
+}
+
+func TestConcurrentDemotionsPreserveAnAdmin(t *testing.T) {
+	testAPI := newAPITest(t)
+	_, firstAdminID := authenticatedPublicationClient(t, testAPI, "First Administrator", "first-admin@example.com")
+	_, secondAdminID := createAuthenticatedUser(t, testAPI, "Second Administrator", "second-admin@example.com", "admin")
+
+	// Demote the first admin in a transaction that stays open while the second
+	// admin is demoted, so the second demotion runs before the first commits.
+	tx, err := testAPI.db.Begin(t.Context())
+	require.NoError(t, err)
+	defer tx.Rollback(t.Context())
+	_, err = tx.Exec(t.Context(), `SELECT id FROM permissions WHERE name = 'admin' FOR UPDATE`)
+	require.NoError(t, err)
+	_, err = tx.Exec(t.Context(), `
+		UPDATE users_permissions
+		SET permission_id = (SELECT id FROM permissions WHERE name = 'publisher')
+		WHERE user_id = $1`, firstAdminID)
+	require.NoError(t, err)
+
+	demoted := make(chan error, 1)
+	go func() {
+		_, err := testAPI.users.AdminUpdate(context.Background(), users.AdminUpdateUser{
+			UserID: secondAdminID,
+			Role:   new(string(users.Publisher)),
+		})
+		demoted <- err
+	}()
+
+	// The second demotion either waits for the roster lock or, if nothing
+	// serialises the two, finishes against the uncommitted state.
+	var result error
+	finished := false
+	require.Eventually(t, func() bool {
+		select {
+		case result = <-demoted:
+			finished = true
+			return true
+		default:
+		}
+		var waiting bool
+		err := testAPI.db.QueryRow(t.Context(), `
+			SELECT EXISTS (SELECT 1 FROM pg_stat_activity WHERE wait_event_type = 'Lock')`).Scan(&waiting)
+		return err == nil && waiting
+	}, 5*time.Second, 10*time.Millisecond)
+
+	require.NoError(t, tx.Commit(t.Context()))
+	if !finished {
+		result = <-demoted
+	}
+	var v *validator.Validator
+	require.ErrorAs(t, result, &v)
+	assert.Contains(t, v.Errors, "permission")
+
+	var admins int
+	require.NoError(t, testAPI.db.QueryRow(t.Context(), `
+		SELECT count(*)
+		FROM users_permissions up
+		INNER JOIN permissions p ON p.id = up.permission_id
+		WHERE p.name = 'admin'`).Scan(&admins))
+	assert.Equal(t, 1, admins)
 }

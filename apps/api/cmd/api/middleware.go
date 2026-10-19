@@ -10,7 +10,8 @@ import (
 	chimiddleware "github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 	"github.com/go-chi/httplog/v3"
-	"github.com/lex-unix/babyn-yar/internal/data"
+	"github.com/lex-unix/babyn-yar/internal/apperr"
+	"github.com/lex-unix/babyn-yar/internal/users"
 )
 
 func requestID(next http.Handler) http.Handler {
@@ -48,15 +49,15 @@ func (app *application) authenticate(next http.Handler) http.Handler {
 		session, _ := app.sessionStore.Get(r, sessionName)
 		userID, ok := session.Values["userID"].(int64)
 		if !ok {
-			r = app.contextSetUser(r, data.AnonymousUser)
+			r = app.contextSetUser(r, users.AnonymousUser)
 			next.ServeHTTP(w, r)
 			return
 		}
 
-		user, err := app.models.Users.GetByID(userID)
+		user, err := app.userQueries.GetByID(r.Context(), userID)
 		if err != nil {
 			switch {
-			case errors.Is(err, data.ErrRecordNotFound):
+			case errors.Is(err, apperr.ErrNotFound):
 				app.invalidCredentialResponse(w, r)
 			default:
 				app.serverErrorResponse(w, r, err)
@@ -87,7 +88,7 @@ func (app *application) requirePermission(code string, next http.HandlerFunc) ht
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		user := app.contextGetUser(r)
 
-		permissions, err := app.models.Permissions.GetAllForUser(user.ID)
+		permissions, err := app.userQueries.Permissions(r.Context(), user.ID)
 		if err != nil {
 			app.serverErrorResponse(w, r, err)
 			return
