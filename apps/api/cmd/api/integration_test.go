@@ -2,12 +2,16 @@ package main
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"io"
 	"log/slog"
 	"net/http/httptest"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -19,6 +23,7 @@ import (
 	publicationspg "github.com/lex-unix/babyn-yar/internal/publications/postgres"
 	"github.com/lex-unix/babyn-yar/internal/users"
 	userspg "github.com/lex-unix/babyn-yar/internal/users/postgres"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/modules/postgres"
@@ -34,7 +39,6 @@ type apiTest struct {
 func newAPITest(t *testing.T) *apiTest {
 	t.Helper()
 	db := newTestDatabase(t)
-	applyTestMigrations(t, db)
 
 	cfg := config.Config{Env: "test"}
 	userService := users.NewService(userspg.UnitOfWork{DB: db}, userspg.NewUserRepository(db))
@@ -55,14 +59,29 @@ func newAPITest(t *testing.T) *apiTest {
 	return &apiTest{db: db, server: server, users: userService}
 }
 
-func newTestDatabase(t *testing.T) *pgxpool.Pool {
-	t.Helper()
+// testPostgres is the Postgres server shared by every test in the package.
+// TestMain starts it and migrates the template each test's database is
+// cloned from.
+var testPostgres struct {
+	admin *pgxpool.Pool
+	url   url.URL
+}
 
+var testDatabaseSeq atomic.Int64
+
+const templateDatabase = "babyn_yar_template"
+
+func TestMain(m *testing.M) {
+	os.Exit(runTests(m))
+}
+
+// runTests returns instead of exiting so its deferred cleanup runs.
+func runTests(m *testing.M) int {
 	ctx := context.Background()
-	postgresContainer, err := postgres.Run(
+	container, err := postgres.Run(
 		ctx,
 		"postgres:16-alpine",
-		postgres.WithDatabase("babyn_yar_test"),
+		postgres.WithDatabase(templateDatabase),
 		postgres.WithUsername("postgres"),
 		postgres.WithPassword("postgres"),
 		testcontainers.WithWaitStrategy(
@@ -71,57 +90,104 @@ func newTestDatabase(t *testing.T) *pgxpool.Pool {
 				WithStartupTimeout(time.Minute),
 		),
 	)
-	testcontainers.CleanupContainer(t, postgresContainer)
-	require.NoError(t, err, "start isolated postgresql test container")
+	defer func() {
+		if err := testcontainers.TerminateContainer(container); err != nil {
+			fmt.Fprintln(os.Stderr, "terminate postgresql test container:", err)
+		}
+	}()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "start postgresql test container:", err)
+		return 1
+	}
 
-	dsn, err := postgresContainer.ConnectionString(ctx, "sslmode=disable")
-	require.NoError(t, err, "get postgresql test connection string")
+	if err := prepareTestPostgres(ctx, container); err != nil {
+		fmt.Fprintln(os.Stderr, "prepare postgresql test template:", err)
+		return 1
+	}
+	defer testPostgres.admin.Close()
 
-	cfg := config.Config{Env: "test"}
-	cfg.DB.DSN = dsn
-
-	db, err := openDB(cfg)
-	require.NoError(t, err, "open postgresql test database")
-	t.Cleanup(db.Close)
-	return db
+	return m.Run()
 }
 
-func applyTestMigrations(t *testing.T, db *pgxpool.Pool) {
-	t.Helper()
-	applyTestMigrationsBefore(t, db, "")
+func prepareTestPostgres(ctx context.Context, container *postgres.PostgresContainer) error {
+	dsn, err := container.ConnectionString(ctx, "sslmode=disable")
+	if err != nil {
+		return err
+	}
+	base, err := url.Parse(dsn)
+	if err != nil {
+		return err
+	}
+	testPostgres.url = *base
+
+	template, err := openTestPool(templateDatabase)
+	if err != nil {
+		return err
+	}
+	err = applyTestMigrations(ctx, template)
+	template.Close()
+	if err != nil {
+		return err
+	}
+
+	testPostgres.admin, err = openTestPool("postgres")
+	if err != nil {
+		return err
+	}
+	// Postgres cannot clone a database that has connections, so refuse them.
+	_, err = testPostgres.admin.Exec(ctx, `ALTER DATABASE `+templateDatabase+` WITH ALLOW_CONNECTIONS false`)
+	return err
 }
 
-func applyTestMigrationsBefore(t *testing.T, db *pgxpool.Pool, before string) {
-	t.Helper()
-
+func applyTestMigrations(ctx context.Context, db *pgxpool.Pool) error {
 	migrationsDir := os.Getenv("MIGRATIONS_DIR")
-	require.NotEmpty(t, migrationsDir, "MIGRATIONS_DIR should be set for tests")
+	if migrationsDir == "" {
+		return errors.New("MIGRATIONS_DIR should be set for tests")
+	}
 	entries, err := os.ReadDir(migrationsDir)
-	require.NoError(t, err, "read repository migrations from %s", migrationsDir)
+	if err != nil {
+		return fmt.Errorf("read repository migrations: %w", err)
+	}
 
 	for _, entry := range entries {
 		if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".up.sql") {
 			continue
 		}
-		if before != "" && entry.Name() >= before {
-			continue
+		migration, err := os.ReadFile(filepath.Join(migrationsDir, entry.Name()))
+		if err != nil {
+			return fmt.Errorf("read migration %s: %w", entry.Name(), err)
 		}
-
-		err = applyTestMigration(t, db, entry.Name())
-		require.NoError(t, err, "apply migration %s", entry.Name())
+		if _, err := db.Exec(ctx, string(migration)); err != nil {
+			return fmt.Errorf("apply migration %s: %w", entry.Name(), err)
+		}
 	}
+	return nil
 }
 
-func applyTestMigration(t *testing.T, db *pgxpool.Pool, name string) error {
+func openTestPool(database string) (*pgxpool.Pool, error) {
+	dsn := testPostgres.url
+	dsn.Path = "/" + database
+
+	cfg := config.Config{Env: "test"}
+	cfg.DB.DSN = dsn.String()
+	return openDB(cfg)
+}
+
+// newTestDatabase returns a migrated database of the test's own, cloned from
+// the template and dropped when the test ends.
+func newTestDatabase(t *testing.T) *pgxpool.Pool {
 	t.Helper()
 
-	migrationsDir := os.Getenv("MIGRATIONS_DIR")
-	require.NotEmpty(t, migrationsDir, "MIGRATIONS_DIR should be set for tests")
-	migration, err := os.ReadFile(filepath.Join(migrationsDir, name))
-	require.NoError(t, err, "read migration %s", name)
+	name := fmt.Sprintf("test_%d", testDatabaseSeq.Add(1))
+	_, err := testPostgres.admin.Exec(t.Context(), `CREATE DATABASE `+name+` TEMPLATE `+templateDatabase)
+	require.NoError(t, err, "clone the migrated template database")
 
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-	_, err = db.Exec(ctx, string(migration))
-	return err
+	db, err := openTestPool(name)
+	require.NoError(t, err, "open the test database")
+	t.Cleanup(func() {
+		db.Close()
+		_, err := testPostgres.admin.Exec(context.Background(), `DROP DATABASE `+name+` WITH (FORCE)`)
+		assert.NoError(t, err, "drop the test database")
+	})
+	return db
 }
