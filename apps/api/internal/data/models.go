@@ -8,17 +8,15 @@ import (
 )
 
 var (
-	ErrRecordNotFound             = apperr.ErrNotFound
-	ErrEditConflict               = apperr.ErrEditConflict
-	ErrIncompleteCopy             = errors.New("not all records were added")
-	ErrDuplicatePublicationLocale = errors.New("publication already has this locale")
+	ErrRecordNotFound = apperr.ErrNotFound
+	ErrEditConflict   = apperr.ErrEditConflict
+	ErrIncompleteCopy = errors.New("not all records were added")
 )
 
 type Models struct {
 	Victims       VictimModel
 	Assets        AssetModel
 	GalleryImages GalleryModel
-	Publications  PublicationModel
 	CachePurges   CachePurgeRequestModel
 }
 
@@ -27,7 +25,6 @@ func NewModels(db *pgxpool.Pool) Models {
 		Victims:       VictimModel{DB: db},
 		Assets:        AssetModel{DB: db},
 		GalleryImages: GalleryModel{DB: db},
-		Publications:  PublicationModel{DB: db},
 		CachePurges:   CachePurgeRequestModel{DB: db},
 	}
 }

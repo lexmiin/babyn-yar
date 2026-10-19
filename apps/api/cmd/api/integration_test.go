@@ -15,6 +15,8 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lex-unix/babyn-yar/internal/config"
 	"github.com/lex-unix/babyn-yar/internal/data"
+	"github.com/lex-unix/babyn-yar/internal/publications"
+	publicationspg "github.com/lex-unix/babyn-yar/internal/publications/postgres"
 	"github.com/lex-unix/babyn-yar/internal/users"
 	userspg "github.com/lex-unix/babyn-yar/internal/users/postgres"
 	"github.com/stretchr/testify/require"
@@ -37,12 +39,14 @@ func newAPITest(t *testing.T) *apiTest {
 	cfg := config.Config{Env: "test"}
 	userService := users.NewService(userspg.UnitOfWork{DB: db}, userspg.NewUserRepository(db))
 	app := &application{
-		config:       cfg,
-		models:       data.NewModels(db),
-		users:        userService,
-		userQueries:  userspg.Queries{DB: db},
-		sessionStore: sessions.NewCookieStore([]byte("test-session-secret")),
-		logger:       slog.New(slog.NewJSONHandler(io.Discard, nil)),
+		config:             cfg,
+		models:             data.NewModels(db),
+		users:              userService,
+		userQueries:        userspg.Queries{DB: db},
+		publications:       publications.NewService(publicationspg.UnitOfWork{DB: db}),
+		publicationQueries: publicationspg.Queries{DB: db},
+		sessionStore:       sessions.NewCookieStore([]byte("test-session-secret")),
+		logger:             slog.New(slog.NewJSONHandler(io.Discard, nil)),
 	}
 
 	server := httptest.NewServer(app.routes())

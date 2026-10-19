@@ -13,6 +13,8 @@ import (
 	"github.com/lex-unix/babyn-yar/internal/cachepurge"
 	"github.com/lex-unix/babyn-yar/internal/config"
 	"github.com/lex-unix/babyn-yar/internal/data"
+	"github.com/lex-unix/babyn-yar/internal/publications"
+	publicationspg "github.com/lex-unix/babyn-yar/internal/publications/postgres"
 	"github.com/lex-unix/babyn-yar/internal/storage"
 	"github.com/lex-unix/babyn-yar/internal/users"
 	userspg "github.com/lex-unix/babyn-yar/internal/users/postgres"
@@ -24,14 +26,16 @@ const (
 )
 
 type application struct {
-	config       config.Config
-	models       data.Models
-	users        *users.Service
-	userQueries  userspg.Queries
-	storage      storage.Storage
-	sessionStore sessions.Store
-	logger       *slog.Logger
-	cachePurger  cachePurger
+	config             config.Config
+	models             data.Models
+	users              *users.Service
+	userQueries        userspg.Queries
+	publications       *publications.Service
+	publicationQueries publicationspg.Queries
+	storage            storage.Storage
+	sessionStore       sessions.Store
+	logger             *slog.Logger
+	cachePurger        cachePurger
 }
 
 func main() {
@@ -103,14 +107,16 @@ func run(logger *slog.Logger) error {
 	}
 
 	app := &application{
-		config:       cfg,
-		models:       data.NewModels(db),
-		users:        userService,
-		userQueries:  userspg.Queries{DB: db},
-		storage:      storageHandler,
-		sessionStore: store,
-		logger:       logger,
-		cachePurger:  purger,
+		config:             cfg,
+		models:             data.NewModels(db),
+		users:              userService,
+		userQueries:        userspg.Queries{DB: db},
+		publications:       publications.NewService(publicationspg.UnitOfWork{DB: db}),
+		publicationQueries: publicationspg.Queries{DB: db},
+		storage:            storageHandler,
+		sessionStore:       store,
+		logger:             logger,
+		cachePurger:        purger,
 	}
 
 	err = app.serve()
