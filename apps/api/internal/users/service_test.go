@@ -105,6 +105,17 @@ func TestAdminUpdate(t *testing.T) {
 		assert.Contains(t, errs, "permission")
 	})
 
+	t.Run("omitted fields are preserved", func(t *testing.T) {
+		s, store := newTestService()
+		id := store.add(t, "Original Name", "original@example.com", Publisher)
+
+		user, err := s.AdminUpdate(t.Context(), AdminUpdateUser{UserID: id, FullName: new("Updated Name")})
+		require.NoError(t, err)
+		assert.Equal(t, "Updated Name", user.FullName)
+		assert.Equal(t, "original@example.com", user.Email)
+		assert.Equal(t, Publisher, store.roles[id])
+	})
+
 	t.Run("a second admin can be demoted", func(t *testing.T) {
 		s, store := newTestService()
 		store.add(t, "First Admin", "first@example.com", Admin)

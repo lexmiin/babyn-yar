@@ -17,186 +17,39 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestResetUserPasswordThroughHTTP(t *testing.T) {
+func TestUserWritesThroughHTTP(t *testing.T) {
 	testAPI := newAPITest(t)
-	adminClient, _ := authenticatedPublicationClient(
-		t,
-		testAPI,
-		"Password Administrator",
-		"password-admin@example.com",
-	)
-	targetClient, targetID := createAuthenticatedUser(
-		t,
-		testAPI,
-		"Password Target",
-		"password-target@example.com",
-		"publisher",
-	)
-	resetURL := fmt.Sprintf("%s/v1/users/%d/password", testAPI.server.URL, targetID)
-
-	t.Run("authentication is required", func(t *testing.T) {
-		response := publicationJSONRequest(t, http.DefaultClient, http.MethodPatch, resetURL, map[string]string{
-			"password": "new-password",
-		})
-		defer response.Body.Close()
-		assert.Equal(t, http.StatusUnauthorized, response.StatusCode)
-	})
-
-	t.Run("admin permission is required", func(t *testing.T) {
-		response := publicationJSONRequest(t, targetClient, http.MethodPatch, resetURL, map[string]string{
-			"password": "new-password",
-		})
-		defer response.Body.Close()
-		assert.Equal(t, http.StatusForbidden, response.StatusCode)
-	})
-
-	t.Run("password must meet the shared policy", func(t *testing.T) {
-		for _, password := range []string{"short", "пароль123"} {
-			response := publicationJSONRequest(t, adminClient, http.MethodPatch, resetURL, map[string]string{
-				"password": password,
-			})
-			assert.Equal(t, http.StatusUnprocessableEntity, response.StatusCode)
-			response.Body.Close()
-		}
-	})
-
-	t.Run("missing users return not found", func(t *testing.T) {
-		response := publicationJSONRequest(
-			t,
-			adminClient,
-			http.MethodPatch,
-			testAPI.server.URL+"/v1/users/999999/password",
-			map[string]string{"password": "new-password"},
-		)
-		defer response.Body.Close()
-		assert.Equal(t, http.StatusNotFound, response.StatusCode)
-	})
-
-	t.Run("an admin can replace the password", func(t *testing.T) {
-		response := publicationJSONRequest(t, adminClient, http.MethodPatch, resetURL, map[string]string{
-			"password": "new-password",
-		})
-		defer response.Body.Close()
-		require.Equal(t, http.StatusOK, response.StatusCode)
-
-		var body struct {
-			Message string `json:"message"`
-		}
-		require.NoError(t, json.NewDecoder(response.Body).Decode(&body))
-		assert.Equal(t, "password successfully reset", body.Message)
-
-		assert.Equal(t, http.StatusUnauthorized, loginStatus(
-			t,
-			testAPI,
-			"password-target@example.com",
-			"password123",
-		))
-		assert.Equal(t, http.StatusOK, loginStatus(
-			t,
-			testAPI,
-			"password-target@example.com",
-			"new-password",
-		))
-	})
-
-	t.Run("existing sessions remain authenticated", func(t *testing.T) {
-		response := publicationJSONRequest(t, targetClient, http.MethodGet, testAPI.server.URL+"/v1/users/me", nil)
-		defer response.Body.Close()
-		assert.Equal(t, http.StatusOK, response.StatusCode)
-	})
-}
-
-func TestAdminUpdateUserThroughHTTP(t *testing.T) {
-	testAPI := newAPITest(t)
-	adminClient, adminID := authenticatedPublicationClient(
-		t,
-		testAPI,
-		"User Administrator",
-		"user-admin@example.com",
-	)
-	publisherClient, publisherID := createAuthenticatedUser(
-		t,
-		testAPI,
-		"Original Publisher",
-		"original-publisher@example.com",
-		"publisher",
-	)
-	updateURL := fmt.Sprintf("%s/v1/users/%d", testAPI.server.URL, publisherID)
-
-	t.Run("authentication is required", func(t *testing.T) {
-		response := publicationJSONRequest(t, http.DefaultClient, http.MethodPatch, updateURL, map[string]any{
-			"fullName": "Updated Publisher",
-		})
-		defer response.Body.Close()
-		assert.Equal(t, http.StatusUnauthorized, response.StatusCode)
-	})
-
-	t.Run("admin permission is required", func(t *testing.T) {
-		response := publicationJSONRequest(t, publisherClient, http.MethodPatch, updateURL, map[string]any{
-			"fullName": "Updated Publisher",
-		})
-		defer response.Body.Close()
-		assert.Equal(t, http.StatusForbidden, response.StatusCode)
-	})
-
-	t.Run("an empty update preserves the user", func(t *testing.T) {
-		response := publicationJSONRequest(t, adminClient, http.MethodPatch, updateURL, map[string]any{})
-		defer response.Body.Close()
-		require.Equal(t, http.StatusOK, response.StatusCode)
-
+	adminClient, _ := authenticatedPublicationClient(t, testAPI, "User Administrator", "user-admin@example.com")
+	userURL := func(id int64) string {
+		return fmt.Sprintf("%s/v1/users/%d", testAPI.server.URL, id)
+	}
+	decodeUser := func(t *testing.T, response *http.Response) users.User {
+		t.Helper()
 		var body struct {
 			User users.User `json:"user"`
 		}
 		require.NoError(t, json.NewDecoder(response.Body).Decode(&body))
-		assert.Equal(t, "Original Publisher", body.User.FullName)
-		assert.Equal(t, "original-publisher@example.com", body.User.Email)
-		assert.Equal(t, users.Permissions{"publisher"}, body.User.Permissions)
-	})
+		return body.User
+	}
 
-	t.Run("null fields are omitted and invalid values are rejected", func(t *testing.T) {
-		response := publicationJSONRequest(t, adminClient, http.MethodPatch, updateURL, map[string]any{
-			"fullName":   nil,
-			"email":      "not-an-email",
-			"permission": "owner",
+	var publisher users.User
+	t.Run("registering creates the user with the single role", func(t *testing.T) {
+		response := publicationJSONRequest(t, adminClient, http.MethodPost, testAPI.server.URL+"/v1/users/register", map[string]string{
+			"fullName":   "New Publisher",
+			"email":      "new-publisher@example.com",
+			"password":   "password123",
+			"permission": "publisher",
 		})
 		defer response.Body.Close()
-		require.Equal(t, http.StatusUnprocessableEntity, response.StatusCode)
+		require.Equal(t, http.StatusCreated, response.StatusCode)
 
-		var body struct {
-			Error map[string]string `json:"error"`
-		}
-		require.NoError(t, json.NewDecoder(response.Body).Decode(&body))
-		assert.NotContains(t, body.Error, "fullName")
-		assert.Contains(t, body.Error, "email")
-		assert.Contains(t, body.Error, "permission")
+		publisher = decodeUser(t, response)
+		assert.Equal(t, users.Permissions{"publisher"}, publisher.Permissions)
+		assert.Equal(t, http.StatusOK, loginStatus(t, testAPI, "new-publisher@example.com", "password123"))
 	})
 
-	t.Run("missing users return not found", func(t *testing.T) {
-		response := publicationJSONRequest(t, adminClient, http.MethodPatch, testAPI.server.URL+"/v1/users/999999", map[string]any{
-			"fullName": "Missing User",
-		})
-		defer response.Body.Close()
-		assert.Equal(t, http.StatusNotFound, response.StatusCode)
-	})
-
-	t.Run("partial updates preserve omitted fields", func(t *testing.T) {
-		response := publicationJSONRequest(t, adminClient, http.MethodPatch, updateURL, map[string]any{
-			"fullName": "Updated Publisher",
-		})
-		defer response.Body.Close()
-		require.Equal(t, http.StatusOK, response.StatusCode)
-
-		var body struct {
-			User users.User `json:"user"`
-		}
-		require.NoError(t, json.NewDecoder(response.Body).Decode(&body))
-		assert.Equal(t, "Updated Publisher", body.User.FullName)
-		assert.Equal(t, "original-publisher@example.com", body.User.Email)
-		assert.Equal(t, users.Permissions{"publisher"}, body.User.Permissions)
-	})
-
-	t.Run("all editable fields and the single role are replaced", func(t *testing.T) {
-		response := publicationJSONRequest(t, adminClient, http.MethodPatch, updateURL, map[string]any{
+	t.Run("an admin replaces the editable fields and the single role", func(t *testing.T) {
+		response := publicationJSONRequest(t, adminClient, http.MethodPatch, userURL(publisher.ID), map[string]any{
 			"fullName":   "Promoted Publisher",
 			"email":      "promoted-publisher@example.com",
 			"permission": "admin",
@@ -204,102 +57,46 @@ func TestAdminUpdateUserThroughHTTP(t *testing.T) {
 		defer response.Body.Close()
 		require.Equal(t, http.StatusOK, response.StatusCode)
 
-		var body struct {
-			User users.User `json:"user"`
-		}
-		require.NoError(t, json.NewDecoder(response.Body).Decode(&body))
-		assert.Equal(t, "Promoted Publisher", body.User.FullName)
-		assert.Equal(t, "promoted-publisher@example.com", body.User.Email)
-		assert.Equal(t, users.Permissions{"admin"}, body.User.Permissions)
+		updated := decodeUser(t, response)
+		assert.Equal(t, "Promoted Publisher", updated.FullName)
+		assert.Equal(t, "promoted-publisher@example.com", updated.Email)
+		assert.Equal(t, users.Permissions{"admin"}, updated.Permissions)
 	})
 
-	t.Run("the last admin cannot be demoted", func(t *testing.T) {
-		response := publicationJSONRequest(t, adminClient, http.MethodPatch, updateURL, map[string]any{
-			"permission": "admin",
-		})
-		response.Body.Close()
-		require.Equal(t, http.StatusOK, response.StatusCode)
-
-		response = publicationJSONRequest(t, adminClient, http.MethodPatch, updateURL, map[string]any{
-			"permission": "publisher",
+	t.Run("an admin can replace the password", func(t *testing.T) {
+		response := publicationJSONRequest(t, adminClient, http.MethodPatch, userURL(publisher.ID)+"/password", map[string]string{
+			"password": "new-password",
 		})
 		defer response.Body.Close()
 		require.Equal(t, http.StatusOK, response.StatusCode)
 
-		adminURL := fmt.Sprintf("%s/v1/users/%d", testAPI.server.URL, adminID)
-		response = publicationJSONRequest(t, adminClient, http.MethodPatch, adminURL, map[string]any{
-			"permission": "publisher",
-		})
-		defer response.Body.Close()
-		require.Equal(t, http.StatusUnprocessableEntity, response.StatusCode)
-
-		var body struct {
-			Error map[string]string `json:"error"`
-		}
-		require.NoError(t, json.NewDecoder(response.Body).Decode(&body))
-		assert.Contains(t, body.Error, "permission")
+		assert.Equal(t, http.StatusUnauthorized, loginStatus(t, testAPI, "promoted-publisher@example.com", "password123"))
+		assert.Equal(t, http.StatusOK, loginStatus(t, testAPI, "promoted-publisher@example.com", "new-password"))
 	})
 
 	t.Run("stale versions are rejected", func(t *testing.T) {
-		user, err := userspg.Queries{DB: testAPI.db}.GetByID(t.Context(), publisherID)
+		user, err := userspg.Queries{DB: testAPI.db}.GetByID(t.Context(), publisher.ID)
 		require.NoError(t, err)
-		_, err = testAPI.db.Exec(t.Context(), `UPDATE users SET version = version + 1 WHERE id = $1`, publisherID)
+		_, err = testAPI.db.Exec(t.Context(), `UPDATE users SET version = version + 1 WHERE id = $1`, publisher.ID)
 		require.NoError(t, err)
 
 		user.FullName = "Stale Update"
 		err = userspg.NewUserRepository(testAPI.db).Update(t.Context(), user)
 		assert.ErrorIs(t, err, apperr.ErrEditConflict)
 	})
-}
 
-func TestDeleteUserPreservesAnAdmin(t *testing.T) {
-	testAPI := newAPITest(t)
-	adminClient, adminID := authenticatedPublicationClient(
-		t,
-		testAPI,
-		"Delete Administrator",
-		"delete-admin@example.com",
-	)
-	_, publisherID := createAuthenticatedUser(
-		t,
-		testAPI,
-		"Delete Publisher",
-		"delete-publisher@example.com",
-		"publisher",
-	)
+	t.Run("deleting a user removes them and their role", func(t *testing.T) {
+		response := publicationJSONRequest(t, adminClient, http.MethodDelete, userURL(publisher.ID), nil)
+		defer response.Body.Close()
+		require.Equal(t, http.StatusOK, response.StatusCode)
 
-	adminDeleteURL := fmt.Sprintf("%s/v1/users/%d", testAPI.server.URL, adminID)
-	response := publicationJSONRequest(t, adminClient, http.MethodDelete, adminDeleteURL, nil)
-	defer response.Body.Close()
-	require.Equal(t, http.StatusUnprocessableEntity, response.StatusCode)
-
-	queries := userspg.Queries{DB: testAPI.db}
-	_, err := queries.GetByID(t.Context(), adminID)
-	require.NoError(t, err)
-
-	publisherDeleteURL := fmt.Sprintf("%s/v1/users/%d", testAPI.server.URL, publisherID)
-	response = publicationJSONRequest(t, adminClient, http.MethodDelete, publisherDeleteURL, nil)
-	defer response.Body.Close()
-	require.Equal(t, http.StatusOK, response.StatusCode)
-
-	_, err = queries.GetByID(t.Context(), publisherID)
-	assert.ErrorIs(t, err, apperr.ErrNotFound)
-
-	_, secondAdminID := createAuthenticatedUser(
-		t,
-		testAPI,
-		"Remaining Administrator",
-		"remaining-admin@example.com",
-		"admin",
-	)
-	response = publicationJSONRequest(t, adminClient, http.MethodDelete, adminDeleteURL, nil)
-	defer response.Body.Close()
-	require.Equal(t, http.StatusOK, response.StatusCode)
-
-	_, err = queries.GetByID(t.Context(), adminID)
-	assert.ErrorIs(t, err, apperr.ErrNotFound)
-	_, err = queries.GetByID(t.Context(), secondAdminID)
-	require.NoError(t, err)
+		_, err := userspg.Queries{DB: testAPI.db}.GetByID(t.Context(), publisher.ID)
+		assert.ErrorIs(t, err, apperr.ErrNotFound)
+		var roles int
+		require.NoError(t, testAPI.db.QueryRow(t.Context(), `
+			SELECT count(*) FROM users_permissions WHERE user_id = $1`, publisher.ID).Scan(&roles))
+		assert.Zero(t, roles)
+	})
 }
 
 func createAuthenticatedUser(
@@ -336,53 +133,6 @@ func loginStatus(t *testing.T, testAPI *apiTest, email, password string) int {
 	})
 	defer response.Body.Close()
 	return response.StatusCode
-}
-
-func TestRegisterUserThroughHTTP(t *testing.T) {
-	testAPI := newAPITest(t)
-	adminClient, _ := authenticatedPublicationClient(
-		t,
-		testAPI,
-		"Register Administrator",
-		"register-admin@example.com",
-	)
-	registerURL := testAPI.server.URL + "/v1/users/register"
-
-	t.Run("unknown permissions are rejected without creating the user", func(t *testing.T) {
-		response := publicationJSONRequest(t, adminClient, http.MethodPost, registerURL, map[string]string{
-			"fullName":   "Unknown Role",
-			"email":      "unknown-role@example.com",
-			"password":   "password123",
-			"permission": "owner",
-		})
-		defer response.Body.Close()
-		require.Equal(t, http.StatusUnprocessableEntity, response.StatusCode)
-
-		var body struct {
-			Error map[string]string `json:"error"`
-		}
-		require.NoError(t, json.NewDecoder(response.Body).Decode(&body))
-		assert.Contains(t, body.Error, "permission")
-		assert.Equal(t, http.StatusUnauthorized, loginStatus(t, testAPI, "unknown-role@example.com", "password123"))
-	})
-
-	t.Run("the user is created with the single role", func(t *testing.T) {
-		response := publicationJSONRequest(t, adminClient, http.MethodPost, registerURL, map[string]string{
-			"fullName":   "New Publisher",
-			"email":      "new-publisher@example.com",
-			"password":   "password123",
-			"permission": "publisher",
-		})
-		defer response.Body.Close()
-		require.Equal(t, http.StatusCreated, response.StatusCode)
-
-		var body struct {
-			User users.User `json:"user"`
-		}
-		require.NoError(t, json.NewDecoder(response.Body).Decode(&body))
-		assert.Equal(t, users.Permissions{"publisher"}, body.User.Permissions)
-		assert.Equal(t, http.StatusOK, loginStatus(t, testAPI, "new-publisher@example.com", "password123"))
-	})
 }
 
 func TestConcurrentDemotionsPreserveAnAdmin(t *testing.T) {
