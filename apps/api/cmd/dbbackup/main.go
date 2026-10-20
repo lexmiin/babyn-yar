@@ -2,6 +2,7 @@ package main
 
 import (
 	"compress/gzip"
+	"context"
 	"fmt"
 	"io"
 	"log"
@@ -98,9 +99,5 @@ func uploadFile(handler *storage.S3Handler, filepath, filename string) error {
 	}
 	defer file.Close()
 
-	if _, err := handler.Upload(file, filename, "application/gzip"); err != nil {
-		return err
-	}
-
-	return nil
+	return handler.Upload(context.Background(), filename, file, "application/gzip", filename)
 }

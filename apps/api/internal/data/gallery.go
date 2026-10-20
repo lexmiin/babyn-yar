@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/jackc/pgx/v5"
@@ -19,6 +20,9 @@ type GalleryModel struct {
 	DB *pgxpool.Pool
 }
 
+// Insert adds a ready asset to the gallery. It returns ErrRecordNotFound when
+// the asset is not ready. FOR SHARE waits for a deletion of the asset in
+// progress and then rechecks its status, so a deleted asset cannot be added.
 func (m GalleryModel) Insert(img *GalleryImage) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -31,9 +35,15 @@ func (m GalleryModel) Insert(img *GalleryImage) error {
 
 	err = tx.QueryRow(ctx, `
 		INSERT INTO gallery_images (id, url)
-		VALUES ($1, $2)
+		SELECT id, $2
+		FROM assets
+		WHERE id = $1 AND status = 'ready'
+		FOR SHARE
 		RETURNING id
 	`, img.ID, img.URL).Scan(&img.ID)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return ErrRecordNotFound
+	}
 	if err != nil {
 		return err
 	}

@@ -8,20 +8,19 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 	"time"
 )
 
 func (app *application) serve() error {
 	workerContext, stopWorker := context.WithCancel(context.Background())
-	workerStopped := make(chan struct{})
-	go func() {
-		defer close(workerStopped)
-		app.runCachePurgeWorker(workerContext)
-	}()
+	var workers sync.WaitGroup
+	workers.Go(func() { app.runCachePurgeWorker(workerContext) })
+	workers.Go(func() { app.runAssetSweeper(workerContext) })
 	defer func() {
 		stopWorker()
-		<-workerStopped
+		workers.Wait()
 	}()
 
 	srv := http.Server{

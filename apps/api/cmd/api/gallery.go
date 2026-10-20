@@ -39,9 +39,13 @@ func (app *application) createGalleryImageHandler(w http.ResponseWriter, r *http
 
 	// FIX: send appropriate response if image is already in gallery
 	err = app.models.GalleryImages.Insert(img)
-
 	if err != nil {
-		app.serverErrorResponse(w, r, err)
+		switch {
+		case errors.Is(err, data.ErrRecordNotFound):
+			app.notFoundResponse(w, r)
+		default:
+			app.serverErrorResponse(w, r, err)
+		}
 		return
 	}
 
