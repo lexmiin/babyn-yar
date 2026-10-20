@@ -131,18 +131,3 @@ func (app *application) readIDParam(r *http.Request) (int64, error) {
 
 	return id, nil
 }
-
-func (app *application) detectContentType(file io.ReadSeeker) (string, error) {
-	buffer := make([]byte, 512)
-	n, err := file.Read(buffer)
-	if err != nil {
-		return "", err
-	}
-	_, err = file.Seek(0, 0)
-	if err != nil {
-		return "", err
-	}
-
-	contentType := http.DetectContentType(buffer[:n])
-	return contentType, nil
-}

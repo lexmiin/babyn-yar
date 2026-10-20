@@ -10,6 +10,8 @@ import (
 	"github.com/boj/redistore/v2"
 	"github.com/gorilla/sessions"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/lex-unix/babyn-yar/internal/assets"
+	assetspg "github.com/lex-unix/babyn-yar/internal/assets/postgres"
 	"github.com/lex-unix/babyn-yar/internal/cachepurge"
 	"github.com/lex-unix/babyn-yar/internal/config"
 	"github.com/lex-unix/babyn-yar/internal/data"
@@ -32,7 +34,8 @@ type application struct {
 	userQueries        userspg.Queries
 	publications       *publications.Service
 	publicationQueries publicationspg.Queries
-	storage            storage.Storage
+	assets             *assets.Service
+	assetQueries       assetspg.Queries
 	sessionStore       sessions.Store
 	logger             *slog.Logger
 	cachePurger        cachePurger
@@ -113,7 +116,8 @@ func run(logger *slog.Logger) error {
 		userQueries:        userspg.Queries{DB: db},
 		publications:       publications.NewService(publicationspg.UnitOfWork{DB: db}),
 		publicationQueries: publicationspg.Queries{DB: db},
-		storage:            storageHandler,
+		assets:             assets.NewService(assetspg.UnitOfWork{DB: db}, storageHandler, logger),
+		assetQueries:       assetspg.Queries{DB: db},
 		sessionStore:       store,
 		logger:             logger,
 		cachePurger:        purger,

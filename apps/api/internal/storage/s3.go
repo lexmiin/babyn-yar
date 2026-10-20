@@ -2,9 +2,9 @@ package storage
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"io"
+	"mime"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsConfig "github.com/aws/aws-sdk-go-v2/config"
@@ -51,28 +51,38 @@ func NewS3Handler(cfg config.Config) (*S3Handler, error) {
 
 }
 
-func (handler S3Handler) Upload(file io.ReadSeeker, filename, contentType string) (string, error) {
-	_, err := handler.transferManager.UploadObject(context.TODO(), &transfermanager.UploadObjectInput{
-		Body:        file,
+// Upload stores body under key. A non-empty filename is the name browsers use
+// when saving the object; it is shown inline either way.
+func (handler S3Handler) Upload(ctx context.Context, key string, body io.ReadSeeker, contentType, filename string) error {
+	input := &transfermanager.UploadObjectInput{
+		Body:        body,
 		Bucket:      aws.String(handler.bucket),
-		Key:         aws.String(filename),
+		Key:         aws.String(key),
 		ContentType: aws.String(contentType),
-	})
-	if err != nil {
-		return "", err
 	}
-	url := fmt.Sprintf("%s/%s", handler.publicURL, filename)
-	return url, nil
+	if filename != "" {
+		input.ContentDisposition = aws.String(mime.FormatMediaType("inline", map[string]string{"filename": filename}))
+	}
+	_, err := handler.transferManager.UploadObject(ctx, input)
+	return err
 }
 
-func (handler S3Handler) Delete(keys []string) error {
-	var objects []types.ObjectIdentifier
-	for _, key := range keys {
-		objects = append(objects, types.ObjectIdentifier{
-			Key: &key,
-		})
+// URL is the public URL of the object stored under key.
+func (handler S3Handler) URL(key string) string {
+	return fmt.Sprintf("%s/%s", handler.publicURL, key)
+}
+
+// Delete removes the objects stored under keys. Missing objects are not an
+// error.
+func (handler S3Handler) Delete(ctx context.Context, keys []string) error {
+	if len(keys) == 0 {
+		return nil
 	}
-	_, err := handler.client.DeleteObjects(context.TODO(), &s3.DeleteObjectsInput{
+	objects := make([]types.ObjectIdentifier, len(keys))
+	for i := range keys {
+		objects[i] = types.ObjectIdentifier{Key: aws.String(keys[i])}
+	}
+	output, err := handler.client.DeleteObjects(ctx, &s3.DeleteObjectsInput{
 		Bucket: aws.String(handler.bucket),
 		Delete: &types.Delete{
 			Objects: objects,
@@ -82,23 +92,9 @@ func (handler S3Handler) Delete(keys []string) error {
 	if err != nil {
 		return err
 	}
-
-	return nil
-}
-
-func (handler S3Handler) Exists(key string) (bool, error) {
-	_, err := handler.client.HeadObject(context.TODO(), &s3.HeadObjectInput{
-		Bucket: aws.String(handler.bucket),
-		Key:    aws.String(key),
-	})
-
-	if err != nil {
-		var notFoundErr *types.NotFound
-		if errors.As(err, &notFoundErr) {
-			return false, nil
-		}
-		return false, err
+	if len(output.Errors) > 0 {
+		failed := output.Errors[0]
+		return fmt.Errorf("%d objects not deleted, first %q: %s", len(output.Errors), aws.ToString(failed.Key), aws.ToString(failed.Message))
 	}
-
-	return true, nil
+	return nil
 }
