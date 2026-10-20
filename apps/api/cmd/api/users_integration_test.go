@@ -85,7 +85,19 @@ func TestUserWritesThroughHTTP(t *testing.T) {
 		assert.ErrorIs(t, err, apperr.ErrEditConflict)
 	})
 
-	t.Run("deleting a user removes them and their role", func(t *testing.T) {
+	t.Run("deleting a user removes them and their role but keeps their publications", func(t *testing.T) {
+		publicationID := seedPublication(t, testAPI, publisher.ID, publicationSeed{
+			kind:       "event",
+			occurredOn: "2024-04-01",
+			translations: []publicationTranslationSeed{{
+				locale:    "uk",
+				title:     "Подія видавця",
+				createdAt: "2024-04-01T00:00:00Z",
+				content:   `{"type":"doc"}`,
+				documents: []string{},
+			}},
+		})
+
 		response := publicationJSONRequest(t, adminClient, http.MethodDelete, userURL(publisher.ID), nil)
 		defer response.Body.Close()
 		require.Equal(t, http.StatusOK, response.StatusCode)
@@ -96,6 +108,23 @@ func TestUserWritesThroughHTTP(t *testing.T) {
 		require.NoError(t, testAPI.db.QueryRow(t.Context(), `
 			SELECT count(*) FROM users_permissions WHERE user_id = $1`, publisher.ID).Scan(&roles))
 		assert.Zero(t, roles)
+		assert.Equal(t, http.StatusUnauthorized, loginStatus(t, testAPI, "promoted-publisher@example.com", "new-password"))
+
+		published := getPublication(t, testAPI, publicationID, "event", "uk")
+		assert.Equal(t, publisher.ID, published.Publisher.ID)
+		assert.Equal(t, "Promoted Publisher", published.Publisher.FullName)
+	})
+
+	t.Run("a deleted user's email can be registered again", func(t *testing.T) {
+		response := publicationJSONRequest(t, adminClient, http.MethodPost, testAPI.server.URL+"/v1/users/register", map[string]string{
+			"fullName":   "Returning Publisher",
+			"email":      "promoted-publisher@example.com",
+			"password":   "password123",
+			"permission": "publisher",
+		})
+		defer response.Body.Close()
+		require.Equal(t, http.StatusCreated, response.StatusCode)
+		assert.Equal(t, http.StatusOK, loginStatus(t, testAPI, "promoted-publisher@example.com", "password123"))
 	})
 }
 

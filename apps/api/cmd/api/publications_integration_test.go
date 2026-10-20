@@ -387,7 +387,8 @@ type publicationResponse struct {
 	Documents          []string        `json:"documents"`
 	PublicationVersion int32           `json:"publicationVersion"`
 	Publisher          struct {
-		ID int64 `json:"id"`
+		ID       int64  `json:"id"`
+		FullName string `json:"fullName"`
 	} `json:"publisher"`
 }
 
