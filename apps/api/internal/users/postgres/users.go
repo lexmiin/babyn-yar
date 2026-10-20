@@ -39,6 +39,7 @@ func (q Queries) GetAll(ctx context.Context, filters pagination.Filters) ([]*use
 		FROM users u
 		INNER JOIN users_permissions up ON u.id = up.user_id
 		INNER JOIN permissions p ON up.permission_id = p.id
+		WHERE u.deleted_at IS NULL
 		GROUP BY u.id
 		ORDER BY %s %s, id ASC
 		LIMIT $1 OFFSET $2`, filters.SortColumn(), filters.SortDirection())
@@ -84,7 +85,7 @@ func (q Queries) Permissions(ctx context.Context, userID int64) (users.Permissio
 		FROM permissions
 		INNER JOIN users_permissions ON users_permissions.permission_id = permissions.id
 		INNER JOIN users ON users_permissions.user_id = users.id
-		WHERE users.id = $1`
+		WHERE users.id = $1 AND users.deleted_at IS NULL`
 
 	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
 	defer cancel()
@@ -138,7 +139,7 @@ func (r userRepository) GetByEmail(ctx context.Context, email string) (*users.Us
 	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
 	defer cancel()
 
-	return scanUser(r.db.QueryRow(ctx, selectUser+` WHERE u.email = $1 GROUP BY u.id`, email))
+	return scanUser(r.db.QueryRow(ctx, selectUser+` WHERE u.email = $1 AND u.deleted_at IS NULL GROUP BY u.id`, email))
 }
 
 func (r userRepository) Insert(ctx context.Context, user *users.User) error {
@@ -185,7 +186,11 @@ func (r userRepository) Delete(ctx context.Context, id int64) error {
 	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
 	defer cancel()
 
-	result, err := r.db.Exec(ctx, `DELETE FROM users WHERE id = $1`, id)
+	// The row stays so the user's publications keep their publisher.
+	result, err := r.db.Exec(ctx, `
+		UPDATE users
+		SET deleted_at = now(), updated_at = now(), version = version + 1
+		WHERE id = $1 AND deleted_at IS NULL`, id)
 	if err != nil {
 		return err
 	}
@@ -199,7 +204,7 @@ func getUserByID(ctx context.Context, q database.DBTX, id int64) (*users.User, e
 	if id < 1 {
 		return nil, apperr.ErrNotFound
 	}
-	return scanUser(q.QueryRow(ctx, selectUser+` WHERE u.id = $1 GROUP BY u.id`, id))
+	return scanUser(q.QueryRow(ctx, selectUser+` WHERE u.id = $1 AND u.deleted_at IS NULL GROUP BY u.id`, id))
 }
 
 func scanUser(row pgx.Row) (*users.User, error) {

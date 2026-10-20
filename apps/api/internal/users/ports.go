@@ -14,7 +14,9 @@ type UserRepository interface {
 	// It returns apperr.ErrEditConflict when the stored version differs from
 	// user.Version, and ErrDuplicateEmail when the email is taken.
 	Update(ctx context.Context, user *User) error
-	// Delete returns apperr.ErrNotFound when the user does not exist.
+	// Delete marks the user deleted, hiding them from every other method while
+	// their publications keep them as publisher. It returns apperr.ErrNotFound
+	// when the user does not exist or is already deleted.
 	Delete(ctx context.Context, id int64) error
 }
 
