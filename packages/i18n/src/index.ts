@@ -10,6 +10,7 @@ export const defaultLang = 'uk'
 export const ui = {
   en: {
     'historyMap.step': 'Step {current} of {total}: {title}',
+    'historyMap.nextScene': 'Next scene',
     'historyMap.background': 'Historical background',
     'historyMap.selected': 'Selected: {title}',
     'historyMap.overview': 'Historical period overview',
@@ -151,6 +152,7 @@ export const ui = {
   },
   uk: {
     'historyMap.step': 'Етап {current} з {total}: {title}',
+    'historyMap.nextScene': 'Наступний етап',
     'historyMap.background': 'Історична довідка',
     'historyMap.selected': 'Вибрано: {title}',
     'historyMap.overview': 'Огляд історичного періоду',

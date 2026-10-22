@@ -25,7 +25,7 @@ export default function HistoryMap({
     [lang, images, poiImages]
   )
   const t = useTranslations(lang)
-  const { activeStep, trackRef } = useActiveHistoryStep(scenes)
+  const { activeStep, trackRef, scrollToStep } = useActiveHistoryStep(scenes)
   const scene = scenes[activeStep]
   usePreloadNextMap(scenes, activeStep)
 
@@ -56,7 +56,18 @@ export default function HistoryMap({
                 <SceneRenderer key={scene.id} scene={scene} />
               </AnimatePresence>
             </div>
-            <ScrollIndicator visible={activeStep < scenes.length - 1} />
+            <ScrollIndicator
+              visible={activeStep < scenes.length - 1}
+              label={t('historyMap.nextScene')}
+              onClick={() =>
+                scrollToStep(
+                  activeStep + 1,
+                  window.matchMedia('(prefers-reduced-motion: reduce)').matches
+                    ? 'instant'
+                    : 'smooth'
+                )
+              }
+            />
           </div>
         </section>
       </MotionConfig>
