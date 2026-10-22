@@ -33,6 +33,7 @@ export function getWartimeScenes(
           image: images.map
         },
         mapSource: text.mapSource,
+        listLabel: text.listLabel,
         BorderComponent: Layer4Borders,
         overlays: [
           { id: 'living-memory', delay: 0.62, Component: Layer5LivingMemory },

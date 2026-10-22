@@ -142,8 +142,7 @@ export type HistoryMapPoiSceneData = {
   mapSource: string
   BorderComponent: ComponentType<SVGProps<SVGSVGElement>>
   overlays?: readonly HistoryMapOverlay[]
-  // Heading for the list of POI titles below the map; omitted hides the list.
-  listLabel?: string
+  listLabel: string
   pois: readonly HistoryMapPoi[]
   overview: readonly string[]
 }

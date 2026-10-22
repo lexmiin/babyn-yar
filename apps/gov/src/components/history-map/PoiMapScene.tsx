@@ -297,12 +297,10 @@ export default function PoiMapScene({
       mapAspectRatio={MAP_ASPECT_RATIO}
       mapSource={mapSource}
       belowMap={
-        listLabel && (
-          <MapObjectList
-            heading={listLabel}
-            labels={pois.map(poi => poi.title)}
-          />
-        )
+        <MapObjectList
+          heading={listLabel}
+          labels={pois.map(poi => poi.title)}
+        />
       }
     >
       <motion.div className="space-y-5" {...SCENE_TEXT_MOTION}>
