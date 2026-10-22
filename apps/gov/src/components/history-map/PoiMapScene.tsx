@@ -2,6 +2,7 @@ import { useHistoryMapTranslations } from './language'
 import { useRef, useState } from 'react'
 import ActiveMapLabel from './ActiveMapLabel'
 import MapImage from './MapImage'
+import MapOverlays from './MapOverlays'
 import { Popover } from '@base-ui/react/popover'
 import { motion, type Transition } from 'framer-motion'
 import {
@@ -210,7 +211,14 @@ export default function PoiMapScene({
   scene: HistoryMapPoiSceneData
 }) {
   const [labelPoi, setLabelPoi] = useState<HistoryMapPoi | null>(null)
-  const { mapBase, mapSource, BorderComponent, pois, overview } = scene
+  const {
+    mapBase,
+    mapSource,
+    BorderComponent,
+    pois,
+    overview,
+    overlays = []
+  } = scene
 
   return (
     <HistoryMapLayout
@@ -261,6 +269,7 @@ export default function PoiMapScene({
               className="absolute inset-0 h-full w-full object-contain select-none"
             />
           </motion.div>
+          <MapOverlays overlays={overlays} />
           {pois.map((poi, index) => (
             <PoiPopover
               key={poi.id}

@@ -3,6 +3,7 @@ import { getBefore1941Scenes } from './before1941'
 import { getOccupationScenes } from './occupation'
 import { getPostwarScenes } from './postwar'
 import { getPresentDayScenes } from './presentDay'
+import { getWartimeScenes } from './wartime'
 import { uk } from './content/uk'
 import { en } from './content/en'
 import type { HistoryMapAssets } from './mapTypes'
@@ -18,6 +19,10 @@ export function getHistoryMapScenes(
     ...getOccupationScenes(text.occupation, maps.occupation),
     ...getPostwarScenes(text.postwar, maps.postwar),
     ...getPresentDayScenes(text.presentDay, lang, {
+      map: maps.presentDay,
+      pois
+    }),
+    ...getWartimeScenes(text.wartime, {
       map: maps.presentDay,
       pois
     })

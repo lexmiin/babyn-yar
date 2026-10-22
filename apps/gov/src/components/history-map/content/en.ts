@@ -186,11 +186,32 @@ export const en = {
       'In September 2020, the installation Mirror Field opened on the site of the former Jewish Cemetery: a forty-meter mirrored disc and columns riddled with bullet holes, from which the names of the dead can be heard.',
       'In May 2021, the symbolic synagogue Place for Reflection, designed by German architect Manuel Herz, was installed at Babyn Yar. The wooden structure unfolds like a book. In October of the same year, the Crystal Wailing Wall, an art object by Serbian artist Marina Abramović, opened at the site. The foundation also created a series of installations called A Look into the Past: wooden telescope-like viewers displaying archival photos, placed at various locations across the city.',
       'In March 2021, a memorial sign by Oleh Shovenko was unveiled in memory of the victims of the Kurenivka Tragedy.',
-      'Altogether, between 1991 and 2026, about thirty monuments and memorial plaques were installed at Babyn Yar.',
+      'Altogether, between 1991 and 2026, about thirty monuments and memorial plaques were installed at Babyn Yar.'
+    ],
+    'present-day.title': 'Independent Ukraine: the return of memory'
+  },
+  wartime: {
+    title: '2022 to the present day',
+    mapAlt: 'Present-day map of the Babyn Yar area',
+    mapSource: 'Base map of the fourth layer',
+    overview: [
       'In 2023, the Babyn Yar National Historical Memorial Preserve and the NGO Living Memory revitalized the Avanhard sports complex building and opened the Living Memory Exhibition Center there.',
       'Since then, the center has hosted more than 15 exhibitions and educational projects. They include Babyn Yar: Mirrors of Death; The Invisible. Resilience: The Roma Past and Present; When the World Falls Apart; State of Deception: The Power of Nazi Propaganda, a joint exhibition with the United States Holocaust Memorial Museum; and Ukrainian-Jewish Century: Photos and Stories from 1920 to 2025, created in cooperation with Centropa.',
       'The Exhibition Center also runs a Film Club and a Book Club. The Film Club screens documentaries on related topics in cooperation with the Goethe-Institut, the Institut français and the Polish Institute in Ukraine. The Book Club holds public discussions of important recent books on the Holocaust, Babyn Yar and memory culture.'
     ],
-    'present-day.title': 'Independent Ukraine: the return of memory'
+    pois: {
+      'living-memory': {
+        title: 'The “Living Memory” Exhibition Center',
+        description:
+          'The “Living Memory” Exhibition Center, operating on the reserve’s grounds and established during Russia’s full-scale invasion of Ukraine in 2022, serves as a space for dialogue, reflection, and the recognition of the importance of preserving memory. It hosts exhibitions, discussions, and educational projects that analyze historical lessons and their relevance to the present day.',
+        alt: 'The Living Memory Exhibition Center building'
+      },
+      'missile-strike': {
+        title: 'Site of the Russian Missile Strike',
+        description:
+          'At 5:08 p.m. on 1 March 2022, a Russian missile aimed at the Kyiv TV Tower struck the grounds of the Babyn Yar National Historical and Memorial Reserve, a site that bears witness to one of the largest massacres of the Holocaust in Europe.\n\nFive civilians were killed in the attack, including an 11-year-old child.',
+        alt: 'Explosion near the Kyiv TV Tower on 1 March 2022'
+      }
+    }
   }
 } satisfies HistoryMapCopy

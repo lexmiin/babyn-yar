@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 894.14 783.2">
+  <!-- Client pin: 50.4741533, 30.4563959. Artwork aligned to the static map; HTML renders the marker. -->
+  <g transform="translate(5.74 113.48)">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #fff;
+        stroke-miterlimit: 10;
+        stroke-width: .84px;
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+
+      .cls-3 {
+        opacity: .16;
+      }
+    </style>
+  </defs>
+  <g id="Layer_10" data-name="Layer 10">
+    <path class="cls-2" d="M506.22,308.28l32.79,5.61-2.7,15.78-32.79-5.61,2.7-15.78h0ZM505.31,307l-3.08,17.96,34.97,5.99,3.08-17.96-34.97-5.99h0Z"/>
+    <g class="cls-3">
+      <rect class="cls-2" x="512.61" y="301.7" width="17.3" height="34.56" transform="translate(118.87 778.91) rotate(-80.28)"/>
+      <path class="cls-2" d="M506.07,308.06l33.16,5.68-2.76,16.15-33.16-5.68,2.76-16.15h0ZM505.31,307l-3.08,17.96,34.97,5.99,3.08-17.96-34.97-5.99h0Z"/>
+    </g>
+  </g>
+  <g id="points">
+    <g>
+    </g>
+  </g>
+  </g>
+</svg>
