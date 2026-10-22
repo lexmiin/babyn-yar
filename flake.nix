@@ -17,7 +17,7 @@
   }:
     {
       overlays.default = final: prev: {
-        go = final.go-bin.versions."1.27.0";
+        go = final.go-bin.versions."1.27.3";
         nodejs = final.nodejs_24;
       };
     }
@@ -40,7 +40,7 @@
 
         # Staticcheck cannot analyze code targeting a newer Go version than its build toolchain.
         gotools = pkgs.go-tools.override {
-          buildGoModule = pkgs.buildGoModule.override {go = pkgs.go;};
+          buildGoModule = pkgs.buildGo127Module;
         };
 
         # Keep CI's closure small; development tools extend the same toolchain.
