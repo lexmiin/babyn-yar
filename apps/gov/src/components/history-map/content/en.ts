@@ -1,4 +1,7 @@
+import { landscape } from './landscape'
 import { uk, type HistoryMapCopy } from './uk'
+
+const timeline = landscape.en.periods
 
 // shortcut: descriptions absent from the source retain Ukrainian; replace when approved translations arrive.
 export const en = {
@@ -46,10 +49,10 @@ export const en = {
       uk.before1941['lukianivske-cemetery.description']
   },
   occupation: {
-    'occupation.title': 'Babyn Yar in 1941–1943',
     'occupation.alt': 'Map of the Babyn Yar area during the Nazi occupation',
     'occupation-features.mapSource':
       'The source of the second layer’s base map is being clarified',
+    'occupation-features.title': timeline.shootings.date,
     'occupation-features.featureLabel': 'Second Layer Sites:',
     'layer2-zone-1.label': 'Babyn Yar mass shooting zone',
     'layer2-zone-1.description': uk.occupation['layer2-zone-1.description'],
@@ -77,6 +80,7 @@ export const en = {
     ],
     'occupation-features-part-2.mapSource':
       'The source of the second layer’s base map is being clarified',
+    'occupation-features-part-2.title': `${timeline.occupation.date} ${timeline.occupation.title}`,
     'occupation-features-part-2.featureLabel': 'Second Layer Sites:',
     'layer2-zone-2.label': 'Syrets camp',
     'layer2-zone-2.description': uk.occupation['layer2-zone-2.description'],
@@ -114,6 +118,7 @@ export const en = {
       'After the disaster, the landscape of Babyn Yar was permanently transformed: the ravine almost disappeared beneath a layer of silt. The tragedy was suppressed for a long time, and the Soviet authorities downplayed its scale.'
     ],
     'postwar-map.mapSource': 'Base map of the third layer',
+    'postwar-map.listLabel': 'Streets:',
     'postwar-street-1.label': 'Shchusieva Street',
     'postwar-street-1.extraLabels.label': 'Illienka Street',
     'postwar-street-2.label': 'Oleny Telihy Street',
@@ -125,6 +130,7 @@ export const en = {
     'postwar-video.caption':
       'Archival footage of development and hydraulic filling at Babyn Yar',
     'postwar-flood.mapSource': 'Base map of the third layer',
+    'postwar-flood.title': `${timeline.flood.date} ${timeline.flood.title}`,
     'postwar-flood.featureLabel': 'Third Layer Sites:',
     'layer3-karer.label': 'Quarry of the Petrivka brickworks',
     'layer3-karer.description': uk.postwar['layer3-karer.description'],
@@ -176,6 +182,7 @@ export const en = {
   presentDay: {
     'presentDay.alt': 'Present-day map of the Babyn Yar area',
     'present-day-pois.mapSource': 'Base map of the fourth layer',
+    'present-day-pois.listLabel': 'Fourth Layer Sites:',
     'present-day-pois.overview': [
       'In the first years of independence, projects planned during the late Soviet period continued to be developed in Babyn Yar and the surrounding areas. Plans for the Syrets–Pechersk metro line had existed since the 1970s. Its Dorohozhychi station opened in 2000, even though it was built within the area where mass shootings and burials had taken place in 1941–1943. From 2019 to the third quarter of 2021, the UNO City House residential complex was built at 25 Olena Teliha Street, on the site where mass shootings had also taken place.',
       'After the fall of the communist rule and lifting the censorship, but without a coordinated state policy on the commemoration of Babyn Yar, monuments and memorial plaques initiated by various organizations began to appear throughout the area, without an overall plan.',

@@ -2,6 +2,7 @@ import { useHistoryMapTranslations } from './language'
 import { useRef, useState } from 'react'
 import ActiveMapLabel from './ActiveMapLabel'
 import MapImage from './MapImage'
+import MapObjectList from './MapObjectList'
 import MapOverlays from './MapOverlays'
 import { Popover } from '@base-ui/react/popover'
 import { motion, type Transition } from 'framer-motion'
@@ -147,7 +148,7 @@ function PoiPopover({
                 sizes={POI_IMAGE_SIZES}
                 loading="lazy"
                 decoding="async"
-                className="aspect-[3/2] w-full shrink-0 object-cover"
+                className="h-auto max-h-[60dvh] w-full shrink-0 bg-neutral-100 object-contain"
               />
             )}
             <div className="relative space-y-2 p-4">
@@ -215,6 +216,7 @@ export default function PoiMapScene({
     mapBase,
     mapSource,
     BorderComponent,
+    listLabel,
     pois,
     overview,
     overlays = []
@@ -294,6 +296,14 @@ export default function PoiMapScene({
       }
       mapAspectRatio={MAP_ASPECT_RATIO}
       mapSource={mapSource}
+      belowMap={
+        listLabel && (
+          <MapObjectList
+            heading={listLabel}
+            labels={pois.map(poi => poi.title)}
+          />
+        )
+      }
     >
       <motion.div className="space-y-5" {...SCENE_TEXT_MOTION}>
         {overview.map(paragraph => (

@@ -7,6 +7,7 @@ import {
 } from './sceneMotion'
 import ActiveMapLabel from './ActiveMapLabel'
 import HistoryMapLayout from './HistoryMapLayout'
+import MapObjectList from './MapObjectList'
 import MapOverlays from './MapOverlays'
 import { MAP_ASPECT_RATIO } from './mapGeometry'
 import type { HistoryMapPeriod, HistoryMapOverlaySceneData } from './mapTypes'
@@ -19,7 +20,7 @@ export default function OverlayMapScene({
   period: HistoryMapPeriod
   scene: HistoryMapOverlaySceneData
 }) {
-  const { mapBase, mapSource, overlays, overview } = scene
+  const { mapBase, mapSource, listLabel, overlays, overview } = scene
   const { activeFeatureId, labelFeature, getFeatureControlProps } =
     useMapFeatureSelection(overlays)
 
@@ -46,6 +47,15 @@ export default function OverlayMapScene({
       }
       mapAspectRatio={MAP_ASPECT_RATIO}
       mapSource={mapSource}
+      belowMap={
+        <MapObjectList
+          heading={listLabel}
+          labels={overlays.flatMap(({ label, extraLabels = [] }) => [
+            label,
+            ...extraLabels.map(extra => extra.label)
+          ])}
+        />
+      }
     >
       <motion.div className="space-y-5" {...SCENE_TEXT_MOTION}>
         {overview.map(paragraph => (

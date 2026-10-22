@@ -58,8 +58,8 @@ export type HistoryMapOverlay = {
 
 /**
  * An overlay with hover/focus labels and a selectable highlight, such as a street.
- * Selection keeps the period overview visible: there is no object description
- * or entry in the object list below the map.
+ * Selection keeps the period overview visible: there is no object description.
+ * Its label and extra labels are listed below the map.
  */
 type HistoryMapSelectableOverlay = HistoryMapOverlay & {
   label: string
@@ -116,6 +116,7 @@ export type HistoryMapFeatureSceneData = {
 export type HistoryMapOverlaySceneData = {
   mapBase: HistoryMapBase
   mapSource: string
+  listLabel: string
   overlays: readonly HistoryMapSelectableOverlay[]
   overview: readonly string[]
 }
@@ -141,6 +142,8 @@ export type HistoryMapPoiSceneData = {
   mapSource: string
   BorderComponent: ComponentType<SVGProps<SVGSVGElement>>
   overlays?: readonly HistoryMapOverlay[]
+  // Heading for the list of POI titles below the map; omitted hides the list.
+  listLabel?: string
   pois: readonly HistoryMapPoi[]
   overview: readonly string[]
 }
