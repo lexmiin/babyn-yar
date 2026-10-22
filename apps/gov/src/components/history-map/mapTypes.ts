@@ -140,6 +140,7 @@ export type HistoryMapPoiSceneData = {
   mapBase: HistoryMapBase
   mapSource: string
   BorderComponent: ComponentType<SVGProps<SVGSVGElement>>
+  overlays?: readonly HistoryMapOverlay[]
   pois: readonly HistoryMapPoi[]
   overview: readonly string[]
 }
