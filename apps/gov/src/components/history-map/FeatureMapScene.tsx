@@ -378,11 +378,11 @@ export default function FeatureMapScene({
           >
             {featureLabel}
           </h2>
-          <ul className="mt-3 grid gap-x-8 gap-y-1 text-base leading-snug sm:grid-cols-2 lg:text-lg">
+          <ul className="mt-3 gap-x-8 text-base leading-snug sm:columns-2 lg:text-lg">
             {listedFeatures.map((feature, index) => (
               <motion.li
                 key={feature.id}
-                className="flex gap-2"
+                className="flex break-inside-avoid gap-2 pb-1"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={getFeatureTransition(

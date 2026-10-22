@@ -18,7 +18,6 @@ export function getOccupationScenes(
   text: HistoryMapCopy['occupation'],
   image: MapImageSource
 ) {
-  const period = { id: 'occupation', title: text['occupation.title'] }
   const mapBase = {
     id: 'occupation',
     alt: text['occupation.alt'],
@@ -28,7 +27,7 @@ export function getOccupationScenes(
   return [
     {
       id: 'occupation-features',
-      period,
+      period: { id: 'occupation', title: text['occupation-features.title'] },
       kind: 'features',
       data: {
         mapBase,
@@ -103,7 +102,10 @@ export function getOccupationScenes(
     },
     {
       id: 'occupation-features-part-2',
-      period,
+      period: {
+        id: 'occupation',
+        title: text['occupation-features-part-2.title']
+      },
       kind: 'features',
       data: {
         mapBase,

@@ -22,6 +22,7 @@ export function getPresentDayScenes(
       image: images.map
     },
     mapSource: text['present-day-pois.mapSource'],
+    listLabel: text['present-day-pois.listLabel'],
     BorderComponent: Layer4Borders,
     pois: LAYER_FOUR_POI_POSITIONS.map(({ id, center }) => {
       const { title, description, image } = getLocalizedPlace(id, lang)

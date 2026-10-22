@@ -43,6 +43,7 @@ export function getPostwarScenes(
       data: {
         mapBase,
         mapSource: text['postwar-map.mapSource'],
+        listLabel: text['postwar-map.listLabel'],
         overlays: [
           {
             id: 'postwar-street-1',
@@ -85,7 +86,7 @@ export function getPostwarScenes(
     },
     {
       id: 'postwar-flood',
-      period,
+      period: { ...period, title: text['postwar-flood.title'] },
       kind: 'features',
       data: {
         mapBase,
