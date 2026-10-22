@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useCallback, useLayoutEffect, useRef, useState } from 'react'
 import { useMotionValueEvent, useScroll } from 'framer-motion'
 import type { HistoryMapScene } from './sceneTypes'
 
@@ -29,13 +29,10 @@ export function useActiveHistoryStep(scenes: readonly HistoryMapScene[]) {
     }
   })
 
-  useLayoutEffect(() => {
-    function scrollToScene() {
-      const index = scenes.findIndex(
-        scene => `#${scene.id}` === window.location.hash
-      )
+  const scrollToStep = useCallback(
+    (index: number, behavior: ScrollBehavior) => {
       const track = trackRef.current
-      if (index < 0 || !track) return
+      if (!track) return
 
       // Land inside the scene's scroll range, away from rounding boundaries.
       const progress = (index + 0.1) / stepCount
@@ -43,14 +40,26 @@ export function useActiveHistoryStep(scenes: readonly HistoryMapScene[]) {
         window.scrollY +
         track.getBoundingClientRect().top +
         progress * (track.offsetHeight - window.innerHeight)
-      window.scrollTo({ top, behavior: 'instant' })
+      window.scrollTo({ top, behavior })
+    },
+    [stepCount]
+  )
+
+  useLayoutEffect(() => {
+    function scrollToScene() {
+      const index = scenes.findIndex(
+        scene => `#${scene.id}` === window.location.hash
+      )
+      if (index < 0 || !trackRef.current) return
+
+      scrollToStep(index, 'instant')
       setActiveStep(index)
     }
 
     scrollToScene()
     window.addEventListener('hashchange', scrollToScene)
     return () => window.removeEventListener('hashchange', scrollToScene)
-  }, [stepCount, scenes])
+  }, [scenes, scrollToStep])
 
-  return { activeStep, trackRef }
+  return { activeStep, trackRef, scrollToStep }
 }
