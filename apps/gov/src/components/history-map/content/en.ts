@@ -203,7 +203,7 @@ export const en = {
     mapSource: 'Base map of the fourth layer',
     listLabel: 'Fifth Layer Sites:',
     overview: [
-      'In 2023, the Babyn Yar National Historical Memorial Preserve and the NGO Living Memory revitalized the Avanhard sports complex building and opened the Living Memory Exhibition Center there.',
+      'In 2022, the Babyn Yar National Historical Memorial Preserve and the NGO Living Memory revitalized the Avanhard sports complex building and opened the Living Memory Exhibition Center there.',
       'Since then, the center has hosted more than 15 exhibitions and educational projects. They include Babyn Yar: Mirrors of Death; The Invisible. Resilience: The Roma Past and Present; When the World Falls Apart; State of Deception: The Power of Nazi Propaganda, a joint exhibition with the United States Holocaust Memorial Museum; and Ukrainian-Jewish Century: Photos and Stories from 1920 to 2025, created in cooperation with Centropa.',
       'The Exhibition Center also runs a Film Club and a Book Club. The Film Club screens documentaries on related topics in cooperation with the Goethe-Institut, the Institut français and the Polish Institute in Ukraine. The Book Club holds public discussions of important recent books on the Holocaust, Babyn Yar and memory culture.'
     ],
