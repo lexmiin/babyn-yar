@@ -20,7 +20,7 @@
     "@svgr/plugin-svgo": "^8.1.0",
     "oxfmt": "^0.73.0",
     "svelte": "catalog:",
-    "turbo": "2.11.8"
+    "turbo": "2.11.10"
   },
   "packageManager": "pnpm@11.28.6"
 }
