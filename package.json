@@ -22,5 +22,5 @@
     "svelte": "catalog:",
     "turbo": "2.11.10"
   },
-  "packageManager": "pnpm@11.28.6"
+  "packageManager": "pnpm@11.28.8"
 }
