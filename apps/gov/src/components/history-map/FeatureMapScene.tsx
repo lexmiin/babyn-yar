@@ -6,7 +6,7 @@ import {
   motion,
   useReducedMotion,
   type Transition
-} from 'framer-motion'
+} from 'motion/react'
 import {
   ENTER_EASE,
   EXIT_EASE,

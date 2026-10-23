@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { AnimatePresence, MotionConfig } from 'framer-motion'
+import { AnimatePresence, MotionConfig } from 'motion/react'
 import { getHistoryMapScenes } from './scenes'
 import { useTranslations, type Language } from '@babyn-yar/i18n'
 import { HistoryMapLanguageContext } from './language'
