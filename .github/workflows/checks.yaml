@@ -39,7 +39,7 @@ jobs:
               - '.github/workflows/checks.yaml'
 
       - name: set up nix
-        uses: cachix/install-nix-action@v31.11.2
+        uses: cachix/install-nix-action@31.11.3
 
       - name: resolve pnpm store
         id: pnpm-store
