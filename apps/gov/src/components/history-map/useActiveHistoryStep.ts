@@ -1,5 +1,5 @@
 import { useCallback, useLayoutEffect, useRef, useState } from 'react'
-import { useMotionValueEvent, useScroll } from 'framer-motion'
+import { useMotionValueEvent, useScroll } from 'motion/react'
 import type { HistoryMapScene } from './sceneTypes'
 
 /** Maps scroll progress through the track to a scene, kept in sync with the URL hash. */

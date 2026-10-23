@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { ENTER_EASE, EXIT_EASE } from './sceneMotion'
 import type { SVGProps } from 'react'
 import { FOCUS_FILL, territoryFillClass } from './mapHighlight'

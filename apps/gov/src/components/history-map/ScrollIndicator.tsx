@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'motion/react'
 import { ArrowDown } from 'lucide-react'
 
 export default function ScrollIndicator({

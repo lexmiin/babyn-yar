@@ -1,5 +1,5 @@
 import MapImage from './MapImage'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import {
   SCENE_TITLE_MOTION,
   SCENE_MAP_MOTION,

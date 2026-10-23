@@ -1,4 +1,4 @@
-import type { MotionProps } from 'framer-motion'
+import type { MotionProps } from 'motion/react'
 
 export const ENTER_EASE = [0.22, 1, 0.36, 1] as const
 export const EXIT_EASE = [0.64, 0, 0.78, 0] as const

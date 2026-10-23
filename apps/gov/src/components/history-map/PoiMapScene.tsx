@@ -5,7 +5,7 @@ import MapImage from './MapImage'
 import MapObjectList from './MapObjectList'
 import MapOverlays from './MapOverlays'
 import { Popover } from '@base-ui/react/popover'
-import { motion, type Transition } from 'framer-motion'
+import { motion, type Transition } from 'motion/react'
 import {
   ENTER_EASE,
   EXIT_EASE,

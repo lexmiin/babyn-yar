@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'motion/react'
 import { toMapPercent, type MapPoint } from './mapGeometry'
 import type { HistoryMapFeature } from './mapTypes'
 
