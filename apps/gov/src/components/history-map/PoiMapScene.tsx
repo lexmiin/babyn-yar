@@ -1,7 +1,6 @@
 import { useHistoryMapTranslations } from './language'
 import { useRef, useState } from 'react'
 import ActiveMapLabel from './ActiveMapLabel'
-import MapImage from './MapImage'
 import MapObjectList from './MapObjectList'
 import MapOverlays from './MapOverlays'
 import { Popover } from '@base-ui/react/popover'
@@ -229,6 +228,7 @@ export default function PoiMapScene({
           {period.title}
         </motion.span>
       }
+      mapBase={mapBase}
       map={
         <motion.div
           data-history-map-pois
@@ -246,7 +246,6 @@ export default function PoiMapScene({
             }
           }}
         >
-          <MapImage mapBase={mapBase} />
           <motion.div
             className="pointer-events-none absolute inset-0"
             initial={{ opacity: 0 }}

@@ -1,5 +1,4 @@
 import { useHistoryMapTranslations } from './language'
-import MapImage from './MapImage'
 import FloodReveal from './FloodReveal'
 import {
   AnimatePresence,
@@ -300,7 +299,10 @@ export default function FeatureMapScene({
   const selectableFeatures = [...features, ...routes, ...symbols]
   const listedFeatures = [
     ...features,
-    ...symbols.map(symbol => ({ ...symbol, duration: symbol.duration ?? 0.32 }))
+    ...symbols.map(symbol => ({
+      ...symbol,
+      duration: symbol.duration ?? 0.32
+    }))
   ]
   const {
     activeFeature,
@@ -316,8 +318,6 @@ export default function FeatureMapScene({
       className="absolute inset-0"
       {...SCENE_MAP_MOTION}
     >
-      <MapImage mapBase={mapBase} />
-
       <div className="pointer-events-none absolute inset-0">
         <MapOverlays overlays={backgroundOverlays} />
       </div>
@@ -367,6 +367,7 @@ export default function FeatureMapScene({
           </motion.span>
         </AnimatePresence>
       }
+      mapBase={mapBase}
       map={map}
       mapAspectRatio={MAP_ASPECT_RATIO}
       mapSource={mapSource}

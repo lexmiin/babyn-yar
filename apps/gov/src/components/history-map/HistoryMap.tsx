@@ -4,6 +4,7 @@ import { getHistoryMapScenes } from './scenes'
 import { useTranslations, type Language } from '@babyn-yar/i18n'
 import { HistoryMapLanguageContext } from './language'
 import SceneRenderer from './SceneRenderer'
+import { HistoryMapFrame } from './HistoryMapLayout'
 import ScrollIndicator from './ScrollIndicator'
 import { useActiveHistoryStep } from './useActiveHistoryStep'
 import { usePreloadNextMap } from './usePreloadNextMap'
@@ -51,11 +52,11 @@ export default function HistoryMap({
                 .replace('{total}', String(scenes.length))
                 .replace('{title}', scene.period.title)}
             </div>
-            <div>
+            <HistoryMapFrame>
               <AnimatePresence mode="wait">
                 <SceneRenderer key={scene.id} scene={scene} />
               </AnimatePresence>
-            </div>
+            </HistoryMapFrame>
             <ScrollIndicator
               visible={activeStep < scenes.length - 1}
               label={t('historyMap.nextScene')}

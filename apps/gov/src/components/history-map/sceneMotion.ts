@@ -4,6 +4,7 @@ export const ENTER_EASE = [0.22, 1, 0.36, 1] as const
 export const EXIT_EASE = [0.64, 0, 0.78, 0] as const
 
 // Every scene remounts on each step, so these play even within one period.
+// The base map image is the exception: HistoryMapFrame keeps it mounted.
 export const SCENE_TITLE_MOTION = {
   initial: { opacity: 0, y: 10 },
   animate: { opacity: 1, y: 0 },

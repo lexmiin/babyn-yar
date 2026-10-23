@@ -1,4 +1,3 @@
-import MapImage from './MapImage'
 import { motion } from 'motion/react'
 import {
   SCENE_TITLE_MOTION,
@@ -31,9 +30,9 @@ export default function OverlayMapScene({
           {period.title}
         </motion.span>
       }
+      mapBase={mapBase}
       map={
         <motion.div className="absolute inset-0" {...SCENE_MAP_MOTION}>
-          <MapImage mapBase={mapBase} />
           <MapOverlays
             overlays={overlays}
             activeOverlayId={activeFeatureId}
