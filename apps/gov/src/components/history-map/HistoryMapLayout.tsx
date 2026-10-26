@@ -31,12 +31,12 @@ export default function HistoryMapLayout({
         className="grid max-h-[calc(100dvh-9rem)] [scrollbar-width:none] items-start gap-y-10 overflow-y-auto pr-3 md:grid-cols-[minmax(0,1.75fr)_minmax(15rem,0.8fr)] md:gap-x-8 lg:gap-x-12 xl:gap-x-16 [&::-webkit-scrollbar]:hidden"
       >
         <div className="min-w-0">
-          <h1
+          <h2
             id={titleId}
             className="mb-4 text-[clamp(1.875rem,3vw,3.25rem)] leading-[0.92] font-bold tracking-[-0.035em]"
           >
             {title}
-          </h1>
+          </h2>
 
           <figure>
             <div

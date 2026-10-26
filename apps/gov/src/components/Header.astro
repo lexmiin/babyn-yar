@@ -116,6 +116,11 @@ const logo = lang === 'en' ? logoEn : logoUk
           {t('header.gallery')}
         </HeaderLink>
       </HeaderSection>
+      <HeaderSection>
+        <HeaderLink href={translatePath('/history')}>
+          {t('header.landscape')}
+        </HeaderLink>
+      </HeaderSection>
       <div class="lg:border-l lg:border-l-black">
         <LanugagePicker client:load lang={lang} paths={languagePaths} />
       </div>
