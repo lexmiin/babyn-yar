@@ -1,5 +1,6 @@
 ---
 import HistoryMap from '@/components/history-map/HistoryMap'
+import LandscapeTimeline from '@/components/LandscapeTimeline.astro'
 import { uk } from './history-map/content/uk'
 import { en } from './history-map/content/en'
 import type { Language } from '@babyn-yar/i18n'
@@ -74,6 +75,7 @@ const poiImages: Record<string, MapImageSource> = Object.fromEntries(
   }
   flushMobileFooter
 >
+  <LandscapeTimeline {lang} onHistoryPage />
   <!-- URL fragments are only available in the browser. Avoid rendering the
        first scene on the server before the requested scene is known. -->
   <HistoryMap client:only="react" {lang} images={images} poiImages={poiImages}>

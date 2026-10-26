@@ -372,12 +372,12 @@ export default function FeatureMapScene({
       mapSource={mapSource}
       belowMap={
         <section aria-labelledby={featureListHeadingId} className="mt-7">
-          <h2
+          <h3
             id={featureListHeadingId}
             className="text-xl leading-tight font-bold"
           >
             {featureLabel}
-          </h2>
+          </h3>
           <ul className="mt-3 gap-x-8 text-base leading-snug sm:columns-2 lg:text-lg">
             {listedFeatures.map((feature, index) => (
               <motion.li
@@ -419,9 +419,9 @@ export default function FeatureMapScene({
           {activeFeature ? (
             <>
               {activeFeature.showLabel !== false && (
-                <h2 className="text-2xl leading-tight font-bold lg:text-3xl">
+                <h3 className="text-2xl leading-tight font-bold lg:text-3xl">
                   {activeFeature.label}
-                </h2>
+                </h3>
               )}
               {activeFeature.description.map(paragraph => (
                 <p key={paragraph}>{paragraph}</p>

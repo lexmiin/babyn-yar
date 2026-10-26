@@ -12,10 +12,29 @@ export function useActiveHistoryStep(scenes: readonly HistoryMapScene[]) {
       scenes.findIndex(scene => `#${scene.id}` === window.location.hash)
     )
   )
-  const { scrollYProgress } = useScroll({
+  const { scrollY, scrollYProgress } = useScroll({
     target: trackRef,
     offset: ['start start', 'end end']
   })
+
+  const syncHash = useCallback(
+    (step: number) => {
+      const track = trackRef.current
+      if (!track) return
+
+      // Content above the maps (the timeline) has no scene, so it has no hash.
+      const hash =
+        track.getBoundingClientRect().top > 0 ? '' : `#${scenes[step].id}`
+      if (window.location.hash !== hash) {
+        window.history.replaceState(
+          window.history.state,
+          '',
+          `${window.location.pathname}${window.location.search}${hash}`
+        )
+      }
+    },
+    [scenes]
+  )
 
   useMotionValueEvent(scrollYProgress, 'change', progress => {
     const nextStep = Math.min(
@@ -23,10 +42,15 @@ export function useActiveHistoryStep(scenes: readonly HistoryMapScene[]) {
       stepCount - 1
     )
     setActiveStep(current => (current === nextStep ? current : nextStep))
-    const hash = `#${scenes[nextStep].id}`
-    if (window.location.hash !== hash) {
-      window.history.replaceState(window.history.state, '', hash)
-    }
+    syncHash(nextStep)
+  })
+
+  // Progress stays at 0 above the maps, so watch the page scroll to clear the
+  // hash once the first scene scrolls back down out of view.
+  useMotionValueEvent(scrollY, 'change', () => {
+    const track = trackRef.current
+    if (window.location.hash && track && track.getBoundingClientRect().top > 0)
+      syncHash(0)
   })
 
   const scrollToStep = useCallback(

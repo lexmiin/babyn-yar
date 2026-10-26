@@ -12,9 +12,9 @@ export default function MapObjectList({
 
   return (
     <section aria-labelledby={headingId} className="mt-7">
-      <h2 id={headingId} className="text-xl leading-tight font-bold">
+      <h3 id={headingId} className="text-xl leading-tight font-bold">
         {heading}
-      </h2>
+      </h3>
       <ul className="mt-3 gap-x-8 text-base leading-snug sm:columns-2 lg:text-lg">
         {labels.map(label => (
           <li key={label} className="flex break-inside-avoid gap-2 pb-1">
