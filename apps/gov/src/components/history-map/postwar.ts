@@ -81,7 +81,7 @@ export function getPostwarScenes(
           ? '/assets/layer-3-video.mp4'
           : 'https://static.babynyar.work/layer-3-video.mp4',
         caption: text['postwar-video.caption'],
-        overview: floodOverview
+        overview: [...text['postwar-map.overview'], ...floodOverview]
       }
     },
     {

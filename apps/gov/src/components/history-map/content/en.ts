@@ -112,10 +112,9 @@ export const en = {
     'postwar.title': 'Babyn Yar in 1943–1991',
     'postwar.alt': 'Historical map of the Babyn Yar area in 1943–1991',
     floodOverview: [
-      'In the second half of the 1940s, the Soviet city authorities adopted a new master plan for the Syrets and Babyn Yar districts. It called for new housing and a transformation of the area. In 1947, construction of Stalin-era apartment blocks (‘stalinkas’) began on Shchusieva Street, partly on the site of the former Syrets concentration camp. In 1950, work started on a highway through part of the ravine, along the route of what is now Olena Teliha Street.',
       'On March 13, 1961, Kyiv went through one of the worst man-made disasters in its history. For the previous ten years, Babyn Yar had been used as a dumping ground for pulp, the liquid waste from the Petrivka brick factory. The first and second branches of the ravine were filled in 1951–1952, and the third from 1954 onward. The slurry slowly altered the terrain and filled the natural hollows of the ravine.',
       'The dam holding the pulp back could no longer withstand the pressure and collapsed. A 14-meter wave of liquid mud flooded 30 hectares of Kurenivka district within minutes, destroying houses, vehicles and everything in its path. Estimates of the number of people who died that day vary, with several hundred reported killed. The city suffered heavy material losses.',
-      'After the disaster, the landscape of Babyn Yar was permanently transformed: the ravine allmost disappeared beneath a layer of silt. The tragedy was suppressed for a long time, and the Soviet authorities downplayed its scale.'
+      'After the disaster, the landscape of Babyn Yar was permanently transformed: the ravine almost disappeared beneath a layer of silt. The tragedy was suppressed for a long time, and the Soviet authorities downplayed its scale.'
     ],
     'postwar-map.mapSource': 'Base map of the third layer',
     'postwar-map.listLabel': 'Third Layer Sites:',
@@ -123,9 +122,7 @@ export const en = {
     'postwar-street-1.extraLabels.label': 'Illienka Street',
     'postwar-street-2.label': 'Oleny Telihy Street',
     'postwar-map.overview': [
-      'On September 29, 1944, the first mourning ceremony for the victims was held at Babyn Yar, with the writers David Hofstein and Itsik Kipnis among those who took part in a big rally. Over the following thirty years, the Soviet authorities rejected every request to put up a monument here and instead planned further development of the site.',
-      'Still, Babyn Yar remained a place for mourning gatherings and political demonstrations by Jews from the USSR and the West. In 1965, the writer Elie Wiesel visited Babyn Yar. In 1966, two demonstrations were held, on September 24 and 29. Ukrainian intellectuals took an active part in the second one, and the dissident Ivan Dziuba gave a speech.',
-      'In 1976, a Soviet monument was erected on the site where Jews had traditionally gathered, but it made no mention of Jewish victims. A Yiddish inscription next to the monument  was added only in 1989.'
+      'In the second half of the 1940s, the Soviet city authorities adopted a new master plan for the Syrets and Babyn Yar districts. It called for new housing and a transformation of the area. In 1947, construction of Stalin-era apartment blocks (‘stalinkas’) began on Shchusieva Street, partly on the site of the former Syrets concentration camp. In 1950, work started on a highway through part of the ravine, along the route of what is now Olena Teliha Street.'
     ],
     'postwar-video.caption':
       'Archival footage of development and hydraulic filling at Babyn Yar',
