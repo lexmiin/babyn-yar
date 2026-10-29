@@ -1,22 +1,27 @@
-node_modules
 **/node_modules
-.pnpm-store
 **/.pnpm-store
-.turbo
 **/.turbo
-dist
 **/dist
-.astro
 **/.astro
-.svelte-kit
 **/.svelte-kit
-build
 **/build
+**/*.tsbuildinfo
+**/coverage
+**/*.log
+apps/api/bin
 .git
 .jj
 
 .DS_Store
-*.webm
+**/*.webm
+**/*.mp4
 
-.env
-.env.production
+.claude
+.direnv
+.github
+backup
+outputs
+
+**/.env
+**/.env.*
+!**/.env.example
