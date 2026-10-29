@@ -30,7 +30,7 @@ export const PRESENT_DAY_POI_CONTENT = {
     },
     en: {
       title:
-        'Monument to Soviet Citizens and Prisoners of War, Soldiers and Officers of the Soviet Army, Killed by the German Occupiers',
+        'Monument to Soviet citizens and prisoners of war, soldiers and officers of the Soviet Army, who were killed by the German occupiers',
       description:
         'The official state monument was erected on 2 July 1976 in the upper part of Babyn Yar. It stands between two sites of mass shootings — the ravine itself, beyond Yuriia Illienka Street, and the anti-tank ditch, beyond Dorohozhytska Street — and opposite the site of the Syrets concentration camp, beyond Olena Teliha Street. In 1989, a plaque with an inscription in Yiddish was added alongside the original Ukrainian and Russian inscriptions.',
       alt: 'Monument to Soviet Citizens and Prisoners of War, Soldiers and Officers of the Soviet Army, Killed by the German Occupiers'
@@ -46,7 +46,7 @@ export const PRESENT_DAY_POI_CONTENT = {
       alt: "Пам'ятний хрест членам ОУН"
     },
     en: {
-      title: 'Memorial Cross to OUN Members Executed in Babyn Yar',
+      title: 'Memorial cross to the OUN members shot at Babyn Yar',
       description:
         'The memorial cross at Babyn Yar was erected in February 1992 to commemorate members of the Organisation of Ukrainian Nationalists (OUN), led by Andrii Melnyk. During the German occupation, several dozen members of the organisation were killed by the Nazis, among them the prominent Ukrainian poet Olena Teliha. The original wooden cross was later replaced with a stone one.',
       alt: 'Memorial Cross to OUN Members Executed in Babyn Yar'
@@ -77,7 +77,7 @@ export const PRESENT_DAY_POI_CONTENT = {
     },
     en: {
       title:
-        'Monument to Hero of Ukraine Tetiana Markus, a Member of the Kyiv Underground Resistance',
+        'Monument to Hero of Ukraine, Kyiv underground fighter Tetiana Markus',
       description:
         'The monument to Tetiana Markus, a 21-year-old Soviet underground resistance member, was unveiled on 1 December 2009 on the initiative of Illia Levitas and the organisations he headed — the Jewish Confederation of Ukraine and the Babyn Yar Memory Foundation.',
       alt: 'Monument to Hero of Ukraine Tetiana Markus, a Member of the Kyiv Underground Resistance'
@@ -93,7 +93,7 @@ export const PRESENT_DAY_POI_CONTENT = {
       alt: "Пам'ятник дітям, розстріляним у Бабиному Яру"
     },
     en: {
-      title: 'Monument to the Children Executed at Babyn Yar',
+      title: 'Monument to the children shot at Babyn Yar',
       description:
         'The monument was erected in 2001. The sculpture was created by Valerii Medvediev, with the architectural design by Ruslan Kukharenko and Yurii Melnychuk. In 2016, as part of commemorative events marking the 75th anniversary of the beginning of the mass killings at Babyn Yar, the monument was restored.',
       alt: 'Monument to the Children Executed at Babyn Yar'
@@ -109,7 +109,7 @@ export const PRESENT_DAY_POI_CONTENT = {
       alt: "Пам'ятний знак «Менора»"
     },
     en: {
-      title: 'The Menorah',
+      title: '"Menorah" memorial',
       description:
         'The memorial sign was unveiled on 29 September 1991, marking 50 years sincethe first mass killing of Jews at Babyn Yar. It stands on the boundary between the former Jewish and Kyrylivske cemeteries. The project was designed by architect Yurii Paskevych; the sculptural reliefs were created by artists Yakym Levyсh and Oleksandr Levyсh. The structural engineer responsible for the monument’s framework was Borys Hiller.',
       alt: 'The Menorah'
@@ -155,7 +155,7 @@ export const PRESENT_DAY_POI_CONTENT = {
       alt: 'Лапідарій Єврейського кладовища'
     },
     en: {
-      title: 'The Lapidarium',
+      title: 'Lapidarium',
       description:
         'The Lapidarium was established in September 2017. Around 70 memorial stones and Jewish gravestones (matzevot) from the former Jewish cemetery, discovered by researchers in Repiakhiv Yar, were placed along the “Road of Sorrow”, which runs from the building at 44 Yuriia Illienka Street to the “Menorah” memorial.',
       alt: 'The Lapidarium'
@@ -185,7 +185,7 @@ export const PRESENT_DAY_POI_CONTENT = {
       alt: "Пам'ятний знак жертвам Куренівської трагедії"
     },
     en: {
-      title: 'Memorial to the Victims of the Kurenivka Mudslide',
+      title: 'Memorial to the victims of the Kurenivka tragedy',
       description:
         'On 13 March 1961, a protective dam in the Babyn Yar area breached due to violations of construction and maintenance regulations, sending a mudflow of liquid clay and sand into the surrounding areas of Kurenivka. According to official figures, 145 people were killed in the disaster. However, the Soviet authorities concealed the actual number of victims, which may have been as high as 1,500. The memorial to the victims of the Kurenivka disasterwas officially unveiled in March 2006. It stands on the territory of the National Historical and Memorial Reserve “Babyn Yar”, near the intersection of Olena Teliha Street and Dorohozhytska Street, close to the beginning of a former ravine that once formed part of Babyn Yar.',
       alt: 'Memorial to the Victims of the Kurenivka Mudslide'
@@ -216,7 +216,7 @@ export const PRESENT_DAY_POI_CONTENT = {
       alt: "Пам'ятний знак «Ромська кибитка»"
     },
     en: {
-      title: 'The Roma Wagon',
+      title: '"Roma Wagon" memorial',
       description:
         'The memorial project was initiated in Kyiv in 1998. For some time, the monument stood in Kamianets-Podilskyi. On 23 September 2016, marking 75 years since the first mass killing of several Roma groups, the “Roma Wagon” was installed on the territory of the National Historical and Memorial Reserve “Babyn Yar”.',
       alt: 'The Roma Wagon'
@@ -250,7 +250,7 @@ export const PRESENT_DAY_POI_CONTENT = {
       alt: "В'їзна брама до Лукʼянівського єврейського кладовища"
     },
     en: {
-      title: 'Entrance Gate to the Former Lukianivske Jewish Cemetery',
+      title: 'Entrance gate to the Lukianivka Jewish Cemetery',
       description:
         'A reconstructed historic structure located near the former cemetery office on Yuriia Illienka Street , adjacent to the territory of Babyn Yar. The gate was reconstructed in 2018 according to a design by the Raden company, commissioned by the National Historical and Memorial Reserve “Babyn Yar”. The original gate was destroyed in the early 1960s.',
       alt: 'Entrance Gate to the Former Lukianivske Jewish Cemetery'
@@ -266,7 +266,7 @@ export const PRESENT_DAY_POI_CONTENT = {
       alt: 'Будівля контори Єврейського кладовища'
     },
     en: {
-      title: 'The Former Office Building of the Jewish Cemetery',
+      title: 'Building of the former Jewish cemetery office',
       description:
         'The building was constructed in 1899 to a design by architect Volodymyr Nikolaiev. In August–September 1943, the building served as a barracks for the German occupying authorities, who carried out the secret operation “Action 1005” there, burning the bodies of victims of the mass killings carried out at Babyn Yar in 1941–1943. In 1962, the building was converted into a dormitory for the Sokol ice hockey team. Since 2015, the office has been part of the National Historical and Memorial Reserve “Babyn Yar.”',
       alt: 'The Former Office Building of the Jewish Cemetery'

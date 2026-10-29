@@ -9,7 +9,7 @@ export const en = {
     'before-1941.title': 'Babyn Yar before 1941',
     'before1941.alt': 'Historical topographic map of the Babyn Yar area',
     overview: [
-      'The origins of the name ‘Babyn Yar’ remain uncertain. According to one version, it derives from the nickname of a local tavern keeper, ‘Baba’ (in Ukrainian usually means grandma or an old woman), who owned land near Syrets. The name was later applied to the ravine and the surrounding area.',
+      'The origins of the name ‘Babyn Yar’ remain uncertain. According to one version, it derives from the nickname of a local tavern keeper, ‘Baba’ (in Ukrainian usually means grandma or an old woman), who owned land near Syrets. The name was later applied to the ravine and the surrounding area. The tract known as Babyn Yar was first documented in the Plan of the City of Kyiv with All Lands under Its Jurisdiction, compiled in 1902 by Ivan Tairov, the city’s land surveyor.',
       "The history of Babyn Yar and its surroundings is often traced back to 1139, when the Olhovychi princes founded the Kyrylivsky Monastery (St. Cyril's Monastery). In 1240, Syrets was mentioned in a charter issued by Prince Danylo of Halych, who granted these lands to the Kyiv-Pechersk Lavra.",
       "From 1661, Syrets and the surrounding area were part of Kyiv's suburbs. In the Hetmanate era, Ivan Mazepa became a patron of the Kyrylivsky Monastery and donated generously to its renovation and restoration.",
       'Under Empress Catherine II of russia, the monastery was secularized and converted into the Kyiv-Kyrylivska Hospital. Land nearby was set aside for burying patients who died there, and by 1871 a cemetery had been established in the Kyrylivsky Grove.',
@@ -115,10 +115,10 @@ export const en = {
       'In the second half of the 1940s, the Soviet city authorities adopted a new master plan for the Syrets and Babyn Yar districts. It called for new housing and a transformation of the area. In 1947, construction of Stalin-era apartment blocks (‘stalinkas’) began on Shchusieva Street, partly on the site of the former Syrets concentration camp. In 1950, work started on a highway through part of the ravine, along the route of what is now Olena Teliha Street.',
       'On March 13, 1961, Kyiv went through one of the worst man-made disasters in its history. For the previous ten years, Babyn Yar had been used as a dumping ground for pulp, the liquid waste from the Petrivka brick factory. The first and second branches of the ravine were filled in 1951–1952, and the third from 1954 onward. The slurry slowly altered the terrain and filled the natural hollows of the ravine.',
       'The dam holding the pulp back could no longer withstand the pressure and collapsed. A 14-meter wave of liquid mud flooded 30 hectares of Kurenivka district within minutes, destroying houses, vehicles and everything in its path. Estimates of the number of people who died that day vary, with several hundred reported killed. The city suffered heavy material losses.',
-      'After the disaster, the landscape of Babyn Yar was permanently transformed: the ravine almost disappeared beneath a layer of silt. The tragedy was suppressed for a long time, and the Soviet authorities downplayed its scale.'
+      'After the disaster, the landscape of Babyn Yar was permanently transformed: the ravine allmost disappeared beneath a layer of silt. The tragedy was suppressed for a long time, and the Soviet authorities downplayed its scale.'
     ],
     'postwar-map.mapSource': 'Base map of the third layer',
-    'postwar-map.listLabel': 'Streets:',
+    'postwar-map.listLabel': 'Third Layer Sites:',
     'postwar-street-1.label': 'Shchusieva Street',
     'postwar-street-1.extraLabels.label': 'Illienka Street',
     'postwar-street-2.label': 'Oleny Telihy Street',
@@ -203,7 +203,7 @@ export const en = {
     mapSource: 'Base map of the fourth layer',
     listLabel: 'Fifth Layer Sites:',
     overview: [
-      'In 2022, the Babyn Yar National Historical Memorial Preserve and the NGO Living Memory revitalized the Avanhard sports complex building and opened the Living Memory Exhibition Center there.',
+      'In 2023, the Babyn Yar National Historical Memorial Preserve and the NGO Living Memory revitalized the Avanhard sports complex building and opened the Living Memory Exhibition Center there.',
       'Since then, the center has hosted more than 15 exhibitions and educational projects. They include Babyn Yar: Mirrors of Death; The Invisible. Resilience: The Roma Past and Present; When the World Falls Apart; State of Deception: The Power of Nazi Propaganda, a joint exhibition with the United States Holocaust Memorial Museum; and Ukrainian-Jewish Century: Photos and Stories from 1920 to 2025, created in cooperation with Centropa.',
       'The Exhibition Center also runs a Film Club and a Book Club. The Film Club screens documentaries on related topics in cooperation with the Goethe-Institut, the Institut français and the Polish Institute in Ukraine. The Book Club holds public discussions of important recent books on the Holocaust, Babyn Yar and memory culture.'
     ],
@@ -211,7 +211,7 @@ export const en = {
       'living-memory': {
         title: 'The “Living Memory” Exhibition Center',
         description:
-          'The “Living Memory” Exhibition Center, operating on the reserve’s grounds and established during Russia’s full-scale invasion of Ukraine in 2022, serves as a space for dialogue, reflection, and the recognition of the importance of preserving memory. It hosts exhibitions, discussions, and educational projects that analyze historical lessons and their relevance to the present day.',
+          'The “Living Memory” Exhibition Center, operating on the reserve’s grounds and established in 2023 during Russia’s full-scale invasion of Ukraine, serves as a space for dialogue, reflection, and the recognition of the importance of preserving memory. It hosts exhibitions, discussions, and educational projects that analyze historical lessons and their relevance to the present day.',
         alt: 'The Living Memory Exhibition Center building'
       },
       'missile-strike': {
