@@ -134,7 +134,7 @@ importers:
         version: 1.2.2(patch_hash=09bfe3868274d32750d07d02047041771b97cfe6afb58adc7d2605c741fe04c5)(@sveltejs/kit@3.1.0(@opentelemetry/api@1.9.1)(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.57.3(@typescript-eslint/types@8.71.2))(vite@8.3.5(@types/node@24.19.2)(jiti@2.7.0)(yaml@2.9.1)))(svelte@5.57.3(@typescript-eslint/types@8.71.2))(typescript@6.0.3)(vite@8.3.5(@types/node@24.19.2)(jiti@2.7.0)(yaml@2.9.1)))(svelte@5.57.3(@typescript-eslint/types@8.71.2))
       svelte-sonner:
         specifier: ^1.1.1
-        version: 1.2.1(svelte@5.57.3(@typescript-eslint/types@8.71.2))
+        version: 1.2.2(svelte@5.57.3(@typescript-eslint/types@8.71.2))
       tailwind-merge:
         specifier: ^3.6.0
         version: 3.7.0
@@ -4119,8 +4119,8 @@ packages:
       svelte:
         optional: true
 
-  svelte-sonner@1.2.1:
-    resolution: {integrity: sha512-N00LOWb60fjKXULbpngku+7E9Krb16KpNq4/Eax5Vu7o1Dpbca55QpaLPsB+yp82JIEdFhfJuv5cVXLoe0ZtVA==}
+  svelte-sonner@1.2.2:
+    resolution: {integrity: sha512-sHAvdhf9PNC7LMBmUSWRGPdxZn17HrW5ITsUKmF4SP9C3IZBE7B3rBw8BEztIiSDcTpEdZcKgmnN+BAhH4M8qQ==}
     peerDependencies:
       svelte: ^5.0.0
 
@@ -8955,7 +8955,7 @@ snapshots:
     optionalDependencies:
       svelte: 5.57.3(@typescript-eslint/types@8.71.2)
 
-  svelte-sonner@1.2.1(svelte@5.57.3(@typescript-eslint/types@8.71.2)):
+  svelte-sonner@1.2.2(svelte@5.57.3(@typescript-eslint/types@8.71.2)):
     dependencies:
       runed: 0.28.0(svelte@5.57.3(@typescript-eslint/types@8.71.2))
       svelte: 5.57.3(@typescript-eslint/types@8.71.2)
