@@ -25,7 +25,7 @@ export function getPostwarScenes(
   text: HistoryMapCopy['postwar'],
   image: MapImageSource
 ) {
-  const period = { id: 'postwar', title: text['postwar.title'] }
+  const period = { id: 'postwar' }
   // The Kurenivka flood spread from the failed earthen dam.
   const damBreach: MapPoint = [561, 237]
   const mapBase = {
@@ -33,12 +33,11 @@ export function getPostwarScenes(
     alt: text['postwar.alt'],
     image
   } as const
-  const floodOverview = text.floodOverview
 
   return [
     {
       id: 'postwar-map',
-      period,
+      period: { ...period, title: text['postwar-map.title'] },
       kind: 'overlays',
       data: {
         mapBase,
@@ -73,7 +72,7 @@ export function getPostwarScenes(
     },
     {
       id: 'postwar-video',
-      period,
+      period: { ...period, title: text['postwar-video.title'] },
       kind: 'video',
       data: {
         aspectRatio: MAP_ASPECT_RATIO,
@@ -81,7 +80,7 @@ export function getPostwarScenes(
           ? '/assets/layer-3-video.mp4'
           : 'https://static.babynyar.work/layer-3-video.mp4',
         caption: text['postwar-video.caption'],
-        overview: [...text['postwar-map.overview'], ...floodOverview]
+        overview: text['postwar-video.overview']
       }
     },
     {
@@ -157,13 +156,13 @@ export function getPostwarScenes(
         routes: [],
         backgroundOverlays: [],
         symbols: [],
-        overview: floodOverview,
+        overview: text.floodOverview,
         featureInitialDelay: 0.25
       }
     },
     {
       id: 'postwar-development',
-      period,
+      period: { ...period, title: text['postwar-development.title'] },
       kind: 'features',
       data: {
         mapBase,
