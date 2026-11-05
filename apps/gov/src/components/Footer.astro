@@ -22,6 +22,9 @@ const { flushMobile = false } = Astro.props
       <FooterSectionItem href={translatePath('/guides/audio')}>
         {lang === 'en' ? 'Audio guide' : 'Аудіогід'}
       </FooterSectionItem>
+      <FooterSectionItem href={translatePath('/guides/places')}>
+        {t('footer.memorials')}
+      </FooterSectionItem>
       <FooterSectionItem href={translatePath('/partners')}>
         {t('footer.partners')}
       </FooterSectionItem>
