@@ -26,7 +26,7 @@ export type HistoryMapFeature = {
     lines?: readonly string[]
     width?: number
   }
-  // Resting territory fill; omitted uses faint white. Hover and selection override it.
+  // Resting territory fill; omitted keeps the source SVG fill. Hover and selection override it.
   fill?: TerritoryFill
   // Spreads the feature outward from `origin` instead of fading it in.
   floodReveal?: { origin: MapPoint; radius: number }

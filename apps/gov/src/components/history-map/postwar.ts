@@ -138,7 +138,6 @@ export function getPostwarScenes(
             label: text['layer3-damba.label'],
             description: text['layer3-damba.description'],
             mapLabel: { anchor: damBreach },
-            fill: 'solid',
             Component: Layer3Damba
           },
           {
