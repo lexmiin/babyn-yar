@@ -84,82 +84,6 @@ export function getPostwarScenes(
       }
     },
     {
-      id: 'postwar-flood',
-      period: { ...period, title: text['postwar-flood.title'] },
-      kind: 'features',
-      data: {
-        mapBase,
-        mapSource: text['postwar-flood.mapSource'],
-        featureLabel: text['postwar-flood.featureLabel'],
-        features: [
-          {
-            id: 'layer3-karer',
-            delay: 0.24,
-            duration: 0.35,
-            label: text['layer3-karer.label'],
-            description: text['layer3-karer.description'],
-            mapLabel: {
-              anchor: [255, 141],
-              lines: text['layer3-karer.lines'],
-              width: 230
-            },
-            Component: Layer3Karer
-          },
-          {
-            id: 'layer3-perekach',
-            delay: 0.68,
-            duration: 0.35,
-            label: text['layer3-perekach.label'],
-            description: text['layer3-perekach.description'],
-            mapLabel: {
-              anchor: [424, 164],
-              lines: text['layer3-perekach.lines'],
-              width: 230
-            },
-            Component: Layer3Perekach
-          },
-          {
-            id: 'layer3-pulpa',
-            delay: 1.4,
-            duration: 0.65,
-            label: text['layer3-pulpa.label'],
-            description: text['layer3-pulpa.description'],
-            mapLabel: {
-              anchor: [497, 283],
-              lines: text['layer3-pulpa.lines'],
-              width: 210
-            },
-            Component: Layer3Pulpa
-          },
-          {
-            id: 'layer3-damba',
-            delay: 1.04,
-            duration: 0.35,
-            label: text['layer3-damba.label'],
-            description: text['layer3-damba.description'],
-            mapLabel: { anchor: damBreach },
-            Component: Layer3Damba
-          },
-          {
-            id: 'layer3-razliv',
-            delay: 2.05,
-            duration: 0.8,
-            label: text['layer3-razliv.label'],
-            description: text['layer3-razliv.description'],
-            mapLabel: { anchor: [790, 160] },
-            fill: 'flood',
-            floodReveal: { origin: damBreach, radius: 370 },
-            Component: Layer3Razliv
-          }
-        ],
-        routes: [],
-        backgroundOverlays: [],
-        symbols: [],
-        overview: text.floodOverview,
-        featureInitialDelay: 0.25
-      }
-    },
-    {
       id: 'postwar-development',
       period: { ...period, title: text['postwar-development.title'] },
       kind: 'features',
@@ -282,6 +206,95 @@ export function getPostwarScenes(
         symbols: [],
         overview: text['postwar-development.overview'],
         featureInitialDelay: 0.25
+      }
+    },
+    {
+      id: 'postwar-flood',
+      period: { ...period, title: text['postwar-flood.title'] },
+      kind: 'features',
+      data: {
+        mapBase,
+        mapSource: text['postwar-flood.mapSource'],
+        featureLabel: text['postwar-flood.featureLabel'],
+        features: [
+          {
+            id: 'layer3-karer',
+            delay: 0.24,
+            duration: 0.35,
+            label: text['layer3-karer.label'],
+            description: text['layer3-karer.description'],
+            mapLabel: {
+              anchor: [255, 141],
+              lines: text['layer3-karer.lines'],
+              width: 230
+            },
+            Component: Layer3Karer
+          },
+          {
+            id: 'layer3-perekach',
+            delay: 0.68,
+            duration: 0.35,
+            label: text['layer3-perekach.label'],
+            description: text['layer3-perekach.description'],
+            mapLabel: {
+              anchor: [424, 164],
+              lines: text['layer3-perekach.lines'],
+              width: 230
+            },
+            Component: Layer3Perekach
+          },
+          {
+            id: 'layer3-pulpa',
+            delay: 1.4,
+            duration: 0.65,
+            label: text['layer3-pulpa.label'],
+            description: text['layer3-pulpa.description'],
+            mapLabel: {
+              anchor: [497, 283],
+              lines: text['layer3-pulpa.lines'],
+              width: 210
+            },
+            Component: Layer3Pulpa
+          },
+          {
+            id: 'layer3-damba',
+            delay: 1.04,
+            duration: 0.35,
+            label: text['layer3-damba.label'],
+            description: text['layer3-damba.description'],
+            mapLabel: { anchor: damBreach },
+            Component: Layer3Damba
+          },
+          {
+            id: 'layer3-razliv',
+            delay: 2.05,
+            duration: 0.8,
+            label: text['layer3-razliv.label'],
+            description: text['layer3-razliv.description'],
+            mapLabel: { anchor: [790, 160] },
+            fill: 'flood',
+            floodReveal: { origin: damBreach, radius: 370 },
+            Component: Layer3Razliv
+          }
+        ],
+        routes: [],
+        backgroundOverlays: [],
+        symbols: [],
+        overview: text.floodOverview,
+        featureInitialDelay: 0.25
+      }
+    },
+    {
+      id: 'postwar-memorialization',
+      period: { ...period, title: text['postwar-memorialization.title'] },
+      kind: 'video',
+      data: {
+        aspectRatio: MAP_ASPECT_RATIO,
+        src: import.meta.env.DEV
+          ? '/assets/memory.mp4'
+          : 'https://static.babynyar.work/memory.mp4',
+        caption: text['postwar-memorialization.caption'],
+        overview: text['postwar-memorialization.overview']
       }
     }
   ] as const satisfies readonly HistoryMapScene[]

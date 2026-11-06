@@ -111,7 +111,9 @@ export const en = {
   postwar: {
     'postwar-map.title': 'The Soviet period 1943–1991',
     'postwar-video.title': 'Soviet development',
-    'postwar-development.title': 'The public call for a place of remembrance for the victims',
+    'postwar-development.title': 'Soviet development',
+    'postwar-memorialization.title':
+      'The public call for a place of remembrance for the victims',
     'postwar.alt': 'Historical map of the Babyn Yar area in 1943–1991',
     floodOverview: [
       'On March 13, 1961, Kyiv went through one of the worst man-made disasters in its history. For the previous ten years, Babyn Yar had been used as a dumping ground for pulp, the liquid waste from the Petrivka brick factory. The first and second branches of the ravine were filled in 1951–1952, and the third from 1954 onward. The slurry slowly altered the terrain and filled the natural hollows of the ravine.',
@@ -129,8 +131,7 @@ export const en = {
     'postwar-video.caption':
       'Archival footage of development and hydraulic filling at Babyn Yar',
     'postwar-video.overview': [
-      'The cemetery grounds were gradually built over. In 1958, some of the graves from the Lukyanivske Jewish Cemetery were moved to the Berkovetske Cemetery. In 1962, the Lukyanivske Jewish, Karaite and Muslim cemeteries were closed, and their demolition began. Some Karaite burials were relocated to the Lukyanivske Cemetery.',
-      'From 1964, the cleared land was used for the construction of a sports complex for the Avanhard sports society, with two halls and a swimming pool. A sports school was added in 1969, followed by an indoor ice rink in 1976. By 1980, the Shevchenkivskyi District Park of Culture and Recreation had been established on the former ravine grounds. The former Fraternal and Jewish cemeteries were also built over: the Kyiv TV Tower was erected in 1976, followed by the Kyiv Television Center, also known as ‘the Pencil’, which was constructed from 1983 to the early 1990s.'
+      'The cemetery grounds were gradually built over. In 1958, some of the graves from the Lukyanivske Jewish Cemetery were moved to the Berkovetske Cemetery. In 1962, the Lukyanivske Jewish, Karaite and Muslim cemeteries were closed, and their demolition began. Some Karaite burials were relocated to the Lukyanivske Cemetery.'
     ],
     'postwar-flood.mapSource': 'Base map of the third layer',
     'postwar-flood.title': timeline.flood.title,
@@ -153,6 +154,9 @@ export const en = {
     'layer3-damba.description': uk.postwar['layer3-damba.description'],
     'layer3-razliv.label': 'Kurenivka tragedy',
     'layer3-razliv.description': uk.postwar['layer3-razliv.description'],
+    'postwar-development.overview': [
+      'From 1964, the cleared land was used for the construction of a sports complex for the Avanhard sports society, with two halls and a swimming pool. A sports school was added in 1969, followed by an indoor ice rink in 1976. By 1980, the Shevchenkivskyi District Park of Culture and Recreation had been established on the former ravine grounds. The former Fraternal and Jewish cemeteries were also built over: the Kyiv TV Tower was erected in 1976, followed by the Kyiv Television Center, also known as ‘the Pencil’, which was constructed from 1983 to the early 1990s.'
+    ],
     'postwar-development.mapSource': 'Base map of the third layer',
     'postwar-development.featureLabel': 'Third Layer Sites:',
     'layer3-lager.label': 'Site of the former Syrets camp',
@@ -177,7 +181,9 @@ export const en = {
     'layer3-point-2.lines': ['Kyiv TV Centre', '“the Pencil”'],
     'layer3-point-3.label': 'Soviet monument',
     'layer3-point-3.description': uk.postwar['layer3-point-3.description'],
-    'postwar-development.overview': [
+    'postwar-memorialization.caption':
+      'Archival footage of commemorations at Babyn Yar',
+    'postwar-memorialization.overview': [
       'On September 29, 1944, the first mourning ceremony for the victims was held at Babyn Yar, with the writers David Hofstein and Itsik Kipnis among those who took part in a big rally. Over the following thirty years, the Soviet authorities rejected every request to put up a monument here and instead planned further development of the site.',
       'Still, Babyn Yar remained a place for mourning gatherings and political demonstrations by Jews from the USSR and the West. In 1965, the writer Elie Wiesel visited Babyn Yar. In 1966, two demonstrations were held, on September 24 and 29. Ukrainian intellectuals took an active part in the second one, and the dissident Ivan Dziuba gave a speech.',
       'In 1976, a Soviet monument was erected on the site where Jews had traditionally gathered, but it made no mention of Jewish victims. A Yiddish inscription next to the monument was added only in 1989.'
