@@ -23,7 +23,7 @@ export const PRESENT_DAY_POI_CONTENT = {
     title:
       "Пам'ятник радянським громадянам та військовополоненим солдатам і офіцерам Радянської Армії, які загинули від рук німецьких окупантів",
     description:
-      "Офіційний державний пам'ятник було встановлено 2 липня 1976 року у верхів'ях Бабиного яру, між двома місцями масових розстрілів: самим яром за вулицею Юрія Іллєнка і протитанковим ровом за вулицею Дорогожицькою та навпроти місця Сирецького концтабору за вулицею Олени Теліги. У 1989 році поруч із оригінальними написами українською та російською мовами було встановлено плиту з написом мовою їдиш.",
+      "Офіційний державний пам'ятник було встановлено 2 липня 1976 року у верхів'ях Бабиного яру, між двома місцями масових розстрілів: самим яром за вулицею Юрія Іллєнка і протитанковим ровом за вулицею Дорогожицькою та навпроти місця Сирецького табору за вулицею Олени Теліги. У 1989 році поруч із оригінальними написами українською та російською мовами було встановлено плиту з написом мовою їдиш.",
     image: {
       src: `${POI_IMAGE_ROOT}/01-soviet-monument.webp`,
       alt: "Пам'ятник радянським громадянам та військовополоненим"
@@ -32,7 +32,7 @@ export const PRESENT_DAY_POI_CONTENT = {
       title:
         'Monument to Soviet citizens and prisoners of war, soldiers and officers of the Soviet Army, who were killed by the German occupiers',
       description:
-        'The official state monument was erected on 2 July 1976 in the upper part of Babyn Yar. It stands between two sites of mass shootings — the ravine itself, beyond Yuriia Illienka Street, and the anti-tank ditch, beyond Dorohozhytska Street — and opposite the site of the Syrets concentration camp, beyond Olena Teliha Street. In 1989, a plaque with an inscription in Yiddish was added alongside the original Ukrainian and Russian inscriptions.',
+        'The official state monument was erected on 2 July 1976 in the upper part of Babyn Yar. It stands between two sites of mass shootings — the ravine itself, beyond Yuriia Illienka Street, and the anti-tank ditch, beyond Dorohozhytska Street — and opposite the site of the Syrets camp, beyond Olena Teliha Street. In 1989, a plaque with an inscription in Yiddish was added alongside the original Ukrainian and Russian inscriptions.',
       alt: 'Monument to Soviet Citizens and Prisoners of War, Soldiers and Officers of the Soviet Army, Killed by the German Occupiers'
     }
   },
