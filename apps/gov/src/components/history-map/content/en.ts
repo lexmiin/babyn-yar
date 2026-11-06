@@ -181,8 +181,6 @@ export const en = {
     'layer3-point-2.lines': ['Kyiv TV Centre', '“the Pencil”'],
     'layer3-point-3.label': 'Soviet monument',
     'layer3-point-3.description': uk.postwar['layer3-point-3.description'],
-    'postwar-memorialization.caption':
-      'Archival footage of commemorations at Babyn Yar',
     'postwar-memorialization.overview': [
       'On September 29, 1944, the first mourning ceremony for the victims was held at Babyn Yar, with the writers David Hofstein and Itsik Kipnis among those who took part in a big rally. Over the following thirty years, the Soviet authorities rejected every request to put up a monument here and instead planned further development of the site.',
       'Still, Babyn Yar remained a place for mourning gatherings and political demonstrations by Jews from the USSR and the West. In 1965, the writer Elie Wiesel visited Babyn Yar. In 1966, two demonstrations were held, on September 24 and 29. Ukrainian intellectuals took an active part in the second one, and the dissident Ivan Dziuba gave a speech.',

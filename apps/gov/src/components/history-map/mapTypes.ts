@@ -124,7 +124,7 @@ export type HistoryMapOverlaySceneData = {
 export type HistoryMapVideoSceneData = {
   aspectRatio: string
   src: string
-  caption: string
+  caption?: string
   overview: readonly string[]
 }
 

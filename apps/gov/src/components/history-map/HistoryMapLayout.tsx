@@ -5,7 +5,7 @@ type HistoryMapLayoutProps = {
   title: ReactNode
   map: ReactNode
   mapAspectRatio: string
-  mapSource: string
+  mapSource?: string
   belowMap?: ReactNode
   children: ReactNode
 }
@@ -45,9 +45,11 @@ export default function HistoryMapLayout({
             >
               {map}
             </div>
-            <figcaption className="mt-2 text-right text-xs leading-snug font-light text-neutral-400 italic">
-              {mapSource}
-            </figcaption>
+            {mapSource && (
+              <figcaption className="mt-2 text-right text-xs leading-snug font-light text-neutral-400 italic">
+                {mapSource}
+              </figcaption>
+            )}
           </figure>
 
           {belowMap}

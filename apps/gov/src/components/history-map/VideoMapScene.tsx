@@ -27,7 +27,7 @@ export default function VideoMapScene({
         <motion.video
           data-history-map-video
           src={src}
-          aria-label={caption}
+          aria-label={caption ?? period.title}
           className="absolute inset-0 h-full w-full object-cover"
           autoPlay
           muted
