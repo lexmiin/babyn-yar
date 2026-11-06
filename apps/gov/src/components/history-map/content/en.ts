@@ -17,7 +17,7 @@ export const en = {
     ],
     'before-1941-features.mapSource':
       'Topographic plan of Kyiv as of 1924, 1:2100 (reduced)',
-    'before-1941-features.featureLabel': 'Cemetery areas:',
+    'before-1941-features.featureLabel': 'Objects indicated on the map:',
     'jewish-cemetery.label': 'Lukianivka Jewish Cemetery',
     'jewish-cemetery.description': uk.before1941['jewish-cemetery.description'],
     'jewish-cemetery.lines': ['Lukianivka Jewish', 'Cemetery'],
@@ -53,7 +53,7 @@ export const en = {
     'occupation-features.mapSource':
       'The source of the second layer’s base map is being clarified',
     'occupation-features.title': timeline.shootings.date,
-    'occupation-features.featureLabel': 'Second Layer Sites:',
+    'occupation-features.featureLabel': 'Objects indicated on the map:',
     'layer2-zone-1.label': 'Babyn Yar mass shooting zone',
     'layer2-zone-1.description': uk.occupation['layer2-zone-1.description'],
     'layer2-zone-1.lines': ['Babyn Yar mass', 'shooting zone'],
@@ -81,7 +81,7 @@ export const en = {
     'occupation-features-part-2.mapSource':
       'The source of the second layer’s base map is being clarified',
     'occupation-features-part-2.title': `${timeline.occupation.date} ${timeline.occupation.title}`,
-    'occupation-features-part-2.featureLabel': 'Second Layer Sites:',
+    'occupation-features-part-2.featureLabel': 'Objects indicated on the map:',
     'layer2-zone-2.label': 'Syrets camp',
     'layer2-zone-2.description': uk.occupation['layer2-zone-2.description'],
     'layer2-zone-4.label': 'Site of the murder of Pavlov Hospital patients',
@@ -121,7 +121,7 @@ export const en = {
       'After the disaster, the landscape of Babyn Yar was permanently transformed: the ravine almost disappeared beneath a layer of silt. The tragedy was suppressed for a long time, and the Soviet authorities downplayed its scale.'
     ],
     'postwar-map.mapSource': 'Base map of the third layer',
-    'postwar-map.listLabel': 'Third Layer Sites:',
+    'postwar-map.listLabel': 'Objects indicated on the map:',
     'postwar-street-1.label': 'Shchusieva Street',
     'postwar-street-1.extraLabels.label': 'Illienka Street',
     'postwar-street-2.label': 'Oleny Telihy Street',
@@ -135,7 +135,7 @@ export const en = {
     ],
     'postwar-flood.mapSource': 'Base map of the third layer',
     'postwar-flood.title': timeline.flood.title,
-    'postwar-flood.featureLabel': 'Third Layer Sites:',
+    'postwar-flood.featureLabel': 'Objects indicated on the map:',
     'layer3-karer.label': 'Quarry of the Petrivka brickworks',
     'layer3-karer.description': uk.postwar['layer3-karer.description'],
     'layer3-karer.lines': ['Quarry of the', 'Petrivka brickworks'],
@@ -158,7 +158,7 @@ export const en = {
       'From 1964, the cleared land was used for the construction of a sports complex for the Avanhard sports society, with two halls and a swimming pool. A sports school was added in 1969, followed by an indoor ice rink in 1976. By 1980, the Shevchenkivskyi District Park of Culture and Recreation had been established on the former ravine grounds. The former Fraternal and Jewish cemeteries were also built over: the Kyiv TV Tower was erected in 1976, followed by the Kyiv Television Center, also known as ‘the Pencil’, which was constructed from 1983 to the early 1990s.'
     ],
     'postwar-development.mapSource': 'Base map of the third layer',
-    'postwar-development.featureLabel': 'Third Layer Sites:',
+    'postwar-development.featureLabel': 'Objects indicated on the map:',
     'layer3-lager.label': 'Site of the former Syrets camp',
     'layer3-lager.description': uk.postwar['layer3-lager.description'],
     'layer3-lager.lines': ['Site of the former', 'Syrets camp'],
@@ -192,7 +192,7 @@ export const en = {
   presentDay: {
     'presentDay.alt': 'Present-day map of the Babyn Yar area',
     'present-day-pois.mapSource': 'Base map of the fourth layer',
-    'present-day-pois.listLabel': 'Fourth Layer Sites:',
+    'present-day-pois.listLabel': 'Objects indicated on the map:',
     'present-day-pois.overview': [
       'In the first years of independence, projects planned during the late Soviet period continued to be developed in Babyn Yar and the surrounding areas. Plans for the Syrets–Pechersk metro line had existed since the 1970s. Its Dorohozhychi station opened in 2000, even though it was built within the area where mass shootings and burials had taken place in 1941–1943. From 2019 to the third quarter of 2021, the UNO City House residential complex was built at 25 Olena Teliha Street, on the site where mass shootings had also taken place.',
       'After the fall of the communist rule and lifting the censorship, but without a coordinated state policy on the commemoration of Babyn Yar, monuments and memorial plaques initiated by various organizations began to appear throughout the area, without an overall plan.',
@@ -211,7 +211,7 @@ export const en = {
     title: '2022 to the present day',
     mapAlt: 'Present-day map of the Babyn Yar area',
     mapSource: 'Base map of the fourth layer',
-    listLabel: 'Fifth Layer Sites:',
+    listLabel: 'Objects indicated on the map:',
     overview: [
       'In 2023, the Babyn Yar National Historical Memorial Preserve and the NGO Living Memory revitalized the Avanhard sports complex building and opened the Living Memory Exhibition Center there.',
       'Since then, the center has hosted more than 15 exhibitions and educational projects. They include Babyn Yar: Mirrors of Death; The Invisible. Resilience: The Roma Past and Present; When the World Falls Apart; State of Deception: The Power of Nazi Propaganda, a joint exhibition with the United States Holocaust Memorial Museum; and Ukrainian-Jewish Century: Photos and Stories from 1920 to 2025, created in cooperation with Centropa.',
