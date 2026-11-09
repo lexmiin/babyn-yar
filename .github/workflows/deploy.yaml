@@ -1,0 +1,79 @@
+# Deploys a release to production over Tailscale; called by release.yaml, or run
+# manually with an existing tag to redeploy or roll back. Rollbacks never undo
+# migrations, so the older app runs against the newer schema. Keep migrations
+# backward-compatible. If a release run is still in progress, cancel it before
+# rolling back, or its deploy will replace the rollback.
+#
+# Requires (backup.yaml uses the same setup):
+# - Tailscale: a `tag:ci` tag; a grant from tag:ci to tag:server on tcp:22; an
+#   ssh rule letting tag:ci log in to tag:server as DEPLOY_USER; Tailscale SSH
+#   enabled on the server (`tailscale set --ssh`); and an OpenID Connect trust
+#   credential (issuer GitHub, subject
+#   `repo:lexmiin/babyn-yar:environment:production`, scope Auth Keys > Write,
+#   tag `tag:ci`).
+# - GitHub `production` environment: deployment rules allowing branch `main`
+#   and tags `v*`; secrets TS_OAUTH_CLIENT_ID, TS_AUDIENCE (from the trust
+#   credential), CLOUDFLARE_ZONE_ID, CLOUDFLARE_API_TOKEN; variables
+#   DEPLOY_HOST (server's MagicDNS name) and DEPLOY_USER.
+# - Server: ~/babyn-yar/.env synced with `just remote-sync`; docker, rsync,
+#   and flock (util-linux) installed.
+name: deploy
+on:
+  workflow_call:
+    inputs:
+      tag:
+        description: release tag to deploy
+        required: true
+        type: string
+  # redeploy or roll back to an existing release
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: release tag to deploy, e.g. v2026.11.09
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: deploy ${{ inputs.tag }}
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: refs/tags/${{ inputs.tag }}
+
+      - name: connect to tailnet
+        uses: tailscale/github-action@064b10558093f38325e838ddea35486bdc6b1d5c # v4.4.0
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          audience: ${{ secrets.TS_AUDIENCE }}
+          tags: tag:ci
+          ping: ${{ vars.DEPLOY_HOST }}
+
+      - name: configure ssh
+        run: |
+          mkdir -p ~/.ssh
+          printf 'Host *\n  StrictHostKeyChecking accept-new\n' >> ~/.ssh/config
+          chmod 600 ~/.ssh/config
+
+      - name: deploy
+        env:
+          TARGET: ${{ vars.DEPLOY_USER }}@${{ vars.DEPLOY_HOST }}
+          TAG: ${{ inputs.tag }}
+        run: ./scripts/deploy.sh "$TARGET" "$TAG"
+
+      - name: purge cdn cache
+        env:
+          CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: ./scripts/purge-cdn-cache.sh

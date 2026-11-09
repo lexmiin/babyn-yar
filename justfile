@@ -68,23 +68,56 @@ remote-setup user host: build-backup
     ssh {{ user }}@{{ host }} 'chmod +x /home/{{ user }}/.local/bin/dbbackup'
     just remote-sync {{ user }} {{ host }}
 
+# Sync production secrets to the server's .env. Compose, Caddy, and migrations
+# ship with each deploy; restart with `just deploy-production` to apply.
 remote-sync user host:
     #!/usr/bin/env bash
     set -euo pipefail
     # Export before touching the server so a failed decryption can't clobber the remote .env.
     env_file="$(fnox --if-missing error export --profile production)"
-    scp docker-compose.yml {{ user }}@{{ host }}:/home/{{ user }}/babyn-yar/docker-compose.yml
     printf '%s\n' "$env_file" | ssh {{ user }}@{{ host }} 'cat > /home/{{ user }}/babyn-yar/.env && chmod 600 /home/{{ user }}/babyn-yar/.env'
-    scp -r caddy {{ user }}@{{ host }}:/home/{{ user }}/babyn-yar/
 
-remote-deploy user host:
-    just remote-sync {{ user }} {{ host }}
-    ssh {{ user }}@{{ host }} 'set -e; cd ~/babyn-yar; docker compose pull api admin gov; docker compose up -d --wait; docker compose exec -T caddy caddy reload --config /etc/caddy/Caddyfile --adapter caddyfile'
+# Release origin/main; the release workflow builds, publishes, and deploys it.
+release:
+    #!/usr/bin/env bash
+    set -euo pipefail
 
-[confirm("Are you sure you want to apply migrations on remote?")]
-remote-migrations-up user host:
-    rsync -az --delete migrations {{ user }}@{{ host }}:/home/{{ user }}/babyn-yar/
-    ssh {{ user }}@{{ host }} "cd /home/{{ user }}/babyn-yar && docker compose --profile tools run --rm migrate up"
+    # A release started while another is queued would replace the queued one,
+    # leaving its tag without images.
+    active="$(gh run list --workflow release.yaml --limit 20 --json status --jq '[.[] | select(.status != "completed")] | length')"
+    if [[ "$active" -ne 0 ]]; then
+        echo "A release run is still in progress; wait for it to finish." >&2
+        exit 1
+    fi
+
+    # Same format as the check in .github/workflows/release.yaml.
+    base="v$(date -u +%Y.%m.%d)"
+    existing="$(gh api "repos/{owner}/{repo}/git/matching-refs/tags/${base}" --jq '.[].ref | sub("^refs/tags/"; "")')"
+    version="$base"
+    n=0
+    while grep -qxF "$version" <<<"$existing"; do
+        n=$((n + 1))
+        version="${base}.${n}"
+    done
+
+    # Pin the release to the commit shown, even if main moves during the prompt.
+    read -r sha subject < <(gh api 'repos/{owner}/{repo}/commits/main' --jq '.sha + " " + (.commit.message | split("\n")[0])')
+    echo "Release $version from origin main: ${sha:0:12} $subject"
+    read -r -p "Continue? [y/N] " answer
+    [[ "$answer" == [yY] ]] || exit 1
+
+    gh release create "$version" --target "$sha" --title "$version" --generate-notes
+
+# Deploy an existing release from this machine (fallback for the deploy
+# workflow). Uses the files at the release tag, not the working copy.
+[confirm("Are you sure you want to deploy to production?")]
+remote-deploy user host tag:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    src="$(mktemp -d)"
+    trap 'rm -rf "$src"' EXIT
+    gh api "repos/{owner}/{repo}/tarball/refs/tags/{{ tag }}" | tar -xz -C "$src" --strip-components=1
+    "$src/scripts/deploy.sh" {{ user }}@{{ host }} {{ tag }}
 
 db-tunnel user host port="5432":
     -ssh -N -L {{ port }}:127.0.0.1:5432 {{ user }}@{{ host }}
@@ -111,18 +144,9 @@ db-sync remote="babynyar" bucket="db-backup":
     gunzip -c "$backup_path" > "$dump_path"
     docker compose -f docker-compose.dev.yml exec -T db psql -U postgres -d postgres < "$dump_path"
 
-deploy-production user host:
-    just remote-deploy {{ user }} {{ host }}
+deploy-production user host tag:
+    just remote-deploy {{ user }} {{ host }} {{ tag }}
     just purge-cdn-cache
 
 purge-cdn-cache:
-    fnox --if-missing error exec --profile production -- just _purge-cdn-cache
-
-[private]
-_purge-cdn-cache:
-    @curl --silent --show-error --fail-with-body \
-        --request POST \
-        "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/purge_cache" \
-        --header "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
-        --json '{"tags":["babynyar-html"]}' \
-        | jq -e '.success == true' >/dev/null
+    fnox --if-missing error exec --profile production -- ./scripts/purge-cdn-cache.sh

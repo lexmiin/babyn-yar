@@ -3,22 +3,44 @@ on:
   schedule:
     - cron: '0 0 * * *' # daily at midnight
   workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   backup:
     runs-on: ubuntu-latest
+    environment: production
     steps:
-      - name: execute remote script
-        uses: appleboy/ssh-action@v1.2.5
+      - name: connect to tailnet
+        uses: tailscale/github-action@064b10558093f38325e838ddea35486bdc6b1d5c # v4.4.0
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          audience: ${{ secrets.TS_AUDIENCE }}
+          tags: tag:ci
+          ping: ${{ vars.DEPLOY_HOST }}
+
+      - name: configure ssh
+        run: |
+          mkdir -p ~/.ssh
+          printf 'Host *\n  StrictHostKeyChecking accept-new\n' >> ~/.ssh/config
+          chmod 600 ~/.ssh/config
+
+      - name: run backup
         env:
+          TARGET: ${{ vars.DEPLOY_USER }}@${{ vars.DEPLOY_HOST }}
           STORAGE_BUCKET_NAME: ${{ secrets.STORAGE_BUCKET_NAME }}
           STORAGE_ACCOUNT_ID: ${{ secrets.STORAGE_ACCOUNT_ID }}
           STORAGE_ACCESS_KEY_ID: ${{ secrets.STORAGE_ACCESS_KEY_ID }}
           STORAGE_SECRET_ACCESS_KEY: ${{ secrets.STORAGE_SECRET_ACCESS_KEY }}
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          port: ${{ secrets.SSH_PORT }}
-          key: ${{ secrets.SSH_KEY }}
-          envs: STORAGE_BUCKET_NAME,STORAGE_ACCOUNT_ID,STORAGE_ACCESS_KEY_ID,STORAGE_SECRET_ACCESS_KEY
-          script: |
-            dbbackup
+        # credentials go over stdin so they never appear in the remote command line
+        run: |
+          # shellcheck disable=SC2016 # $HOME expands on the server
+          {
+            echo 'set -eu'
+            for name in STORAGE_BUCKET_NAME STORAGE_ACCOUNT_ID STORAGE_ACCESS_KEY_ID STORAGE_SECRET_ACCESS_KEY; do
+              printf 'export %s=%q\n' "$name" "${!name}"
+            done
+            echo 'exec "$HOME/.local/bin/dbbackup"'
+          } | ssh "$TARGET" 'bash -s'
