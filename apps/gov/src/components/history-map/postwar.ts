@@ -293,6 +293,7 @@ export function getPostwarScenes(
         src: import.meta.env.DEV
           ? '/assets/memory.mp4'
           : 'https://static.babynyar.work/memory.mp4',
+        caption: text['postwar-memorialization.caption'],
         overview: text['postwar-memorialization.overview']
       }
     }

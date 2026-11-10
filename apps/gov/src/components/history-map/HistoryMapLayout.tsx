@@ -28,7 +28,7 @@ export default function HistoryMapLayout({
         aria-labelledby={titleId}
         tabIndex={0}
         data-history-map-scroll-container
-        className="grid max-h-[calc(100dvh-9rem)] [scrollbar-width:none] items-start gap-y-10 overflow-y-auto pr-3 md:grid-cols-[minmax(0,1.75fr)_minmax(15rem,0.8fr)] md:gap-x-8 lg:gap-x-12 xl:gap-x-16 [&::-webkit-scrollbar]:hidden"
+        className="grid max-h-[calc(100dvh-9rem)] [scrollbar-width:none] items-start gap-y-10 overflow-y-auto pr-3 pb-12 md:grid-cols-[minmax(0,1.75fr)_minmax(15rem,0.8fr)] md:gap-x-8 lg:gap-x-12 xl:gap-x-16 [&::-webkit-scrollbar]:hidden"
       >
         <div className="min-w-0">
           <h2
@@ -47,7 +47,7 @@ export default function HistoryMapLayout({
             </div>
             {mapSource && (
               <figcaption className="mt-2 text-right text-xs leading-snug font-light text-neutral-400 italic">
-                {mapSource}
+                {linkifyUrls(mapSource)}
               </figcaption>
             )}
           </figure>
@@ -63,5 +63,23 @@ export default function HistoryMapLayout({
         </aside>
       </div>
     </div>
+  )
+}
+
+function linkifyUrls(text: string) {
+  return text.split(/(https?:\/\/\S+)/).map((part, index) =>
+    index % 2 === 1 ? (
+      <a
+        key={index}
+        href={part}
+        target="_blank"
+        rel="noreferrer"
+        className="underline underline-offset-2 hover:text-neutral-200"
+      >
+        {part}
+      </a>
+    ) : (
+      part
+    )
   )
 }

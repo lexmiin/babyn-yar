@@ -1,6 +1,9 @@
 import { landscape } from './landscape'
 import { uk, type HistoryMapCopy } from './uk'
 
+const mapSource =
+  'Cartographic sources: https://resource.history.org.ua/item/0014254'
+
 const timeline = landscape.en.periods
 
 // shortcut: descriptions absent from the source retain Ukrainian; replace when approved translations arrive.
@@ -15,8 +18,7 @@ export const en = {
       'Under Empress Catherine II of russia, the monastery was secularized and converted into the Kyiv-Kyrylivska Hospital. Land nearby was set aside for burying patients who died there, and by 1871 a cemetery had been established in the Kyrylivsky Grove.',
       'In the late 19th century, two Jewish sites were established near Babyn Yar: the Jewish Hospital in 1885 and the Lukyanivske Jewish Cemetery in 1894. Adjacent to the cemetery were the Kyrylivske Orthodox Cemetery and the Karaite, Muslim, Fraternal and Military cemeteries.'
     ],
-    'before-1941-features.mapSource':
-      'Topographic plan of Kyiv as of 1924, 1:2100 (reduced)',
+    'before-1941-features.mapSource': mapSource,
     'before-1941-features.featureLabel': 'Objects indicated on the map:',
     'jewish-cemetery.label': 'Lukianivka Jewish Cemetery',
     'jewish-cemetery.description': uk.before1941['jewish-cemetery.description'],
@@ -50,8 +52,7 @@ export const en = {
   },
   occupation: {
     'occupation.alt': 'Map of the Babyn Yar area during the Nazi occupation',
-    'occupation-features.mapSource':
-      'The source of the second layer’s base map is being clarified',
+    'occupation-features.mapSource': mapSource,
     'occupation-features.title': timeline.shootings.date,
     'occupation-features.featureLabel': 'Objects indicated on the map:',
     'layer2-zone-1.label': 'Babyn Yar mass shooting zone',
@@ -78,8 +79,7 @@ export const en = {
       'Over September 29–30, thousands of people made their way toward the cemetery grounds, believing they were being resettled. Sonderkommando 4a of Einsatzgruppe C, led by SS-Standartenführer Paul Blobel, robbed and murdered around 34,000 Jews from Kyiv at Babyn Yar. The unit was assisted by two battalions of the German Police Regiment South, the 45th and 303rd, as well as the local collaborationist police and administrative authorities.',
       'Only eleven people managed to escape from the ravine itself. About 21 more prisoners of the Syrets camp, who were also meant to be shot at Babyn Yar, got away.'
     ],
-    'occupation-features-part-2.mapSource':
-      'The source of the second layer’s base map is being clarified',
+    'occupation-features-part-2.mapSource': mapSource,
     'occupation-features-part-2.title': `${timeline.occupation.date} ${timeline.occupation.title}`,
     'occupation-features-part-2.featureLabel': 'Objects indicated on the map:',
     'layer2-zone-2.label': 'Syrets camp',
@@ -120,7 +120,7 @@ export const en = {
       'The dam holding the pulp back could no longer withstand the pressure and collapsed. A 14-meter wave of liquid mud flooded 30 hectares of Kurenivka district within minutes, destroying houses, vehicles and everything in its path. Estimates of the number of people who died that day vary, with several hundred reported killed. The city suffered heavy material losses.',
       'After the disaster, the landscape of Babyn Yar was permanently transformed: the ravine almost disappeared beneath a layer of silt. The tragedy was suppressed for a long time, and the Soviet authorities downplayed its scale.'
     ],
-    'postwar-map.mapSource': 'Base map of the third layer',
+    'postwar-map.mapSource': mapSource,
     'postwar-map.listLabel': 'Objects indicated on the map:',
     'postwar-street-1.label': 'Shchusieva Street',
     'postwar-street-1.extraLabels.label': 'Illienka Street',
@@ -133,7 +133,7 @@ export const en = {
     'postwar-video.overview': [
       'The cemetery grounds were gradually built over. In 1958, some of the graves from the Lukyanivske Jewish Cemetery were moved to the Berkovetske Cemetery. In 1962, the Lukyanivske Jewish, Karaite and Muslim cemeteries were closed, and their demolition began. Some Karaite burials were relocated to the Lukyanivske Cemetery.'
     ],
-    'postwar-flood.mapSource': 'Base map of the third layer',
+    'postwar-flood.mapSource': mapSource,
     'postwar-flood.title': timeline.flood.title,
     'postwar-flood.featureLabel': 'Objects indicated on the map:',
     'layer3-karer.label': 'Quarry of the Petrivka brickworks',
@@ -157,7 +157,7 @@ export const en = {
     'postwar-development.overview': [
       'From 1964, the cleared land was used for the construction of a sports complex for the Avanhard sports society, with two halls and a swimming pool. A sports school was added in 1969, followed by an indoor ice rink in 1976. By 1980, the Shevchenkivskyi District Park of Culture and Recreation had been established on the former ravine grounds. The former Fraternal and Jewish cemeteries were also built over: the Kyiv TV Tower was erected in 1976, followed by the Kyiv Television Center, also known as ‘the Pencil’, which was constructed from 1983 to the early 1990s.'
     ],
-    'postwar-development.mapSource': 'Base map of the third layer',
+    'postwar-development.mapSource': mapSource,
     'postwar-development.featureLabel': 'Objects indicated on the map:',
     'layer3-lager.label': 'Site of the former Syrets camp',
     'layer3-lager.description': uk.postwar['layer3-lager.description'],
@@ -181,6 +181,8 @@ export const en = {
     'layer3-point-2.lines': ['Kyiv TV Centre', '“the Pencil”'],
     'layer3-point-3.label': 'Soviet monument',
     'layer3-point-3.description': uk.postwar['layer3-point-3.description'],
+    'postwar-memorialization.caption':
+      'Video from the archives of the NM “Babyn Yar”, filmed by Eduard Timlin on the eve of the rally held on 29 September 1966.',
     'postwar-memorialization.overview': [
       'On September 29, 1944, the first mourning ceremony for the victims was held at Babyn Yar, with the writers David Hofstein and Itsik Kipnis among those who took part in a big rally. Over the following thirty years, the Soviet authorities rejected every request to put up a monument here and instead planned further development of the site.',
       'Still, Babyn Yar remained a place for mourning gatherings and political demonstrations by Jews from the USSR and the West. In 1965, the writer Elie Wiesel visited Babyn Yar. In 1966, two demonstrations were held, on September 24 and 29. Ukrainian intellectuals took an active part in the second one, and the dissident Ivan Dziuba gave a speech.',
@@ -189,7 +191,7 @@ export const en = {
   },
   presentDay: {
     'presentDay.alt': 'Present-day map of the Babyn Yar area',
-    'present-day-pois.mapSource': 'Base map of the fourth layer',
+    'present-day-pois.mapSource': mapSource,
     'present-day-pois.listLabel': 'Objects indicated on the map:',
     'present-day-pois.overview': [
       'In the first years of independence, projects planned during the late Soviet period continued to be developed in Babyn Yar and the surrounding areas. Plans for the Syrets–Pechersk metro line had existed since the 1970s. Its Dorohozhychi station opened in 2000, even though it was built within the area where mass shootings and burials had taken place in 1941–1943. From 2019 to the third quarter of 2021, the UNO City House residential complex was built at 25 Olena Teliha Street, on the site where mass shootings had also taken place.',
@@ -208,7 +210,7 @@ export const en = {
   wartime: {
     title: '2022 to the present day',
     mapAlt: 'Present-day map of the Babyn Yar area',
-    mapSource: 'Base map of the fourth layer',
+    mapSource,
     listLabel: 'Objects indicated on the map:',
     overview: [
       'In 2023, the Babyn Yar National Historical Memorial Preserve and the NGO Living Memory revitalized the Avanhard sports complex building and opened the Living Memory Exhibition Center there.',
