@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"uuid"
 
+	"github.com/getsentry/sentry-go"
 	chimiddleware "github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 	"github.com/go-chi/httplog/v3"
@@ -26,6 +27,9 @@ func requestIDHeader(next http.Handler) http.Handler {
 		requestID := chimiddleware.GetReqID(r.Context())
 		w.Header().Set(chimiddleware.RequestIDHeader, requestID)
 		httplog.SetAttrs(r.Context(), slog.String("request_id", requestID))
+		if hub := sentry.GetHubFromContext(r.Context()); hub != nil {
+			hub.Scope().SetTag("request_id", requestID)
+		}
 
 		next.ServeHTTP(w, r)
 	})

@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/boj/redistore/v2"
+	"github.com/getsentry/sentry-go"
 	"github.com/gorilla/sessions"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lex-unix/babyn-yar/internal/assets"
@@ -25,6 +26,8 @@ import (
 const (
 	version     = "1.0.0"
 	sessionName = "user-session"
+
+	sentryFlushTimeout = 2 * time.Second
 )
 
 type application struct {
@@ -46,6 +49,8 @@ func main() {
 
 	if err := run(logger); err != nil {
 		logger.Error("application failed", "err", err)
+		sentry.CaptureException(err)
+		sentry.Flush(sentryFlushTimeout)
 		os.Exit(1)
 	}
 }
@@ -64,6 +69,15 @@ func run(logger *slog.Logger) error {
 	if err != nil {
 		return err
 	}
+
+	err = sentry.Init(sentry.ClientOptions{
+		Dsn:         cfg.Sentry.DSN,
+		Environment: cfg.Env,
+	})
+	if err != nil {
+		return err
+	}
+	defer sentry.Flush(sentryFlushTimeout)
 
 	purger, err := newCachePurger(cfg)
 	if err != nil {
