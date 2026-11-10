@@ -5,6 +5,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/lex-unix/babyn-yar/internal/cachepurge"
 )
 
@@ -32,10 +33,20 @@ func (app *application) runCachePurgeWorker(ctx context.Context) {
 	app.logger.Info("cache purge outbox worker started")
 	defer app.logger.Info("cache purge outbox worker stopped")
 
+	// The worker polls every few seconds, so an outage would otherwise send
+	// Sentry the same error on every poll. Report only the first of a streak.
+	failing := false
+
 	for {
 		processed, err := app.processCachePurgeBatch(ctx)
 		if err != nil && !errors.Is(err, context.Canceled) {
 			app.logger.Error("cache purge worker failed", "err", err)
+			if !failing {
+				sentry.CaptureException(err)
+			}
+			failing = true
+		} else {
+			failing = false
 		}
 		if ctx.Err() != nil {
 			return

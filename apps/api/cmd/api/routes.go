@@ -4,6 +4,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	sentryhttp "github.com/getsentry/sentry-go/http"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/httplog/v3"
 )
@@ -19,6 +20,8 @@ func (app *application) routes() http.Handler {
 			return r.URL.Path == "/v1/healthcheck"
 		},
 	}))
+	// Repanic so that httplog above still logs the panic and writes the 500.
+	router.Use(sentryhttp.New(sentryhttp.Options{Repanic: true}).Handle)
 	router.Use(requestIDHeader)
 	router.Use(app.enableCORS())
 	router.Use(app.authenticate)

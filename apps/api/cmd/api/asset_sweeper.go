@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"time"
+
+	"github.com/getsentry/sentry-go"
 )
 
 const (
@@ -21,6 +23,7 @@ func (app *application) runAssetSweeper(ctx context.Context) {
 		removed, err := app.assets.Sweep(ctx, assetSweepBatchSize)
 		if err != nil && !errors.Is(err, context.Canceled) {
 			app.logger.Error("asset sweep failed", "err", err)
+			sentry.CaptureException(err)
 		}
 		if removed > 0 {
 			app.logger.Info("swept stale assets", "assets", removed)

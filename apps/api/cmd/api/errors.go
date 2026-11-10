@@ -1,10 +1,12 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"log/slog"
 	"net/http"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/lex-unix/babyn-yar/internal/apperr"
 	"github.com/lex-unix/babyn-yar/internal/users"
@@ -23,6 +25,14 @@ func (app *application) logError(r *http.Request, err error) {
 			"url", r.URL.String(),
 		),
 	)
+
+	// A client that disconnects mid-request is not a server fault.
+	if errors.Is(err, context.Canceled) {
+		return
+	}
+	if hub := sentry.GetHubFromContext(r.Context()); hub != nil {
+		hub.CaptureException(err)
+	}
 }
 
 func (app *application) errorResponse(w http.ResponseWriter, r *http.Request, status int, message any) {
