@@ -18,7 +18,8 @@ export const en = {
       'Under Empress Catherine II of russia, the monastery was secularized and converted into the Kyiv-Kyrylivska Hospital. Land nearby was set aside for burying patients who died there, and by 1871 a cemetery had been established in the Kyrylivsky Grove.',
       'In the late 19th century, two Jewish sites were established near Babyn Yar: the Jewish Hospital in 1885 and the Lukyanivske Jewish Cemetery in 1894. Adjacent to the cemetery were the Kyrylivske Orthodox Cemetery and the Karaite, Muslim, Fraternal and Military cemeteries.'
     ],
-    'before-1941-features.mapSource': mapSource,
+    'before-1941-features.mapSource':
+      'Topographic plan of Kyiv as of 1924, 1:2100 (reduced)',
     'before-1941-features.featureLabel': 'Objects indicated on the map:',
     'jewish-cemetery.label': 'Lukianivka Jewish Cemetery',
     'jewish-cemetery.description': uk.before1941['jewish-cemetery.description'],
