@@ -17,7 +17,29 @@ const (
 	cachePurgePollInterval = 2 * time.Second
 	cachePurgeMaxRetry     = 15 * time.Minute
 	cachePurgeErrorLimit   = 2000
+	// The worker polls every few seconds and retries failed purges, so an
+	// outage would otherwise send Sentry the same error over and over.
+	cachePurgeReportInterval = time.Hour
 )
+
+// errorReportThrottle decides which failures of a polling loop to report. A
+// failure is reported when its message differs from the last one reported, or
+// when the interval has passed since that report.
+type errorReportThrottle struct {
+	interval   time.Duration
+	message    string
+	reportedAt time.Time
+}
+
+func (t *errorReportThrottle) allow(err error, now time.Time) bool {
+	message := err.Error()
+	if message == t.message && now.Sub(t.reportedAt) < t.interval {
+		return false
+	}
+	t.message = message
+	t.reportedAt = now
+	return true
+}
 
 type cachePurger interface {
 	PurgePrefixes(context.Context, []string) error
@@ -33,20 +55,15 @@ func (app *application) runCachePurgeWorker(ctx context.Context) {
 	app.logger.Info("cache purge outbox worker started")
 	defer app.logger.Info("cache purge outbox worker stopped")
 
-	// The worker polls every few seconds, so an outage would otherwise send
-	// Sentry the same error on every poll. Report only the first of a streak.
-	failing := false
+	reports := errorReportThrottle{interval: cachePurgeReportInterval}
 
 	for {
 		processed, err := app.processCachePurgeBatch(ctx)
 		if err != nil && !errors.Is(err, context.Canceled) {
 			app.logger.Error("cache purge worker failed", "err", err)
-			if !failing {
+			if reports.allow(err, time.Now()) {
 				sentry.CaptureException(err)
 			}
-			failing = true
-		} else {
-			failing = false
 		}
 		if ctx.Err() != nil {
 			return

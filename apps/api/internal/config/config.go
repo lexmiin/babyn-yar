@@ -44,10 +44,6 @@ type Config struct {
 		ZoneID        string `env:"CLOUDFLARE_ZONE_ID" envDefault:""`
 		PublicSiteURL string `env:"GOV_PUBLIC_URL" envDefault:"https://babynyar.gov.ua"`
 	}
-	Sentry struct {
-		// DSN is empty outside production, which leaves error reporting disabled.
-		DSN string `env:"SENTRY_DSN" envDefault:""`
-	}
 	Seed bool `env:"SEED_USER" envDefault:"false"`
 }
 
