@@ -3,8 +3,11 @@ import react from '@astrojs/react'
 import mdx from '@astrojs/mdx'
 import node from '@astrojs/node'
 import sitemap from '@astrojs/sitemap'
+import sentry from '@sentry/astro'
 
 import tailwindcss from '@tailwindcss/vite'
+
+const { SENTRY_ORG, SENTRY_AUTH_TOKEN } = process.env
 
 // https://astro.build/config
 export default defineConfig({
@@ -70,6 +73,15 @@ export default defineConfig({
           en: 'en'
         }
       }
+    }),
+    // The SDK is initialised in sentry.client.config.ts and
+    // sentry.server.config.ts, and only sends from production builds.
+    sentry({
+      project: 'babyn-yar-gov',
+      telemetry: false,
+      sourcemaps: {
+        disable: !(SENTRY_ORG && SENTRY_AUTH_TOKEN)
+      }
     })
   ],
   devToolbar: { enabled: false },
@@ -83,6 +95,9 @@ export default defineConfig({
   },
 
   vite: {
+    // Sentry only reports errors here, so drop its tracing and debug code from
+    // the client bundle, which roughly halves what the SDK adds to each page.
+    define: { __SENTRY_TRACING__: false, __SENTRY_DEBUG__: false },
     plugins: [tailwindcss()]
   }
 })

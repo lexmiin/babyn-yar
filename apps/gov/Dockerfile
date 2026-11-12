@@ -34,7 +34,9 @@ ARG API_URL
 ENV VITE_API_URL=${API_URL}
 
 # Build the project
-RUN pnpm exec turbo build --filter=@babyn-yar/gov...
+RUN --mount=type=secret,id=sentry-org,env=SENTRY_ORG \
+  --mount=type=secret,id=sentry-auth-token,env=SENTRY_AUTH_TOKEN \
+  pnpm exec turbo build --filter=@babyn-yar/gov...
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm deploy --legacy --filter=@babyn-yar/gov --prod /prod/gov
 
 # Final runtime stage
