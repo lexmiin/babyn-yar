@@ -19,7 +19,8 @@ export async function fetcher(url: URL | string, opts: RequestInit = {}) {
       method,
       status: response.status,
       url: response.url,
-      error: responseError
+      error: responseError,
+      requestId: response.headers.get('X-Request-Id') ?? undefined
     })
   }
   return response.json()
