@@ -3,12 +3,14 @@ export class ResponseError extends Error {
   method: string
   requestUrl: URL
   error: string | Record<string, string>
+  requestId?: string
 
   constructor(opts: {
     status: number
     method: string
     url: string
     error: string | Record<string, string>
+    requestId?: string
   }) {
     const { status, method, url, error } = opts
     super(
@@ -20,6 +22,7 @@ export class ResponseError extends Error {
     this.method = method
     this.requestUrl = new URL(url)
     this.error = error
+    this.requestId = opts.requestId
   }
 
   get pathname() {

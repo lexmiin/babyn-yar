@@ -1,5 +1,6 @@
 import type { HandleClientError } from '@sveltejs/kit/hooks'
 import * as Sentry from '@sentry/sveltekit'
+import { ResponseError } from '@babyn-yar/api-utils'
 
 Sentry.init({
   enabled: import.meta.env.PROD,
@@ -8,7 +9,16 @@ Sentry.init({
   tracesSampleRate: 0.1,
   integrations: [Sentry.replayIntegration()],
   replaysSessionSampleRate: 0.1,
-  replaysOnErrorSampleRate: 0.2
+  replaysOnErrorSampleRate: 0.2,
+  // Tag failed API calls with the API's request id, so the event can be
+  // matched to the API's own event and log lines.
+  beforeSend(event, hint) {
+    const error = hint.originalException
+    if (error instanceof ResponseError && error.requestId) {
+      event.tags = { ...event.tags, request_id: error.requestId }
+    }
+    return event
+  }
 })
 
 const errorHandler: HandleClientError = ({ event, error }) => {
