@@ -69,8 +69,12 @@ remote-setup user host: build-backup
     just remote-sync {{ user }} {{ host }}
 
 remote-sync user host:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    # Export before touching the server so a failed decryption can't clobber the remote .env.
+    env_file="$(fnox --if-missing error export --profile production)"
     scp docker-compose.yml {{ user }}@{{ host }}:/home/{{ user }}/babyn-yar/docker-compose.yml
-    fnox export --profile production | ssh {{ user }}@{{ host }} 'cat > /home/{{ user }}/babyn-yar/.env && chmod 600 /home/{{ user }}/babyn-yar/.env'
+    printf '%s\n' "$env_file" | ssh {{ user }}@{{ host }} 'cat > /home/{{ user }}/babyn-yar/.env && chmod 600 /home/{{ user }}/babyn-yar/.env'
     scp -r caddy {{ user }}@{{ host }}:/home/{{ user }}/babyn-yar/
 
 remote-deploy user host:
@@ -112,7 +116,7 @@ deploy-production user host:
     just purge-cdn-cache
 
 purge-cdn-cache:
-    fnox exec --profile production -- just _purge-cdn-cache
+    fnox --if-missing error exec --profile production -- just _purge-cdn-cache
 
 [private]
 _purge-cdn-cache:
