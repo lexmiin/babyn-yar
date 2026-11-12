@@ -160,11 +160,11 @@ const entries: readonly GuideEntry[] = [
     semanticId: 'memory-road-belongings-area',
     title:
       'Майданчик, де євреї залишали речі перед масовим вбивством 29-30 вересня 1941 року',
-    alt: 'Сучасний вигляд майданчика, де євреїв змушували залишати речі',
+    alt: 'Архівне фото: речі, які євреїв змусили залишити на майданчику',
     en: {
       title:
         'Site Where Jews Left Their Belongings Before the Mass Killing of 29–30 September 1941',
-      alt: 'Present-day view of the site where Jews were forced to leave their belongings'
+      alt: 'Archival photograph of the belongings Jews were forced to leave at the site'
     },
     image: belongingsAreaImage,
     Content: BelongingsArea
