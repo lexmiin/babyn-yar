@@ -45,12 +45,25 @@ type application struct {
 }
 
 func main() {
-	logger := newLogger(os.Getenv("API_ENV"))
+	env := os.Getenv("API_ENV")
+	logger := newLogger(env)
 
-	if err := run(logger); err != nil {
+	// Sentry is set up before the config is parsed so that an invalid config
+	// is reported too. An empty DSN, as outside production, disables it.
+	err := sentry.Init(sentry.ClientOptions{
+		Dsn:         os.Getenv("SENTRY_DSN"),
+		Environment: env,
+	})
+	if err == nil {
+		err = run(logger)
+	}
+	if err != nil {
 		logger.Error("application failed", "err", err)
 		sentry.CaptureException(err)
-		sentry.Flush(sentryFlushTimeout)
+	}
+
+	sentry.Flush(sentryFlushTimeout)
+	if err != nil {
 		os.Exit(1)
 	}
 }
@@ -69,15 +82,6 @@ func run(logger *slog.Logger) error {
 	if err != nil {
 		return err
 	}
-
-	err = sentry.Init(sentry.ClientOptions{
-		Dsn:         cfg.Sentry.DSN,
-		Environment: cfg.Env,
-	})
-	if err != nil {
-		return err
-	}
-	defer sentry.Flush(sentryFlushTimeout)
 
 	purger, err := newCachePurger(cfg)
 	if err != nil {
