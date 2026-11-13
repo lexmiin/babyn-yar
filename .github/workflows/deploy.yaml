@@ -4,7 +4,7 @@
 # backward-compatible. If a release run is still in progress, cancel it before
 # rolling back, or its deploy will replace the rollback.
 #
-# Requires (backup.yaml uses the same setup):
+# Requires:
 # - Tailscale: a `tag:ci` tag; a grant from tag:ci to tag:server on tcp:22; an
 #   ssh rule letting tag:ci log in to tag:server as DEPLOY_USER; Tailscale SSH
 #   enabled on the server (`tailscale set --ssh`); and an OpenID Connect trust

@@ -57,15 +57,8 @@ migrations-up:
     @echo 'Running migrations...'
     migrate -path migrations -database $DATABASE_URL up
 
-[working-directory(api_dir)]
-build-backup os="linux" arch="amd64":
-    mkdir -p ./bin
-    GOOS={{ os }} GOARCH={{ arch }} go build -o ./bin/dbbackup ./cmd/dbbackup
-
-remote-setup user host: build-backup
-    ssh {{ user }}@{{ host }} 'mkdir -p /home/{{ user }}/babyn-yar /home/{{ user }}/.local/bin'
-    scp {{ api_dir }}/bin/dbbackup {{ user }}@{{ host }}:/home/{{ user }}/.local/bin/dbbackup
-    ssh {{ user }}@{{ host }} 'chmod +x /home/{{ user }}/.local/bin/dbbackup'
+remote-setup user host:
+    ssh {{ user }}@{{ host }} 'mkdir -p /home/{{ user }}/babyn-yar'
     just remote-sync {{ user }} {{ host }}
 
 # Sync production secrets to the server's .env. Compose, Caddy, and migrations
@@ -133,7 +126,7 @@ db-sync remote="babynyar" bucket="db-backup":
     latest="$(rclone lsjson {{ remote }}:{{ bucket }} --recursive | jq -r 'sort_by(.ModTime) | last | .Path')"
 
     if [[ -z "$latest" || "$latest" == "null" ]]; then
-        echo "No dump_*.gz backups found in {{ remote }}:{{ bucket }}" >&2
+        echo "No backups found in {{ remote }}:{{ bucket }}" >&2
         exit 1
     fi
 
@@ -141,7 +134,12 @@ db-sync remote="babynyar" bucket="db-backup":
     dump_path="$backup_dir/dump.sql"
 
     rclone copyto "{{ remote }}:{{ bucket }}/$latest" "$backup_path"
-    gunzip -c "$backup_path" > "$dump_path"
+    case "$latest" in
+        # The backup service uploads the dump as the only file in a tar archive.
+        *.tar.gz) tar -xzOf "$backup_path" > "$dump_path" ;;
+        # Older backups are a bare gzipped dump.
+        *) gunzip -c "$backup_path" > "$dump_path" ;;
+    esac
     docker compose -f docker-compose.dev.yml exec -T db psql -U postgres -d postgres < "$dump_path"
 
 deploy-production user host tag:
