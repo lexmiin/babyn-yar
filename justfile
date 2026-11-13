@@ -4,6 +4,9 @@ api_dir := "apps/api"
 main_package := "./cmd/api"
 binary := "api"
 
+# Production server over Tailscale MagicDNS (CI: DEPLOY_USER@DEPLOY_HOST).
+target := env("DEPLOY_TARGET", "dev@babyn-yar")
+
 help:
     @just --list
 
@@ -57,18 +60,18 @@ migrations-up:
     @echo 'Running migrations...'
     migrate -path migrations -database $DATABASE_URL up
 
-remote-setup user host:
-    ssh {{ user }}@{{ host }} 'mkdir -p /home/{{ user }}/babyn-yar'
-    just remote-sync {{ user }} {{ host }}
+remote-setup:
+    ssh {{ target }} 'mkdir -p babyn-yar'
+    just remote-sync
 
 # Sync production secrets to the server's .env. Compose, Caddy, and migrations
 # ship with each deploy; restart with `just deploy-production` to apply.
-remote-sync user host:
+remote-sync:
     #!/usr/bin/env bash
     set -euo pipefail
     # Export before touching the server so a failed decryption can't clobber the remote .env.
     env_file="$(fnox --if-missing error export --profile production)"
-    printf '%s\n' "$env_file" | ssh {{ user }}@{{ host }} 'cat > /home/{{ user }}/babyn-yar/.env && chmod 600 /home/{{ user }}/babyn-yar/.env'
+    printf '%s\n' "$env_file" | ssh {{ target }} 'cat > babyn-yar/.env && chmod 600 babyn-yar/.env'
 
 # Release origin/main; the release workflow builds, publishes, and deploys it.
 release:
@@ -104,16 +107,16 @@ release:
 # Deploy an existing release from this machine (fallback for the deploy
 # workflow). Uses the files at the release tag, not the working copy.
 [confirm("Are you sure you want to deploy to production?")]
-remote-deploy user host tag:
+remote-deploy tag:
     #!/usr/bin/env bash
     set -euo pipefail
     src="$(mktemp -d)"
     trap 'rm -rf "$src"' EXIT
     gh api "repos/{owner}/{repo}/tarball/refs/tags/{{ tag }}" | tar -xz -C "$src" --strip-components=1
-    "$src/scripts/deploy.sh" {{ user }}@{{ host }} {{ tag }}
+    "$src/scripts/deploy.sh" {{ target }} {{ tag }}
 
-db-tunnel user host port="5432":
-    -ssh -N -L {{ port }}:127.0.0.1:5432 {{ user }}@{{ host }}
+db-tunnel port="5432":
+    -ssh -N -L {{ port }}:127.0.0.1:5432 {{ target }}
 
 [confirm("Are you sure you want to sync local db with prod?")]
 db-sync remote="babynyar" bucket="db-backup":
@@ -142,8 +145,8 @@ db-sync remote="babynyar" bucket="db-backup":
     esac
     docker compose -f docker-compose.dev.yml exec -T db psql -U postgres -d postgres < "$dump_path"
 
-deploy-production user host tag:
-    just remote-deploy {{ user }} {{ host }} {{ tag }}
+deploy-production tag:
+    just remote-deploy {{ tag }}
     just purge-cdn-cache
 
 purge-cdn-cache:
