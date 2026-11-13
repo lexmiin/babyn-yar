@@ -69,6 +69,11 @@ services:
       - 'POSTGRES_DB=${POSTGRES_DB}'
     volumes:
       - db-data:/var/lib/postgresql/data
+      - db-dump:/dump
+    labels:
+      # Run by the backup service before it archives db-dump. A failed dump
+      # fails the backup.
+      - docker-volume-backup.archive-pre=/bin/sh -c 'pg_dumpall --clean --username="$$POSTGRES_USER" --file=/dump/dump.sql'
     ports:
       - '127.0.0.1:5432:5432'
     healthcheck:
@@ -86,6 +91,48 @@ services:
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
       interval: 10s
+  # Nightly database backup to R2: dumps the database (see the label on db),
+  # uploads the dump as db-<timestamp>.tar.gz, and prunes uploads older than
+  # BACKUP_RETENTION_DAYS. Restore locally with `just db-sync`; run one now
+  # with `docker compose exec backup backup`.
+  #
+  # BACKUP_HEARTBEAT_URL is a healthchecks.io-style check URL. It is pinged
+  # when a run starts and when it succeeds, and gets the error and log on
+  # failure, so the check alerts on failed and on missed backups.
+  backup:
+    image: offen/docker-volume-backup:v2.50.1
+    restart: unless-stopped
+    logging: *default-logging
+    environment:
+      BACKUP_CRON_EXPRESSION: '0 0 * * *' # daily at midnight UTC
+      BACKUP_FILENAME: db-%Y-%m-%dT%H-%M-%S.tar.gz
+      # Pruning only touches db-* objects, never other files in the bucket.
+      BACKUP_PRUNING_PREFIX: db-
+      BACKUP_RETENTION_DAYS: '30'
+      AWS_ENDPOINT: ${STORAGE_ACCOUNT_ID:?}.r2.cloudflarestorage.com
+      AWS_S3_BUCKET_NAME: ${BACKUP_BUCKET_NAME:?}
+      AWS_ACCESS_KEY_ID: ${BACKUP_ACCESS_KEY_ID:?}
+      AWS_SECRET_ACCESS_KEY: ${BACKUP_SECRET_ACCESS_KEY:?}
+      NOTIFICATION_URLS: generic+${BACKUP_HEARTBEAT_URL:?}/fail
+    labels:
+      # These run inside this container. `|| true` keeps an unreachable
+      # heartbeat service from failing the backup. prune is the last step, so
+      # the success ping is only sent once the upload is done.
+      - docker-volume-backup.archive-pre=/bin/sh -c 'wget -q -T 10 -O /dev/null ${BACKUP_HEARTBEAT_URL}/start || true'
+      # The dump command is skipped, not failed, when the db container isn't
+      # running, which would upload the previous run's dump as a new backup.
+      # Removing the dump once it is archived means each one is uploaded at
+      # most once, and a run that finds none aborts before the upload.
+      - docker-volume-backup.copy-pre=/bin/sh -c 'rm /backup/db/dump.sql || { echo "no new dump.sql; is the db container running?" >&2; exit 1; }'
+      - docker-volume-backup.prune-post=/bin/sh -c 'wget -q -T 10 -O /dev/null ${BACKUP_HEARTBEAT_URL} || true'
+    volumes:
+      # Writable so the copy-pre command can remove the dump.
+      - db-dump:/backup/db
+      # Needed to run the dump command inside the db container.
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      db:
+        condition: service_healthy
   migrate:
     image: migrate/migrate:v4.16.2
     logging: *default-logging
@@ -109,4 +156,5 @@ volumes:
   caddy-data:
   caddy-config:
   db-data:
+  db-dump:
   redis:
