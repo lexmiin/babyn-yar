@@ -2,6 +2,7 @@
 import { PublicationAPI } from '@babyn-yar/api-utils'
 import type { PublicationSchema } from '@babyn-yar/schema'
 import CMSList from './CMSList.astro'
+import { parsePage } from '@/pagination'
 
 interface Props {
   kind: PublicationSchema.Kind
@@ -12,7 +13,7 @@ interface Props {
 }
 
 const { kind, locale, title, description, slug } = Astro.props
-const page = Number(Astro.url.searchParams.get('page') || '1')
+const page = parsePage(Astro.url)
 const response = await PublicationAPI.list({ kind, locale, page })
 ---
 
