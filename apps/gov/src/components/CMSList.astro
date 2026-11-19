@@ -16,7 +16,7 @@ let { list, metadata, slug, title, description } = Astro.props
 description ??= title
 ---
 
-<MainLayout {title} {description}>
+<MainLayout {title} {description} canonicalPage={metadata?.currentPage}>
   <div class="not-prose">
     {list.map((e, i) => (
       <MediaListItem

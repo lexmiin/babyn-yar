@@ -11,13 +11,15 @@ export interface Props {
   description: string
   flushMobileFooter?: boolean
   noindex?: boolean
+  canonicalPage?: number
 }
 
 const {
   title,
   description,
   flushMobileFooter = false,
-  noindex = false
+  noindex = false,
+  canonicalPage
 } = Astro.props
 const lang = getLang(Astro.currentLocale)
 const t = useTranslations(lang)
@@ -33,6 +35,7 @@ const ogImage = lang === 'en' ? '/og-image-en.png' : '/og-image.png'
       {description}
       {ogImage}
       {noindex}
+      {canonicalPage}
       siteTitle={t('site.title')}
     />
   </head>

@@ -16,6 +16,7 @@ const { victims, metadata } = await VictimAPI.list({ fullname, info, page })
   <MainLayout
     title="List of Holocaust Victims"
     description="List of Holocaust Victims"
+    canonicalPage={metadata.currentPage}
   >
     <div class="not-prose mx-auto max-w-4xl">
       <div class="mb-7">

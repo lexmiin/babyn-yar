@@ -5,19 +5,28 @@ export interface Props {
   title: string
   description: string
   noindex?: boolean
+  /** Page number of a paginated list, kept in the canonical when above 1. */
+  canonicalPage?: number
 }
 
-const { title, description, siteTitle, ogImage, noindex = false } = Astro.props
+const {
+  title,
+  description,
+  siteTitle,
+  ogImage,
+  noindex = false,
+  canonicalPage
+} = Astro.props
 
 const canonicalURL = new URL(
   Astro.url.pathname.replace(/([^/])$/, '$1/'),
   Astro.site
 )
-// Each page of a paginated list is its own canonical page; other query
-// parameters (tracking, search filters) still collapse onto the bare path.
-const page = Number(Astro.url.searchParams.get('page'))
-if (Number.isInteger(page) && page > 1) {
-  canonicalURL.searchParams.set('page', String(page))
+// Each page of a paginated list is its own canonical page. Pages opt in with
+// canonicalPage, so a stray ?page= on any other route, like other query
+// parameters (tracking, search filters), collapses onto the bare path.
+if (canonicalPage && canonicalPage > 1) {
+  canonicalURL.searchParams.set('page', String(canonicalPage))
 }
 ---
 
