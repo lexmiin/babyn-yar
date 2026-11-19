@@ -1,9 +1,13 @@
 ---
 import PublicationLoader from '@/components/PublicationLoader.astro'
+import { loadPublication } from '@/publication'
 
 export const prerender = false
 
-const id = Astro.params.id as string
+const publication = await loadPublication(
+  { id: Astro.params.id as string, kind: 'victim_testimony', locale: 'en' },
+  Astro.response
+)
 ---
 
-<PublicationLoader {id} kind="victim_testimony" locale="en" />
+<PublicationLoader {publication} />

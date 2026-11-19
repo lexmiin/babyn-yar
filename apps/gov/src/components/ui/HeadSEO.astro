@@ -13,6 +13,12 @@ const canonicalURL = new URL(
   Astro.url.pathname.replace(/([^/])$/, '$1/'),
   Astro.site
 )
+// Each page of a paginated list is its own canonical page; other query
+// parameters (tracking, search filters) still collapse onto the bare path.
+const page = Number(Astro.url.searchParams.get('page'))
+if (Number.isInteger(page) && page > 1) {
+  canonicalURL.searchParams.set('page', String(page))
+}
 ---
 
 <title>{title}</title>
