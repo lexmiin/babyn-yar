@@ -12,7 +12,11 @@ const page = Number(Astro.url.searchParams.get('page') || '1')
 const { victims, metadata } = await VictimAPI.list({ fullname, info, page })
 ---
 
-<MainLayout title="Списки розстріляних" description="Списки розстріляних">
+<MainLayout
+  title="Списки розстріляних"
+  description="Списки розстріляних"
+  canonicalPage={metadata.currentPage}
+>
   <div class="not-prose mx-auto max-w-4xl">
     <div class="mb-7">
       <h1 class="text-3xl font-bold">Списки розстріляних</h1>

@@ -4,12 +4,13 @@ import BaseLayout from './BaseLayout.astro'
 interface Props {
   title: string
   description: string
+  canonicalPage?: number
 }
 
-const { title, description } = Astro.props
+const { title, description, canonicalPage } = Astro.props
 ---
 
-<BaseLayout {title} {description}>
+<BaseLayout {title} {description} {canonicalPage}>
   <div class="prose max-w-none text-xl text-black prose-img:m-0 prose-img:p-0 [&_img+img]:mt-4 md:[&_img+img]:mt-8">
     <slot />
   </div>
