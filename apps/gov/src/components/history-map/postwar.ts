@@ -71,19 +71,6 @@ export function getPostwarScenes(
       }
     },
     {
-      id: 'postwar-video',
-      period: { ...period, title: text['postwar-video.title'] },
-      kind: 'video',
-      data: {
-        aspectRatio: MAP_ASPECT_RATIO,
-        src: import.meta.env.DEV
-          ? '/assets/layer-3-video.mp4'
-          : 'https://static.babynyar.work/layer-3-video.mp4',
-        caption: text['postwar-video.caption'],
-        overview: text['postwar-video.overview']
-      }
-    },
-    {
       id: 'postwar-development',
       period: { ...period, title: text['postwar-development.title'] },
       kind: 'features',

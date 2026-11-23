@@ -111,7 +111,6 @@ export const en = {
   },
   postwar: {
     'postwar-map.title': 'The Soviet period 1943–1991',
-    'postwar-video.title': 'Soviet development',
     'postwar-development.title': 'Soviet development',
     'postwar-memorialization.title':
       'The public call for a place of remembrance for the victims',
@@ -128,11 +127,6 @@ export const en = {
     'postwar-street-2.label': 'Oleny Telihy Street',
     'postwar-map.overview': [
       'In the second half of the 1940s, the Soviet city authorities adopted a new master plan for the Syrets and Babyn Yar districts. It called for new housing and a transformation of the area. In 1947, construction of Stalin-era apartment blocks (‘stalinkas’) began on Shchusieva Street, partly on the site of the former Syrets camp. In 1950, work started on a highway through part of the ravine, along the route of what is now Olena Teliha Street.'
-    ],
-    'postwar-video.caption':
-      'Archival footage of development and hydraulic filling at Babyn Yar',
-    'postwar-video.overview': [
-      'The cemetery grounds were gradually built over. In 1958, some of the graves from the Lukyanivske Jewish Cemetery were moved to the Berkovetske Cemetery. In 1962, the Lukyanivske Jewish, Karaite and Muslim cemeteries were closed, and their demolition began. Some Karaite burials were relocated to the Lukyanivske Cemetery.'
     ],
     'postwar-flood.mapSource': mapSource,
     'postwar-flood.title': timeline.flood.title,
@@ -156,7 +150,8 @@ export const en = {
     'layer3-razliv.label': 'Kurenivka tragedy',
     'layer3-razliv.description': uk.postwar['layer3-razliv.description'],
     'postwar-development.overview': [
-      'From 1964, the cleared land was used for the construction of a sports complex for the Avanhard sports society, with two halls and a swimming pool. A sports school was added in 1969, followed by an indoor ice rink in 1976. By 1980, the Shevchenkivskyi District Park of Culture and Recreation had been established on the former ravine grounds. The former Fraternal and Jewish cemeteries were also built over: the Kyiv TV Tower was erected in 1976, followed by the Kyiv Television Center, also known as ‘the Pencil’, which was constructed from 1983 to the early 1990s.'
+      'From 1964, the cleared land was used for the construction of a sports complex for the Avanhard sports society, with two halls and a swimming pool. A sports school was added in 1969, followed by an indoor ice rink in 1976. By 1980, the Shevchenkivskyi District Park of Culture and Recreation had been established on the former ravine grounds. The former Fraternal and Jewish cemeteries were also built over: the Kyiv TV Tower was erected in 1976, followed by the Kyiv Television Center, also known as ‘the Pencil’, which was constructed from 1983 to the early 1990s.',
+      'The cemetery grounds were gradually built over. In 1958, some of the graves from the Lukyanivske Jewish Cemetery were moved to the Berkovetske Cemetery. In 1962, the Lukyanivske Jewish, Karaite and Muslim cemeteries were closed, and their demolition began. Some Karaite burials were relocated to the Lukyanivske Cemetery.'
     ],
     'postwar-development.mapSource': mapSource,
     'postwar-development.featureLabel': 'Objects indicated on the map:',
