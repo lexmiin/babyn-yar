@@ -150,8 +150,8 @@ export const en = {
     'layer3-razliv.label': 'Kurenivka tragedy',
     'layer3-razliv.description': uk.postwar['layer3-razliv.description'],
     'postwar-development.overview': [
-      'From 1964, the cleared land was used for the construction of a sports complex for the Avanhard sports society, with two halls and a swimming pool. A sports school was added in 1969, followed by an indoor ice rink in 1976. By 1980, the Shevchenkivskyi District Park of Culture and Recreation had been established on the former ravine grounds. The former Fraternal and Jewish cemeteries were also built over: the Kyiv TV Tower was erected in 1976, followed by the Kyiv Television Center, also known as ‘the Pencil’, which was constructed from 1983 to the early 1990s.',
-      'The cemetery grounds were gradually built over. In 1958, some of the graves from the Lukyanivske Jewish Cemetery were moved to the Berkovetske Cemetery. In 1962, the Lukyanivske Jewish, Karaite and Muslim cemeteries were closed, and their demolition began. Some Karaite burials were relocated to the Lukyanivske Cemetery.'
+      'The cemetery grounds were gradually built over. In 1958, some of the graves from the Lukyanivske Jewish Cemetery were moved to the Berkovetske Cemetery. In 1962, the Lukyanivske Jewish, Karaite and Muslim cemeteries were closed, and their demolition began. Some Karaite burials were relocated to the Lukyanivske Cemetery.',
+      'From 1964, the cleared land was used for the construction of a sports complex for the Avanhard sports society, with two halls and a swimming pool. A sports school was added in 1969, followed by an indoor ice rink in 1976. By 1980, the Shevchenkivskyi District Park of Culture and Recreation had been established on the former ravine grounds. The former Fraternal and Jewish cemeteries were also built over: the Kyiv TV Tower was erected in 1976, followed by the Kyiv Television Center, also known as ‘the Pencil’, which was constructed from 1983 to the early 1990s.'
     ],
     'postwar-development.mapSource': mapSource,
     'postwar-development.featureLabel': 'Objects indicated on the map:',
